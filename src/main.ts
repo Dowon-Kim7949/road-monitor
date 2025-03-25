@@ -6,6 +6,7 @@ import { createI18n, type Composer } from 'vue-i18n'
 
 import App from './App.vue'
 import router from './router'
+import VueApexCharts from 'vue3-apexcharts'
 
 const app = createApp(App)
 
@@ -37,6 +38,7 @@ await loadLocaleMessages('ko')
 app.use(createPinia())
 app.use(router)
 app.use(i18n)
+app.use(VueApexCharts)
 
 app.provide<Composer>('i18n', i18n.global)
 app.provide('loadLocaleMessages', loadLocaleMessages)

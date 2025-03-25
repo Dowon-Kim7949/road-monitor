@@ -4,12 +4,12 @@ import type { RouteRecordRaw } from 'vue-router'
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    component: () => import('@/layouts/LoginLayout.vue'),
+    component: () => import('@/layouts/loginLayout.vue'),
     children: [{ path: '', component: () => import('@/views/Login/LoginView.vue') }],
   },
   {
     path: '/contents',
-    component: () => import('@/layouts/ContentsLayout.vue'),
+    component: () => import('@/layouts/contentsLayout.vue'),
     children: [
       { path: '/monitoring', component: () => import('@/views/RoadMonitor/RMMonitoringView.vue') },
       { path: '/coverage', component: () => import('@/views/RoadMonitor/RMCoverageView.vue') },

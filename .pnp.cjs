@@ -39,6 +39,7 @@ const RAW_RUNTIME_STATE =
           ["@vue/eslint-config-typescript", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:14.5.0"],\
           ["@vue/test-utils", "npm:2.4.6"],\
           ["@vue/tsconfig", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:0.7.0"],\
+          ["apexcharts", "npm:4.5.0"],\
           ["axios", "npm:1.8.4"],\
           ["crypto-js", "npm:4.2.0"],\
           ["eslint", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:9.22.0"],\
@@ -57,7 +58,8 @@ const RAW_RUNTIME_STATE =
           ["vue", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:3.5.13"],\
           ["vue-i18n", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:10.0.6"],\
           ["vue-router", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:4.5.0"],\
-          ["vue-tsc", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:2.2.8"]\
+          ["vue-tsc", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:2.2.8"],\
+          ["vue3-apexcharts", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:1.8.0"]\
         ],\
         "linkType": "SOFT"\
       }]\
@@ -1463,6 +1465,95 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/@sindresorhus-merge-streams-npm-4.0.0-28e7c03ac1-10c0.zip/node_modules/@sindresorhus/merge-streams/",\
         "packageDependencies": [\
           ["@sindresorhus/merge-streams", "npm:4.0.0"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["@svgdotjs/svg.draggable.js", [\
+      ["npm:3.0.6", {\
+        "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/@svgdotjs-svg.draggable.js-npm-3.0.6-791140de47-10c0.zip/node_modules/@svgdotjs/svg.draggable.js/",\
+        "packageDependencies": [\
+          ["@svgdotjs/svg.draggable.js", "npm:3.0.6"]\
+        ],\
+        "linkType": "SOFT"\
+      }],\
+      ["virtual:971fe8bc32e46f1aac0fe5eee54b43467e78cbb51ca2f716d2f5475778266e6917c60377d84ab65c574c1c27b9bb828395c327e1bc8102e0f6eb0e2a99e0fbfc#npm:3.0.6", {\
+        "packageLocation": "./.yarn/__virtual__/@svgdotjs-svg.draggable.js-virtual-0912a026a3/4/AppData/Local/Yarn/Berry/cache/@svgdotjs-svg.draggable.js-npm-3.0.6-791140de47-10c0.zip/node_modules/@svgdotjs/svg.draggable.js/",\
+        "packageDependencies": [\
+          ["@svgdotjs/svg.draggable.js", "virtual:971fe8bc32e46f1aac0fe5eee54b43467e78cbb51ca2f716d2f5475778266e6917c60377d84ab65c574c1c27b9bb828395c327e1bc8102e0f6eb0e2a99e0fbfc#npm:3.0.6"],\
+          ["@svgdotjs/svg.js", "npm:3.2.4"],\
+          ["@types/svgdotjs__svg.js", null]\
+        ],\
+        "packagePeers": [\
+          "@svgdotjs/svg.js",\
+          "@types/svgdotjs__svg.js"\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["@svgdotjs/svg.filter.js", [\
+      ["npm:3.0.9", {\
+        "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/@svgdotjs-svg.filter.js-npm-3.0.9-c4427b836f-10c0.zip/node_modules/@svgdotjs/svg.filter.js/",\
+        "packageDependencies": [\
+          ["@svgdotjs/svg.filter.js", "npm:3.0.9"],\
+          ["@svgdotjs/svg.js", "npm:3.2.4"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["@svgdotjs/svg.js", [\
+      ["npm:3.2.4", {\
+        "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/@svgdotjs-svg.js-npm-3.2.4-e1dfac9908-10c0.zip/node_modules/@svgdotjs/svg.js/",\
+        "packageDependencies": [\
+          ["@svgdotjs/svg.js", "npm:3.2.4"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["@svgdotjs/svg.resize.js", [\
+      ["npm:2.0.5", {\
+        "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/@svgdotjs-svg.resize.js-npm-2.0.5-b43f854246-10c0.zip/node_modules/@svgdotjs/svg.resize.js/",\
+        "packageDependencies": [\
+          ["@svgdotjs/svg.resize.js", "npm:2.0.5"]\
+        ],\
+        "linkType": "SOFT"\
+      }],\
+      ["virtual:971fe8bc32e46f1aac0fe5eee54b43467e78cbb51ca2f716d2f5475778266e6917c60377d84ab65c574c1c27b9bb828395c327e1bc8102e0f6eb0e2a99e0fbfc#npm:2.0.5", {\
+        "packageLocation": "./.yarn/__virtual__/@svgdotjs-svg.resize.js-virtual-9cf0616134/4/AppData/Local/Yarn/Berry/cache/@svgdotjs-svg.resize.js-npm-2.0.5-b43f854246-10c0.zip/node_modules/@svgdotjs/svg.resize.js/",\
+        "packageDependencies": [\
+          ["@svgdotjs/svg.resize.js", "virtual:971fe8bc32e46f1aac0fe5eee54b43467e78cbb51ca2f716d2f5475778266e6917c60377d84ab65c574c1c27b9bb828395c327e1bc8102e0f6eb0e2a99e0fbfc#npm:2.0.5"],\
+          ["@svgdotjs/svg.js", "npm:3.2.4"],\
+          ["@svgdotjs/svg.select.js", "virtual:971fe8bc32e46f1aac0fe5eee54b43467e78cbb51ca2f716d2f5475778266e6917c60377d84ab65c574c1c27b9bb828395c327e1bc8102e0f6eb0e2a99e0fbfc#npm:4.0.2"],\
+          ["@types/svgdotjs__svg.js", null],\
+          ["@types/svgdotjs__svg.select.js", null]\
+        ],\
+        "packagePeers": [\
+          "@svgdotjs/svg.js",\
+          "@svgdotjs/svg.select.js",\
+          "@types/svgdotjs__svg.js",\
+          "@types/svgdotjs__svg.select.js"\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["@svgdotjs/svg.select.js", [\
+      ["npm:4.0.2", {\
+        "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/@svgdotjs-svg.select.js-npm-4.0.2-c6d8a0ab6d-10c0.zip/node_modules/@svgdotjs/svg.select.js/",\
+        "packageDependencies": [\
+          ["@svgdotjs/svg.select.js", "npm:4.0.2"]\
+        ],\
+        "linkType": "SOFT"\
+      }],\
+      ["virtual:971fe8bc32e46f1aac0fe5eee54b43467e78cbb51ca2f716d2f5475778266e6917c60377d84ab65c574c1c27b9bb828395c327e1bc8102e0f6eb0e2a99e0fbfc#npm:4.0.2", {\
+        "packageLocation": "./.yarn/__virtual__/@svgdotjs-svg.select.js-virtual-77c7e630a7/4/AppData/Local/Yarn/Berry/cache/@svgdotjs-svg.select.js-npm-4.0.2-c6d8a0ab6d-10c0.zip/node_modules/@svgdotjs/svg.select.js/",\
+        "packageDependencies": [\
+          ["@svgdotjs/svg.select.js", "virtual:971fe8bc32e46f1aac0fe5eee54b43467e78cbb51ca2f716d2f5475778266e6917c60377d84ab65c574c1c27b9bb828395c327e1bc8102e0f6eb0e2a99e0fbfc#npm:4.0.2"],\
+          ["@svgdotjs/svg.js", "npm:3.2.4"],\
+          ["@types/svgdotjs__svg.js", null]\
+        ],\
+        "packagePeers": [\
+          "@svgdotjs/svg.js",\
+          "@types/svgdotjs__svg.js"\
         ],\
         "linkType": "HARD"\
       }]\
@@ -4296,6 +4387,15 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["@yr/monotone-cubic-spline", [\
+      ["npm:1.0.3", {\
+        "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/@yr-monotone-cubic-spline-npm-1.0.3-a6469f7958-10c0.zip/node_modules/@yr/monotone-cubic-spline/",\
+        "packageDependencies": [\
+          ["@yr/monotone-cubic-spline", "npm:1.0.3"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["abbrev", [\
       ["npm:2.0.0", {\
         "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/abbrev-npm-2.0.0-0eb38a17e5-10c0.zip/node_modules/abbrev/",\
@@ -4403,6 +4503,21 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/ansi-styles-npm-6.2.1-d43647018c-10c0.zip/node_modules/ansi-styles/",\
         "packageDependencies": [\
           ["ansi-styles", "npm:6.2.1"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["apexcharts", [\
+      ["npm:4.5.0", {\
+        "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/apexcharts-npm-4.5.0-971fe8bc32-10c0.zip/node_modules/apexcharts/",\
+        "packageDependencies": [\
+          ["apexcharts", "npm:4.5.0"],\
+          ["@svgdotjs/svg.draggable.js", "virtual:971fe8bc32e46f1aac0fe5eee54b43467e78cbb51ca2f716d2f5475778266e6917c60377d84ab65c574c1c27b9bb828395c327e1bc8102e0f6eb0e2a99e0fbfc#npm:3.0.6"],\
+          ["@svgdotjs/svg.filter.js", "npm:3.0.9"],\
+          ["@svgdotjs/svg.js", "npm:3.2.4"],\
+          ["@svgdotjs/svg.resize.js", "virtual:971fe8bc32e46f1aac0fe5eee54b43467e78cbb51ca2f716d2f5475778266e6917c60377d84ab65c574c1c27b9bb828395c327e1bc8102e0f6eb0e2a99e0fbfc#npm:2.0.5"],\
+          ["@svgdotjs/svg.select.js", "virtual:971fe8bc32e46f1aac0fe5eee54b43467e78cbb51ca2f716d2f5475778266e6917c60377d84ab65c574c1c27b9bb828395c327e1bc8102e0f6eb0e2a99e0fbfc#npm:4.0.2"],\
+          ["@yr/monotone-cubic-spline", "npm:1.0.3"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -7483,6 +7598,7 @@ const RAW_RUNTIME_STATE =
           ["@vue/eslint-config-typescript", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:14.5.0"],\
           ["@vue/test-utils", "npm:2.4.6"],\
           ["@vue/tsconfig", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:0.7.0"],\
+          ["apexcharts", "npm:4.5.0"],\
           ["axios", "npm:1.8.4"],\
           ["crypto-js", "npm:4.2.0"],\
           ["eslint", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:9.22.0"],\
@@ -7501,7 +7617,8 @@ const RAW_RUNTIME_STATE =
           ["vue", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:3.5.13"],\
           ["vue-i18n", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:10.0.6"],\
           ["vue-router", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:4.5.0"],\
-          ["vue-tsc", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:2.2.8"]\
+          ["vue-tsc", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:2.2.8"],\
+          ["vue3-apexcharts", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:1.8.0"]\
         ],\
         "linkType": "SOFT"\
       }]\
@@ -8729,6 +8846,32 @@ const RAW_RUNTIME_STATE =
         "packagePeers": [\
           "@types/typescript",\
           "typescript"\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["vue3-apexcharts", [\
+      ["npm:1.8.0", {\
+        "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/vue3-apexcharts-npm-1.8.0-f1205638f7-10c0.zip/node_modules/vue3-apexcharts/",\
+        "packageDependencies": [\
+          ["vue3-apexcharts", "npm:1.8.0"]\
+        ],\
+        "linkType": "SOFT"\
+      }],\
+      ["virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:1.8.0", {\
+        "packageLocation": "./.yarn/__virtual__/vue3-apexcharts-virtual-944195d9ea/4/AppData/Local/Yarn/Berry/cache/vue3-apexcharts-npm-1.8.0-f1205638f7-10c0.zip/node_modules/vue3-apexcharts/",\
+        "packageDependencies": [\
+          ["vue3-apexcharts", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:1.8.0"],\
+          ["@types/apexcharts", null],\
+          ["@types/vue", null],\
+          ["apexcharts", "npm:4.5.0"],\
+          ["vue", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:3.5.13"]\
+        ],\
+        "packagePeers": [\
+          "@types/apexcharts",\
+          "@types/vue",\
+          "apexcharts",\
+          "vue"\
         ],\
         "linkType": "HARD"\
       }]\
