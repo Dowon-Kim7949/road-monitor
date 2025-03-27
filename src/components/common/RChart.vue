@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 const options = {
   chart: {
     id: 'vuechart-example'

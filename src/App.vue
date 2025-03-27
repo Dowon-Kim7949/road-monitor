@@ -10,11 +10,11 @@ import { windowSize } from '@/utils/krds-ui-script/krds_windowSize.ts'
 import { scrollManager } from '@/utils/krds-ui-script/krds_scrollManager.ts'
 
 // 이벤트 핸들러 정의
-function handleResize() {
+const handleResize = () => {
   windowSize.setWinSize()
 }
 
-function handleScroll() {
+const handleScroll = () => {
   scrollManager.updateScrollValues()
   scrollManager.handleScrollDirection()
 }
@@ -22,7 +22,6 @@ function handleScroll() {
 onMounted(() => {
   // 모든 KRDS 유틸 초기화
   initAllKRDS()
-
   // 초기 상태 업데이트
   windowSize.setWinSize()
   scrollManager.updateScrollValues()
@@ -42,5 +41,3 @@ onBeforeUnmount(() => {
 <template>
   <RouterView />
 </template>
-
-<style scoped></style>
