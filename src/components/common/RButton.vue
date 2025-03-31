@@ -1,77 +1,94 @@
-<template>
-  <div class="pt-4">
-    <button type="button" class="krds-btn">버튼</button>
-  </div>
+<script setup lang="ts">
+import { computed, defineAsyncComponent } from "vue";
+import * as rawIcons from "lucide-vue-next";
 
-  <div class="gutter large">
-    <button type="button" class="krds-btn xsmall">
-      x-small 버튼
-      <i class="svg-icon ico-sch"></i>
-    </button>
-    <button type="button" class="krds-btn small">
-      small 버튼
-      <i class="svg-icon ico-sch"></i>
-    </button>
-    <button type="button" class="krds-btn medium">
-      medium 버튼
-      <i class="svg-icon ico-sch"></i>
-    </button>
-    <button type="button" class="krds-btn large">
-      large 버튼
-      <i class="svg-icon ico-sch"></i>
-    </button>
-    <button type="button" class="krds-btn xlarge">
-      <i class="svg-icon ico-sch"></i>
-      x-large 버튼
-    </button>
-  </div>
-  <div>
-    <button type="button" class="krds-btn small text">텍스트 버튼</button>
-    <button type="button" class="krds-btn xsmall text">찜하기 <i class="svg-icon ico-like"></i></button>
-    <button type="button" class="krds-btn small text">주민등록표초본 <i class="svg-icon ico-angle right"></i></button>
-    <button type="button" class="krds-btn medium text">검색 <i class="svg-icon ico-sch"></i></button>
-    <button type="button" class="krds-btn xlarge text">자세히 보기 <i class="svg-icon ico-more"></i></button>
-    <button type="button" class="krds-btn text">파일다운로드 <i class="svg-icon ico-down"></i></button>
-    <button type="button" class="krds-btn text" disabled>필터 <i class="svg-icon ico-filter"></i></button>
-  </div>
-  <div>
-    <button type="button" class="krds-btn xsmall">x-small 버튼</button>
-    <button type="button" class="krds-btn small">small 버튼</button>
-    <button type="button" class="krds-btn medium">medium 버튼</button>
-    <button type="button" class="krds-btn large">large 버튼</button>
-    <button type="button" class="krds-btn xlarge">x-large 버튼</button>
-  </div>
+const icons = rawIcons as Record<string, any>
 
-  <div>
-    <button type="button" class="krds-btn icon">
-      <span class="sr-only">검색</span>
-      <i class="svg-icon ico-sch"></i>
-    </button>
-    <button type="button" class="krds-btn icon medium">
-      <span class="sr-only">입력한 비밀번호 보기</span>
-      <i class="svg-icon ico-pw-visible"></i>
-    </button>
-    <button class="krds-btn icon medium btn-help-exec">
-      <span class="sr-only">도움말</span>
-      <i class="svg-icon ico-help"></i>
-    </button>
-  </div>
-  <div>
-    <button type="button" class="krds-btn large icon border">
-      <span class="sr-only">새로고침</span>
-      <i class="svg-icon ico-refresh"></i>
-    </button>
-    <button type="button" class="krds-btn large icon border" disabled>
-      <span class="sr-only">열기</span>
-      <i class="svg-icon ico-angle down"></i>
-    </button>
-  </div>
-  <div>
-    <button type="button" class="krds-btn primary">버튼 : primary</button>
-    <button type="button" class="krds-btn secondary">버튼 : secondary</button>
-    <button type="button" class="krds-btn tertiary">버튼 : tertiary</button>
-  </div>
-</template>
+const props = defineProps({
+  label: String,
+  type: {
+    type: String,
+    default: "primary",
+    validator: (val: string) => ["primary", "secondary", "tertiary"].includes(val),
+  },
+  size: {
+    type: String,
+    default: "medium",
+    validator: (val: string) => ["xsmall", "small", "medium", "large", "xlarge"].includes(val),
+  },
+  icon: String,
+  iconSize: { type: Number, default: 20 },
+  iconColor: { type: String, default: "currentColor" },
+  strokeWidth: { type: Number, default: 2 },
+  iconPos: {
+    type: String,
+    default: "left",
+    validator: (val: string) => ["left", "right"].includes(val),
+  },
+  isLoaded: { type: Boolean, default: false },
+});
 
-<script lang="ts">
+const isIconOnly = computed(() => !props.label && props.icon);
+
+const selectedIcon = computed(() => {
+  if (!props.icon) return null;
+  const iconName = props.icon.replace(/(^\w|-\w)/g, (match) => match.replace("-", "").toUpperCase());
+  return icons[iconName] || null;
+});
+
+const sizeClasses = computed(() => {
+  return isIconOnly.value
+    ? {
+      xsmall: "h-fit p-1.5",
+      small: "h-fit p-2",
+      medium: "h-fit p-2.5",
+      large: "h-fit p-3",
+      xlarge: "h-fit p-3.5",
+    }[props.size]
+    : {
+      xsmall: "h-[24px] px-2 py-1 text-xs rounded-xs",
+      small: "h-[32px] px-3 py-1.5 text-sm rounded-sm",
+      medium: "h-[40px] px-4 py-2 text-base rounded-md",
+      large: "h-[48px] px-5 py-2.5 text-lg rounded-lg",
+      xlarge: "h-[56px] px-6 py-3 text-xl rounded-xl",
+    }[props.size];
+});
+
+const typeClasses = computed(() =>
+({
+  primary: "bg-primary text-white hover:bg-primary-60 active:bg-primary-70 focus-visible:ring-2 focus-visible:ring-primary-40",
+  secondary:
+    "bg-primary-5 text-primary border border-primary hover:bg-primary-10 active:bg-primary-20 focus-visible:ring-2 focus-visible:ring-primary-40",
+  tertiary:
+    "bg-white text-gray-90 border border-gray-50 hover:bg-gray-10 active:bg-gray-20 focus-visible:ring-2 focus-visible:ring-gray-60",
+}[props.type])
+);
+
+const Spinner = defineAsyncComponent(() => import('./RSpinner.vue'))
 </script>
+
+<template>
+  <button type="button" :class="[
+    'krds-btn font-sans font-medium transition-colors duration-200 cursor-pointer',
+    'inline-flex items-center justify-center self-auto focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed',
+    typeClasses,
+    sizeClasses,
+    { 'rounded-full aspect-square': isIconOnly, 'gap-2': !isIconOnly }
+  ]" :aria-label="label">
+    <template v-if="iconPos === 'left'">
+      <component v-if="selectedIcon" :is="selectedIcon" :size="iconSize" :color="iconColor"
+        :stroke-width="strokeWidth" />
+      <template v-if="isLoaded">
+        <Spinner :size="size" />
+      </template>
+    </template>
+    <span v-if="!isIconOnly" class="whitespace-nowrap">{{ label }}</span>
+    <template v-if="iconPos === 'right'">
+      <component v-if="selectedIcon" :is="selectedIcon" :size="iconSize" :color="iconColor"
+        :stroke-width="strokeWidth" />
+      <template v-if="isLoaded">
+        <Spinner :size="size" />
+      </template>
+    </template>
+  </button>
+</template>
