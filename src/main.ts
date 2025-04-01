@@ -1,4 +1,5 @@
 import '@/assets/style/main.css'
+import '@/assets/style/openlayers-reset.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'

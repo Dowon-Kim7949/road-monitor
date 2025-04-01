@@ -2,16 +2,17 @@ import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 
 const routes: RouteRecordRaw[] = [
+  // {
+  //   path: '/',
+  //   // component: () => import('@/layouts/loginLayout.vue'),
+  //   // children: [{ path: '', component: () => import('@/views/Login/LoginView.vue') }],
+  //   redirect: '/contents/monitoring',
+  // },
   {
     path: '/',
-    component: () => import('@/layouts/loginLayout.vue'),
-    children: [{ path: '', component: () => import('@/views/Login/LoginView.vue') }],
-  },
-  {
-    path: '/contents',
     component: () => import('@/layouts/contentsLayout.vue'),
     children: [
-      { path: '/monitoring', component: () => import('@/views/RoadMonitor/RMMonitoringView.vue') },
+      { path: '/', component: () => import('@/views/RoadMonitor/RMMonitoringView.vue') },
       { path: '/coverage', component: () => import('@/views/RoadMonitor/RMCoverageView.vue') },
       { path: '/rpci', component: () => import('@/views/rPCI/rPCIAnalyzeMapView.vue') },
       { path: '/rpci/table', component: () => import('@/views/rPCI/rPCIAnalyzeResultView.vue') },
