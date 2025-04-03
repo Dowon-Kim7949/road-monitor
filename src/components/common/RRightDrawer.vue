@@ -1,18 +1,3 @@
-<template>
-  <Transition name="slide-right">
-    <aside v-if="modelValue" class="fixed top-0 right-0 h-full w-1/2 bg-white shadow z-40">
-      <div class="p-6 space-y-4">
-        <RImageViewer :src="props.data?.image" />
-        <RImageInfo :roadName="data?.roadName" :lat="data?.lat" :lon="data?.lon" :nodeLink="data?.nodeLink"
-          :timestamp="data?.timestamp" @copy-coord="onCopyLatLon" />
-        <hr />
-        <RImageHistory :items="historyList" @select="onSelectHistory" />
-
-      </div>
-    </aside>
-  </Transition>
-</template>
-
 <script setup lang="ts">
 import { watch } from 'vue'
 import RImageViewer from './RImageViewer.vue';
@@ -91,6 +76,21 @@ watch(modelValue, (val) => {
   }
 }, { immediate: true })
 </script>
+
+<template>
+  <Transition name="slide-right">
+    <aside v-if="modelValue" class="fixed top-0 right-0 h-full w-1/2 bg-white shadow z-40">
+      <div class="p-6 space-y-4">
+        <RImageViewer :src="props.data?.image" />
+        <RImageInfo :roadName="data?.roadName" :lat="data?.lat" :lon="data?.lon" :nodeLink="data?.nodeLink"
+          :timestamp="data?.timestamp" @copy-coord="onCopyLatLon" />
+        <hr />
+        <RImageHistory :items="historyList" @select="onSelectHistory" />
+
+      </div>
+    </aside>
+  </Transition>
+</template>
 
 <style scoped>
 .slide-right-enter-from {

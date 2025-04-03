@@ -1,7 +1,3 @@
-<template>
-  <div ref="mapContainer" class="absolute top-0 left-0 h-full" :style="mapStyle"></div>
-</template>
-
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import Map from 'ol/Map'
@@ -118,5 +114,9 @@ onBeforeUnmount(() => {
   window.removeEventListener('reset-map-center', () => { })
 })
 </script>
+
+<template>
+  <div ref="mapContainer" class="absolute top-0 left-0 h-full" :style="mapStyle"></div>
+</template>
 
 <style scoped></style>

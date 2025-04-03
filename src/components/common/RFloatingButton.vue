@@ -1,3 +1,21 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import RButton from '@/components/common/atom/RButton.vue'
+import RModeSelector from '@/components/common/RModeSelector.vue'
+
+defineEmits<{
+  (e: 'toggle-left'): void
+  (e: 'reset-center'): void
+  (e: 'change-mode', mode: string): void
+}>()
+
+const activeMode = ref('alert')
+
+const handleChangeMode = (mode: string) => {
+  activeMode.value = mode
+}
+</script>
+
 <template>
   <!-- 좌측 상단 로고 버튼 -->
   <button class="fixed top-4 left-4 z-[4] bg-transparent p-3" @click="$emit('toggle-left')">
@@ -23,24 +41,6 @@
     <RButton type="icon" size="small" class="bg-white shadow rounded-sm" icon="minus" />
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue'
-import RButton from '@/components/common/atom/RButton.vue'
-import RModeSelector from '@/components/common/RModeSelector.vue'
-
-defineEmits<{
-  (e: 'toggle-left'): void
-  (e: 'reset-center'): void
-  (e: 'change-mode', mode: string): void
-}>()
-
-const activeMode = ref('alert')
-
-const handleChangeMode = (mode: string) => {
-  activeMode.value = mode
-}
-</script>
 
 <style scoped>
 .floating-top-right,
