@@ -10,7 +10,7 @@ const props = defineProps({
   type: {
     type: String,
     default: "primary",
-    validator: (val: string) => ["primary", "secondary", "tertiary"].includes(val),
+    validator: (val: string) => ["primary", "secondary", "tertiary", "icon", "select"].includes(val),
   },
   size: {
     type: String,
@@ -61,7 +61,9 @@ const typeClasses = computed(() =>
   secondary:
     "bg-primary-5 text-primary border border-primary hover:bg-primary-10 active:bg-primary-20 focus-visible:ring-2 focus-visible:ring-primary-40",
   tertiary:
-    "bg-white text-gray-90 border border-gray-50 hover:bg-gray-10 active:bg-gray-20 focus-visible:ring-2 focus-visible:ring-gray-60",
+    "text-gray-90 border border-gray-50 hover:bg-gray-10 active:bg-gray-20 focus-visible:ring-2 focus-visible:ring-gray-60",
+  icon: "bg-white text-black hover:text-white hover:bg-gray-80 active:bg-black-70 focus-visible:ring-2 focus-visible:ring-primary-40",
+  select: "hover:text-white hover:bg-gray-80 active:bg-black-70 focus-visible:ring-2 focus-visible:ring-primary-40"
 }[props.type])
 );
 </script>
@@ -75,16 +77,16 @@ const typeClasses = computed(() =>
     { 'rounded-full aspect-square': isIconOnly, 'gap-2': !isIconOnly }
   ]" :aria-label="label">
     <template v-if="iconPos === 'left'">
-      <component v-if="selectedIcon" :is="selectedIcon" :size="iconSize" :color="iconColor"
-        :stroke-width="strokeWidth" />
+      <component v-if="selectedIcon" :is="selectedIcon" :size="iconSize" :stroke-width="strokeWidth"
+        class="stroke-current" />
       <template v-if="isLoaded">
         <Spinner :size="size" />
       </template>
     </template>
     <span v-if="!isIconOnly" class="whitespace-nowrap">{{ label }}</span>
     <template v-if="iconPos === 'right'">
-      <component v-if="selectedIcon" :is="selectedIcon" :size="iconSize" :color="iconColor"
-        :stroke-width="strokeWidth" />
+      <component v-if="selectedIcon" :is="selectedIcon" :size="iconSize" :stroke-width="strokeWidth"
+        class="stroke-current" />
       <template v-if="isLoaded">
         <Spinner :size="size" />
       </template>

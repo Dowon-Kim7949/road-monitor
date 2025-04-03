@@ -3,30 +3,35 @@
     <!-- 이미지 -->
     <img
       :src="src || 'https://rm-project.site/assets/test/demo_241219/CAMFront_camera2024-12-19T18_34_12_608+01_00.webp'"
-      alt="Road Image" class="w-full h-auto object-cover" />
+      alt="Road Image" class="w-full h-auto object-cover cursor-pointer" @click="showModal = true"
+      @upload="handleUpload" @play="handlePlay" @prev="handlePrev" @next="handleNext" />
 
+    <RImageModal :visible="showModal" :images="historyImages" @close="showModal = false" />
     <!-- 좌측 하단 ▶ play -->
-    <RButton class="bg-white shadow absolute bottom-2 left-2 p-1 rounded-full" icon="play" icon-color="black"
-      size="small" @click="$emit('play')" />
+    <RButton type="icon" class="bg-white shadow absolute bottom-4 left-4 rounded-full" icon="play" size="small"
+      @click="$emit('play')" />
 
     <!-- 우측 상단 ⬆ upload -->
-    <RButton class="bg-white shadow absolute top-2 right-2 p-1 rounded-full" icon="upload" icon-color="black"
-      size="small" @click="$emit('upload')" />
+    <RButton type="icon" class="bg-white shadow absolute top-4 right-4 rounded-full" icon="upload" size="small"
+      @click="$emit('upload')" />
 
     <!-- 우측 하단 ◀ ▶ ⛶ -->
-    <div class="absolute bottom-2 right-2 flex space-x-5 bg-transparent p-1 rounded-full">
-      <RButton class="bg-white shadow p-1 rounded-full" icon="chevron-left" icon-color="black" size="small"
+    <div class="absolute bottom-2 right-2 flex space-x-5 bg-transparent p-2 rounded-full">
+      <RButton type="icon" class="bg-white shadow rounded-full" icon="chevron-left" size="small"
         @click="$emit('prev')" />
-      <RButton class="bg-white shadow p-1 rounded-full" icon="chevron-right" icon-color="black" size="small"
+      <RButton type="icon" class="bg-white shadow rounded-full" icon="chevron-right" size="small"
         @click="$emit('next')" />
-      <RButton class="bg-white shadow p-1 rounded-full" icon="maximize" icon-color="black" size="small"
+      <RButton type="icon" class="bg-white shadow rounded-full" icon="maximize" size="small"
         @click="$emit('fullscreen')" />
     </div>
   </div>
+
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import RButton from './atom/RButton.vue';
+import RImageModal from './RImageModal.vue';
 defineProps<{
   src?: string
 }>()
@@ -38,4 +43,37 @@ defineEmits<{
   (e: 'prev'): void
   (e: 'next'): void
 }>()
+
+const showModal = ref(false)
+const imageUrl = 'https://rm-project.site/assets/test/demo_241219/CAMFront_camera2024-12-19T18_34_12_608+01_00.webp'
+const historyImages = [
+  { src: imageUrl, date: '2024-11-20 14:58' },
+  { src: imageUrl, date: '2024-11-19 14:58' },
+  { src: imageUrl, date: '2024-11-18 14:58' },
+  { src: imageUrl, date: '2024-11-17 14:58' },
+  { src: imageUrl, date: '2024-11-16 14:58' },
+  { src: imageUrl, date: '2024-11-15 14:58' },
+  { src: imageUrl, date: '2024-11-14 14:58' },
+  { src: imageUrl, date: '2024-11-13 14:58' },
+  { src: imageUrl, date: '2024-11-12 14:58' },
+  { src: imageUrl, date: '2024-11-11 14:58' },
+  { src: imageUrl, date: '2024-11-10 14:58' },
+  { src: imageUrl, date: '2024-11-09 14:58' },
+]
+
+const handleUpload = () => {
+
+}
+
+const handlePlay = () => {
+
+}
+
+const handlePrev = () => {
+
+}
+
+const handleNext = () => {
+
+}
 </script>

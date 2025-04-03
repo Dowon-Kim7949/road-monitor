@@ -1,1 +1,57 @@
+/* src/assets/style/fonts.css */
+@font-face {
+  font-family: 'PretendardGOV';
+  src:
+    url('@/assets/font/PretendardGOV-Regular.subset.woff2') format('woff2'),
+    url('@/assets/font/PretendardGOV-Regular.subset.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'PretendardGOV';
+  src:
+    url('@/assets/font/PretendardGOV-Medium.subset.woff2') format('woff2'),
+    url('@/assets/font/PretendardGOV-Medium.subset.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'PretendardGOV';
+  src:
+    url('@/assets/font/PretendardGOV-Bold.subset.woff2') format('woff2'),
+    url('@/assets/font/PretendardGOV-Bold.subset.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+}
+
+body {
+  font-family: 'PretendardGOV', sans-serif;
+}
+
 @import './theme.css';
+
+@layer utilities {
+  .thin-scrollbar {
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #888 transparent; /* Firefox */
+  }
+
+  .thin-scrollbar::-webkit-scrollbar {
+    width: 6px; /* Chrome */
+  }
+
+  .thin-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .thin-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 6px;
+  }
+
+  .thin-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+  }
+}

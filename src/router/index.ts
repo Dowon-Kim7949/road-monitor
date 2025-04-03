@@ -10,12 +10,14 @@ const routes: RouteRecordRaw[] = [
   // },
   {
     path: '/',
+    redirect: '/monitoring',
     component: () => import('@/layouts/contentsLayout.vue'),
     children: [
-      { path: '/', component: () => import('@/views/RoadMonitor/RMMonitoringView.vue') },
+      { path: '/monitoring', component: () => import('@/views/RoadMonitor/RMMonitoringView.vue') },
       { path: '/coverage', component: () => import('@/views/RoadMonitor/RMCoverageView.vue') },
-      { path: '/rpci', component: () => import('@/views/rPCI/rPCIAnalyzeMapView.vue') },
-      { path: '/rpci/table', component: () => import('@/views/rPCI/rPCIAnalyzeResultView.vue') },
+      { path: '/settings', component: () => import('@/views/rPCI/rPCIReportView.vue') },
+      { path: '/rpci/map', component: () => import('@/views/rPCI/rPCIAnalyzeMapView.vue') },
+      { path: '/rpci/analysis', component: () => import('@/views/rPCI/rPCIAnalyzeResultView.vue') },
       { path: '/rpci/report', component: () => import('@/views/rPCI/rPCIReportView.vue') },
     ],
   },

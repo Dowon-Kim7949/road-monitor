@@ -1,69 +1,79 @@
 <template>
   <Transition name="slide-left">
-    <aside v-if="modelValue" class="fixed top-0 left-0 h-full w-[260px] bg-gray-10 shadow z-40 flex flex-col">
+    <aside v-if="modelValue" class="fixed top-0 left-0 h-full w-[240px] bg-gray-10 shadow z-50 flex flex-col">
       <!-- 상단 로고 및 닫기 버튼 -->
-      <div class="flex items-center justify-between p-4">
-        <div class="flex flex-col">
-          <img src="@/assets/image/logo.svg" alt="logo" class="h-6 mb-1" />
-          <span class="text-sm text-red-600 font-bold">RoadMonitor</span>
-          <span class="text-xs text-gray-500">ver0.9.1</span>
+      <button class="z-50 bg-transparent p-7">
+        <div class="flex">
+          <img src="../../assets/image/CI.webp" alt="logo" class="h-10" />
+          <div class="text-left pl-2">
+            <div class="text-red-60 font-bold text-lg">RoadMonitor</div>
+            <div class="text-gray-50 text-xs">ver1.0.0</div>
+          </div>
         </div>
-        <!-- 닫기 버튼 -->
-        <button class="ml-auto" @click="modelValue = false">
-          <!-- <Icon name="chevron-left" class="w-5 h-5 text-gray-600" /> -->
-          ←
-        </button>
+      </button>
+      <div class="fixed top-10 left-58 z-60 p-1 ">
+        <RButton type="tertiary" class="bg-gray-10 rounded-sm py-2 px-1 border-0" icon="chevron-left" size="small"
+          @click="modelValue = false" />
       </div>
 
       <!-- 메뉴 섹션 -->
-      <nav class="flex-1 px-4 space-y-6 overflow-y-auto">
+      <nav class="flex-1 px-7 space-y-6 overflow-y-auto">
         <div v-for="(group, gIdx) in menuGroups" :key="gIdx">
-          <p :class="[
-            'text-sm mb-1',
-            group.highlight ? 'text-blue-600 font-semibold' : 'font-bold'
-          ]">
-            {{ group.label }}
-          </p>
+          <p class="text-sm font-bold mb-1">{{ t(group.label) }}</p>
           <ul v-if="group.items" class="space-y-1 pl-2">
             <li v-for="(item, iIdx) in group.items" :key="iIdx">
-              <button class="text-sm hover:underline text-left w-full">{{ item }}</button>
+              <RouterLink :to="item.path" class="block w-full text-sm py-1 px-2 rounded hover:bg-gray-200" :class="{
+                'text-blue-600 font-semibold bg-gray-200': route.path === item.path
+              }">
+                {{ t(item.label) }}
+              </RouterLink>
             </li>
           </ul>
         </div>
       </nav>
 
-      <!-- 하단 기능 -->
-      <div class="p-4 border-t space-y-2 text-sm">
-        <button class="flex items-center space-x-2">
-          <!-- <Icon name="globe" /> -->
-          🌐
-          <span>Language</span>
-        </button>
-        <button class="flex items-center space-x-2">
-          <!-- <Icon name="moon" /> -->
-          🌙
-          <span>Theme</span>
-        </button>
-        <button class="flex items-center space-x-2">
-          <!-- <Icon name="user" /> -->
-          👤
-          <span>Dareesoft</span>
-        </button>
+      <!-- 하단 설정 -->
+      <div class="p-7 space-y-2 text-sm w-full">
+        <RLocaleSelector />
+        <RUserMenu />
       </div>
     </aside>
   </Transition>
 </template>
 
 <script setup lang="ts">
+import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+import RButton from './atom/RButton.vue'
+import RLocaleSelector from './RLocaleSelector.vue'
+import RUserMenu from './RUserMenu.vue'
+
 const modelValue = defineModel<boolean>()
+const route = useRoute()
+const { t } = useI18n()
 
 const menuGroups = [
-  { label: 'Monitoring', highlight: true },
   {
-    label: 'Kracknet',
-    items: ['rPCI Results', 'rPCI Map', 'rPCI Report']
+    label: 'menu.roadMonitor',
+    items: [
+      { label: 'menu.monitoring', path: '/monitoring' },
+      { label: 'menu.coverage', path: '/coverage' }
+    ]
   },
-  { label: 'Device Tracker' }
+  {
+    label: 'menu.rapidPci',
+    items: [
+      { label: 'menu.rpcianalysis', path: '/rpci/analysis' },
+      { label: 'menu.rpcimap', path: '/rpci/map' },
+      { label: 'menu.rpcireport', path: '/rpci/report' }
+    ]
+  },
+  {
+    label: 'menu.settings',
+    items: [
+      { label: 'menu.envSetting', path: '/settings' }
+    ]
+  }
 ]
 </script>
 

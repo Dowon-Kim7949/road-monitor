@@ -7,7 +7,7 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import Map from 'ol/Map'
 import View from 'ol/View'
 import TileLayer from 'ol/layer/Tile'
-import XYZ from 'ol/source/XYZ'
+import OSM from 'ol/source/OSM'
 import { fromLonLat } from 'ol/proj'
 import Feature from 'ol/Feature'
 import Point from 'ol/geom/Point'
@@ -98,9 +98,7 @@ onMounted(() => {
     target: mapContainer.value,
     layers: [
       new TileLayer({
-        source: new XYZ({
-          url: 'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}'
-        })
+        source: new OSM()
       })
     ],
     view: new View({
