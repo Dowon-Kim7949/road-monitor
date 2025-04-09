@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, watchEffect } from 'vue'
+import { ref, nextTick, watchEffect, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import RIcon from '@/components/common/atom/RIcon.vue'
 import { useDropdownControl } from '@/utils/composables/useDropdownControl'
@@ -28,13 +28,14 @@ const direction = ref<'up' | 'down'>('down')
 const { isOpen, toggle } = useDropdownControl('locale')
 
 const { locale, t } = useI18n()
-
+const loadLocaleMessages = inject('loadLocaleMessages') as any
 const langs = [
   { code: 'ko', label: 'lang.ko' },
   { code: 'en', label: 'lang.en' }
 ]
 
-const changeLang = (lang: string) => {
+const changeLang = async (lang: string) => {
+  await loadLocaleMessages(lang)
   locale.value = lang
   toggle() // 닫기
 }

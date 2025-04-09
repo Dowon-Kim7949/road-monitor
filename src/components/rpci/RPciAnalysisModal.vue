@@ -1,15 +1,23 @@
 <template>
   <div v-if="visible" class="fixed inset-0 z-[9999] bg-gray-800/75 flex items-center justify-center">
-    <div class="bg-white w-[500px] rounded shadow-lg p-6 relative">
+    <div class="bg-white w-[410px] rounded shadow-lg p-6 relative">
       <!-- 닫기 버튼 -->
-      <button class="absolute top-2 right-2 text-gray-500" @click="close">
-        <RIcon name="X" />
-      </button>
+      <div class="flex pb-4 justify-between w-full">
+        <p class="text-lg font-bold">STEP {{ step }}.</p>
+        <button class="text-gray-500" @click="close">
+          <RIcon name="X" />
+        </button>
+      </div>
 
       <!-- Step 1: 진행 확인 -->
       <div v-if="step === 1">
-        <p class="text-lg font-bold mb-2">현재 화면에서 조회 중인 기간에 대해 rPCI 분석을 진행합니다. 계속하시겠습니까?</p>
-        <p class="text-sm text-gray-600 mb-6">분석 기간을 변경하려면 [취소]를 눌러 이전 화면으로 돌아가 지도 조회 기간을 수정해 주세요.</p>
+        <div class="relative my-1">
+          <div class="mb-4 flex h-2 overflow-hidden rounded bg-gray-30 text-xs">
+            <div style="width: 33%" class="bg-gray-80 transition-all duration-500 ease-out"></div>
+          </div>
+        </div>
+        <p class="text-lg font-bold mb-2 text-pretty"> 현재 화면에서 조회 중인 기간에 대해<br /> rPCI분석을 진행합니다. 계속하시겠습니까?</p>
+        <p class="text-sm text-gray-600 mb-6 text-pretty">분석 기간을 변경하려면 [취소]를 눌러 이전 화면으로 돌아가<br /> 지도 조회 기간을 수정해 주세요.</p>
         <div class="flex justify-end space-x-2">
           <RButton type="tertiary" size="small" label="취소" @click="close" />
           <RButton type="tertiary" size="small" label="다음" @click="step++" />
@@ -18,6 +26,11 @@
 
       <!-- Step 2: 회차명 입력 -->
       <div v-if="step === 2">
+        <div class="relative my-1">
+          <div class="mb-4 flex h-2 overflow-hidden rounded bg-gray-30 text-xs">
+            <div style="width: 66%" class="bg-gray-80 transition-all duration-500 ease-out"></div>
+          </div>
+        </div>
         <p class="text-lg font-semibold mb-4">새롭게 생성될 회차의 이름을 입력해주세요.</p>
         <input v-model="batchName" type="text"
           class="w-full border rounded px-3 py-2 mb-6 text-sm focus:ring focus:outline-none" />
@@ -29,6 +42,11 @@
 
       <!-- Step 3: 도로 선택 -->
       <div v-if="step === 3">
+        <div class="relative my-1">
+          <div class="mb-4 flex h-2 overflow-hidden rounded bg-gray-30 text-xs">
+            <div style="width: 100%" class="bg-gray-80 transition-all duration-500 ease-out"></div>
+          </div>
+        </div>
         <p class="text-lg font-semibold mb-2">rPCI를 분석할 도로를 선택해주세요.</p>
         <p class="text-sm text-gray-500 mb-2">{{ batchName }}</p>
 
@@ -98,3 +116,9 @@ const submit = () => {
   close()
 }
 </script>
+
+<style scoped>
+.text-pretty {
+  text-wrap-style: balance !important;
+}
+</style>

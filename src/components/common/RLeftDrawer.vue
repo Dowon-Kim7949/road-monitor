@@ -1,13 +1,13 @@
 <template>
   <Transition name="slide-left">
-    <aside v-if="modelValue" class="fixed top-0 left-0 h-full w-[240px] bg-gray-10 shadow z-50 flex flex-col">
+    <aside v-if="modelValue" class="fixed top-0 left-0 h-full w-[240px] bg-gray-10 shadow z-[5] flex flex-col">
       <!-- 상단 로고 및 닫기 버튼 -->
       <button class="z-50 bg-transparent p-7">
         <div class="flex">
           <img src="../../assets/image/CI.webp" alt="logo" class="h-10" />
           <div class="text-left pl-2">
             <div class="text-red-60 font-bold text-lg">RoadMonitor</div>
-            <div class="text-gray-50 text-xs">ver1.0.0</div>
+            <div class="text-gray-70 font-bold text-xs">ver1.0.0</div>
           </div>
         </div>
       </button>
