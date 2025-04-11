@@ -2,7 +2,41 @@
   <div class="relative w-full h-screen overflow-hidden">
     <!-- 좌측 사이드바 -->
     <RLeftDrawer v-model="leftDrawer" />
-
+    <RFloatingList :items="[
+      { start: '남양교차로', end: '승리리145-4', date: '2024-11-20' },
+      { start: '중동초등학교', end: '중동5길', date: '2024-11-20' },
+      { start: '중앙초교사거리', end: '정신여고입구삼거리', date: '2024-11-20' },
+      { start: '남양교차로', end: '승리리145-4', date: '2024-11-20' },
+      { start: '중동초등학교', end: '중동5길', date: '2024-11-20' },
+      { start: '중앙초교사거리', end: '정신여고입구삼거리', date: '2024-11-20' },
+      { start: '남양교차로', end: '승리리145-4', date: '2024-11-20' },
+      { start: '중동초등학교', end: '중동5길', date: '2024-11-20' },
+      { start: '중앙초교사거리', end: '정신여고입구삼거리', date: '2024-11-20' },
+      { start: '남양교차로', end: '승리리145-4', date: '2024-11-20' },
+      { start: '중동초등학교', end: '중동5길', date: '2024-11-20' },
+      { start: '중앙초교사거리', end: '정신여고입구삼거리', date: '2024-11-20' },
+      { start: '남양교차로', end: '승리리145-4', date: '2024-11-20' },
+      { start: '중동초등학교', end: '중동5길', date: '2024-11-20' },
+      { start: '중앙초교사거리', end: '정신여고입구삼거리', date: '2024-11-20' },
+      { start: '남양교차로', end: '승리리145-4', date: '2024-11-20' },
+      { start: '중동초등학교', end: '중동5길', date: '2024-11-20' },
+      { start: '중앙초교사거리', end: '정신여고입구삼거리', date: '2024-11-20' },
+      { start: '남양교차로', end: '승리리145-4', date: '2024-11-20' },
+      { start: '중동초등학교', end: '중동5길', date: '2024-11-20' },
+      { start: '중앙초교사거리', end: '정신여고입구삼거리', date: '2024-11-20' },
+      { start: '남양교차로', end: '승리리145-4', date: '2024-11-20' },
+      { start: '중동초등학교', end: '중동5길', date: '2024-11-20' },
+      { start: '중앙초교사거리', end: '정신여고입구삼거리', date: '2024-11-20' },
+      { start: '남양교차로', end: '승리리145-4', date: '2024-11-20' },
+      { start: '중동초등학교', end: '중동5길', date: '2024-11-20' },
+      { start: '중앙초교사거리', end: '정신여고입구삼거리', date: '2024-11-20' },
+      { start: '남양교차로', end: '승리리145-4', date: '2024-11-20' },
+      { start: '중동초등학교', end: '중동5길', date: '2024-11-20' },
+      { start: '중앙초교사거리', end: '정신여고입구삼거리', date: '2024-11-20' },
+      { start: '남양교차로', end: '승리리145-4', date: '2024-11-20' },
+      { start: '중동초등학교', end: '중동5길', date: '2024-11-20' },
+      { start: '중앙초교사거리', end: '정신여고입구삼거리', date: '2024-11-20' },
+    ]" />
     <!-- 우측 사이드바 (Suspense + Async) -->
     <Suspense>
       <template #default>
@@ -29,6 +63,7 @@ import { ref, defineAsyncComponent } from 'vue'
 import RMap from '@/components/common/RMap.vue'
 import RFloatingButton from '@/components/common/RFloatingButton.vue'
 import RLeftDrawer from '@/components/common/RLeftDrawer.vue'
+import RFloatingList from '@/components/common/RFloatingList.vue'
 
 const RRightDrawer = defineAsyncComponent(() =>
   import('@/components/common/RRightDrawer.vue')
@@ -58,5 +93,6 @@ const resetCenter = () => {
 const handleSelectMarker = (data: typeof selectedData.value) => {
   selectedData.value = data
   rightDrawer.value = true
+  if (leftDrawer.value) leftDrawer.value = false
 }
 </script>

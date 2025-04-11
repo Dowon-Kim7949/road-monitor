@@ -38,9 +38,11 @@ const handlePrev = () => emit('prev')
 const handleNext = () => emit('next')
 
 const showRPciModal = ref(false)
-const onSubmit = (data: { name: string; selectedRoads: string[] }) => {
+const showRoadSelectModal = ref(false)
+const onSubmit = (data: { name: string; }) => {
+  showRPciModal.value = false
   console.log('분석 회차:', data.name)
-  console.log('선택된 도로:', data.selectedRoads)
+  showRoadSelectModal.value = true
 }
 
 </script>

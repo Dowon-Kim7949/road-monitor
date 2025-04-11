@@ -18,9 +18,9 @@ const handleChangeMode = (mode: string) => {
 
 <template>
   <!-- 좌측 상단 로고 버튼 -->
-  <button class="fixed top-4 left-4 z-[4] bg-transparent p-3 cursor-pointer" @click="$emit('toggle-left')">
+  <button class="fixed top-4 left-4 z-[3] bg-transparent p-3 cursor-pointer" @click="$emit('toggle-left')">
     <div class="flex">
-      <img src="../../assets/image/CI.webp" alt="logo" class="h-10" />
+      <img src="../../assets/image/CI.webp" alt="logo" class="h-15" />
       <div class="text-left pl-2">
         <div class="text-red-60 font-bold text-lg">RoadMonitor</div>
         <div class="text-gray-70 font-bold text-xs">ver1.0.0</div>

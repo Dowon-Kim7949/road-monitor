@@ -25,7 +25,7 @@ const map = ref<Map | null>(null)
 const mapStyle = computed(() => {
   return {
     // left: props.leftDrawer ? '260px' : '0px',
-    right: props.rightDrawer ? '50%' : '0px',
+    right: props.rightDrawer ? '25%' : '0px',
     transition: 'all 0.3s ease'
   }
 })

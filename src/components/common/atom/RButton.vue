@@ -40,7 +40,7 @@ const selectedIcon = computed(() => {
 const sizeClasses = computed(() => {
   return isIconOnly.value
     ? {
-      xsmall: "h-fit p-1.5",
+      xsmall: "h-fit p-1",
       small: "h-fit p-2",
       medium: "h-fit p-2.5",
       large: "h-fit p-3",

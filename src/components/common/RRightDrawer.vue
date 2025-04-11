@@ -79,7 +79,7 @@ watch(modelValue, (val) => {
 
 <template>
   <Transition name="slide-right">
-    <aside v-if="modelValue" class="fixed top-0 right-0 h-full w-1/2 bg-white shadow z-40">
+    <aside v-if="modelValue" class="fixed top-0 right-0 h-full w-[40%] bg-white shadow z-40">
       <div class="p-6 space-y-4">
         <RImageViewer :src="props.data?.image" />
         <RImageInfo :roadName="data?.roadName" :lat="data?.lat" :lon="data?.lon" :nodeLink="data?.nodeLink"
@@ -110,10 +110,10 @@ watch(modelValue, (val) => {
 <style>
 /* RFloatingButton 내 우측 버튼 위치 조정용 */
 body.drawer-open .floating-top-right {
-  right: 51% !important;
+  right: 41% !important;
 }
 
 body.drawer-open .floating-bottom-right {
-  right: 51% !important;
+  right: 41% !important;
 }
 </style>

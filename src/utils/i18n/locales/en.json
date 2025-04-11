@@ -16,5 +16,15 @@
   },
   "Language": "Language",
   "Theme": "Theme",
-  "logout": "logout"
+  "logout": "logout",
+  "button": {
+    "next": "Next",
+    "prev": "Prev",
+    "cancel": "Cancel",
+    "confirm": "Confirm"
+  },
+  "Roadsegment": "Road Segment",
+  "Roadname": "Road name",
+  "Coordinates": "Coordinates",
+  "Capture_at": "Captured at"
 }

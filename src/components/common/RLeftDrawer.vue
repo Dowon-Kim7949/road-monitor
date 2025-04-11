@@ -1,19 +1,21 @@
 <template>
   <Transition name="slide-left">
-    <aside v-if="modelValue" class="fixed top-0 left-0 h-full w-[240px] bg-gray-10 shadow z-[5] flex flex-col">
+    <aside v-if="modelValue"
+      class="fixed top-0 left-0 h-full w-[240px] bg-gray-10 shadow z-[5] flex flex-col border-gray-40 border-r-1">
       <!-- 상단 로고 및 닫기 버튼 -->
       <button class="z-50 bg-transparent p-7">
         <div class="flex">
-          <img src="../../assets/image/CI.webp" alt="logo" class="h-10" />
+          <img src="../../assets/image/CI.webp" alt="logo" class="h-15" />
           <div class="text-left pl-2">
             <div class="text-red-60 font-bold text-lg">RoadMonitor</div>
             <div class="text-gray-70 font-bold text-xs">ver1.0.0</div>
           </div>
         </div>
       </button>
-      <div class="fixed top-10 left-58 z-60 p-1 ">
-        <RButton type="tertiary" class="bg-gray-10 rounded-sm py-2 px-1 border-0" icon="chevron-left" size="small"
-          @click="modelValue = false" />
+      <div class="fixed top-10 left-[239px] z-[5]">
+        <RButton type="tertiary"
+          class="bg-gray-10 rounded-br-sm rounded-tr-sm rounded-bl-none rounded-tl-none py-2 px-1 border-gray-40 border-r-1 border-t-1 border-b-1 border-l-0"
+          icon="chevron-left" size="small" @click="modelValue = false" />
       </div>
 
       <!-- 메뉴 섹션 -->

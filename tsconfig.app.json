@@ -7,7 +7,8 @@
     "target": "ES2021",
     "lib": ["DOM", "ES2021"],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@icon/*": ["./src/assets/image/*"]
     }
   }
 }
