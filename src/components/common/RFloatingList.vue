@@ -13,7 +13,7 @@ defineEmits<{
   (e: 'confirm'): void
 }>()
 
-const itemsPerPage = 13
+const itemsPerPage = 11
 const currentPage = ref(1)
 const modelValue = ref(true)
 
@@ -40,7 +40,7 @@ const nextPage = () => {
   <!-- 펼쳐진 상태 -->
   <Transition name="slide-left">
     <div v-show="modelValue"
-      class="fixed w-[340px] top-20 left-4 bg-white shadow-lg rounded-sm border-gray-40 border-1 p-4 text-sm z-[4] h-[85vh] flex flex-col">
+      class="fixed w-[300px] top-20 left-4 bg-white shadow-lg rounded-sm border-gray-40 border-1 p-4 text-sm z-[4] h-[85vh] flex flex-col">
 
       <!-- 접기 버튼 -->
       <div
@@ -63,7 +63,7 @@ const nextPage = () => {
 
       <!-- 리스트 -->
       <div class="flex-1 overflow-y-auto thin-scrollbar space-y-3 py-2">
-        <div v-for="(item, idx) in paginatedItems" :key="idx" class="flex">
+        <div v-for="(item, idx) in paginatedItems" :key="idx" class="flex cursor-pointer hover:bg-gray-20 p-1 rounded">
           <div class="flex-1 pl-2">
             <div>{{ item.start }}</div>
             <div>→ {{ item.end }}</div>
