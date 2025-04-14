@@ -23,7 +23,8 @@
     "cancel": "취소",
     "confirm": "확인",
     "more": "더보기",
-    "request": "분석 요청"
+    "request": "분석 요청",
+    "allSelect": "전체 선택/해제"
   },
   "Roadsegment": "노드링크",
   "Roadname": "도로명",

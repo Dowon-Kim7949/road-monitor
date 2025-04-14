@@ -13,7 +13,7 @@ defineEmits<{
   (e: 'confirm'): void
 }>()
 
-const itemsPerPage = 11
+const itemsPerPage = 10
 const currentPage = ref(1)
 const modelValue = ref(true)
 

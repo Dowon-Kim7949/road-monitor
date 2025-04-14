@@ -5,7 +5,9 @@ import RIcon from '@/components/common/atom/RIcon.vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
-const props = defineProps<{ visible: boolean }>()
+const props = defineProps<{
+  visible: boolean
+}>()
 const emit = defineEmits<{
   (e: 'close'): void
   (e: 'submit', payload: { name: string; }): void

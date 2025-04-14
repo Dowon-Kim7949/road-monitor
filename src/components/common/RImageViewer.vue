@@ -4,6 +4,7 @@ import RButton from './atom/RButton.vue';
 import RImageModal from './RImageModal.vue';
 import RPciAnalysisModal from '../rpci/RPciAnalysisModal.vue';
 import RPciAnalysisSelectModal from '../rpci/RPciAnalysisSelectModal.vue';
+import RModal from './RModal.vue';
 
 defineProps<{
   src?: string
@@ -18,8 +19,12 @@ const emit = defineEmits<{
 }>()
 
 const showModal = ref(false)
+const showAlert = ref(false)
+const showConfirm = ref(false)
 const imageUrl = 'https://rm-project.site/assets/test/demo_241219/CAMFront_camera2024-12-19T18_34_12_608+01_00.webp'
 const analysisTitle = ref('')
+const modalTitle = ref('')
+const modalContent = ref('')
 
 const historyImages = [
   { src: imageUrl, date: '2024-11-20 14:58' },
@@ -86,8 +91,6 @@ const selelctItems = [
   }
 ]
 
-
-
 const handleUpload = () => {
   if (showModal.value) showModal.value = false
   showRPciModal.value = !showRPciModal.value
@@ -105,6 +108,20 @@ const onSubmit = (data: { name: string; }) => {
 }
 const onRequest = () => {
   showSelectRPciModal.value = false
+
+  modalTitle.value = '요청 확인'
+  modalContent.value = 'rPCI 분석이 시작되었습니다. 진행 상황은 [Rapid-PCI] 메뉴에서 확인하실 수 있습니다.'
+  showAlert.value = true
+}
+const selectModalClose = () => {
+  showConfirm.value = true
+}
+const onCancel = () => {
+  showConfirm.value = false
+  showSelectRPciModal.value = false
+}
+const onOk = () => {
+  showAlert.value = false
 }
 
 </script>
@@ -132,11 +149,14 @@ const onRequest = () => {
       <RButton type="icon" class="bg-white shadow rounded-full" icon="chevron-right" size="small"
         @click="$emit('next')" />
       <RButton type="icon" class="bg-white shadow rounded-full" icon="maximize" size="small"
-        @click="$emit('fullscreen')" />
+        @click="showModal = true" />
     </div>
     <RPciAnalysisModal :visible="showRPciModal" @close="showRPciModal = false" @submit="onSubmit" />
     <RPciAnalysisSelectModal :analysisTitle="analysisTitle" :items="selelctItems" :visible="showSelectRPciModal"
-      @close="showSelectRPciModal = false" @request="onRequest" />
+      @close="selectModalClose" @request="onRequest" />
+    <RModal :visible="showConfirm" type="confirm" title="분석 요청 취소" content="분석 요청을 취소하시겠습니까? 이 작업은 되돌릴 수 없습니다."
+      okText="확인" cancelText="취소" @onCancel="showConfirm = false" @onConfirm="onCancel" />
+    <RModal :visible="showAlert" :title="modalTitle" :content="modalContent" type="alert" okText="확인" @onOk="onOk" />
   </div>
 
 </template>

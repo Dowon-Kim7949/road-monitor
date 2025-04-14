@@ -23,7 +23,8 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "more": "More",
-    "request": "Request"
+    "request": "Request",
+    "allSelect": "Select All / Deselect All"
   },
   "Roadsegment": "Road Segment",
   "Roadname": "Road name",
