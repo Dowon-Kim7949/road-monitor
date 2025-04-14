@@ -21,10 +21,13 @@
     "next": "다음",
     "prev": "이전",
     "cancel": "취소",
-    "confirm": "확인"
+    "confirm": "확인",
+    "more": "더보기",
+    "request": "분석 요청"
   },
   "Roadsegment": "노드링크",
   "Roadname": "도로명",
   "Coordinates": "좌표",
-  "Capture_at": "촬영일시"
+  "Capture_at": "촬영일시",
+  "Roadhistory": "도로 히스토리"
 }

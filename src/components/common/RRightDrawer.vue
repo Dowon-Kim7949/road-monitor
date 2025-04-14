@@ -29,36 +29,7 @@ const historyList = [
   {
     image: 'https://rm-project.site/assets/test/demo_241219/CAMFront_camera2024-12-19T18_34_12_608+01_00.webp',
     timestamp: '2024-11-28 16:07:20'
-  },
-  {
-    image: 'https://rm-project.site/assets/test/demo_241219/CAMFront_camera2024-12-19T18_34_12_608+01_00.webp',
-    timestamp: '2024-11-27 12:11:06'
-  },
-  {
-    image: 'https://rm-project.site/assets/test/demo_241219/CAMFront_camera2024-12-19T18_34_12_608+01_00.webp',
-    timestamp: '2024-11-28 16:07:20'
-  },
-  {
-    image: 'https://rm-project.site/assets/test/demo_241219/CAMFront_camera2024-12-19T18_34_12_608+01_00.webp',
-    timestamp: '2024-11-27 12:11:06'
-  },
-  {
-    image: 'https://rm-project.site/assets/test/demo_241219/CAMFront_camera2024-12-19T18_34_12_608+01_00.webp',
-    timestamp: '2024-11-28 16:07:20'
-  },
-  {
-    image: 'https://rm-project.site/assets/test/demo_241219/CAMFront_camera2024-12-19T18_34_12_608+01_00.webp',
-    timestamp: '2024-11-27 12:11:06'
-  },
-  {
-    image: 'https://rm-project.site/assets/test/demo_241219/CAMFront_camera2024-12-19T18_34_12_608+01_00.webp',
-    timestamp: '2024-11-28 16:07:20'
-  },
-  {
-    image: 'https://rm-project.site/assets/test/demo_241219/CAMFront_camera2024-12-19T18_34_12_608+01_00.webp',
-    timestamp: '2024-11-27 12:11:06'
-  },
-
+  }
 ]
 
 const onSelectHistory = (item: any) => {

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, nextTick, watch } from 'vue'
 import RButton from './atom/RButton.vue'
+import RIcon from './atom/RIcon.vue';
 
 const props = defineProps<{
   visible: boolean
@@ -16,6 +17,7 @@ const emit = defineEmits<{
 }>()
 
 const image = ref(document.getElementById('zoomableImage'))
+const selectDate = ref('')
 const scale = ref(1)
 const startX = ref(0)
 const startY = ref(0)
@@ -64,14 +66,21 @@ const selectedImage = computed(() => {
 
 const selectImage = (index: number) => {
   selectedIndex.value = index
+  selectDate.value = props.images[selectedIndex.value].date
 }
 
 const prev = () => {
-  if (selectedIndex.value > 0) selectedIndex.value--
+  if (selectedIndex.value > 0) {
+    selectedIndex.value--
+    selectDate.value = props.images[selectedIndex.value].date
+  }
 }
 
 const next = () => {
-  if (selectedIndex.value < props.images.length - 1) selectedIndex.value++
+  if (selectedIndex.value < props.images.length - 1) {
+    selectedIndex.value++
+    selectDate.value = props.images[selectedIndex.value].date
+  }
 }
 
 watch(() => selectedImage, () => {
@@ -126,6 +135,7 @@ watch(() => props.visible, (value: boolean) => {
         else scale.value = Math.max(scale.value - zoomSpeed, 1) // 최소 1배
         updateImageTransform()
       }
+      selectDate.value = props.images[selectedIndex.value].date
     })
   }
 })
@@ -141,12 +151,19 @@ watch(() => props.visible, (value: boolean) => {
           'border-transparent': selectedIndex !== index
         }">
         <img :src="image.src" alt="history" class="w-full h-[150px] object-cover" />
-        <div class="text-center py-1 text-sm font-semibold">{{ image.date }}</div>
+        <div class="py-1 text-sm font-semibold flex justify-center space-x-2">
+          <RIcon name="Camera" />
+          <span>{{ image.date }}</span>
+        </div>
       </div>
     </div>
 
     <!-- 우측 메인 이미지 -->
     <div class="flex-1 relative flex items-center justify-center">
+      <div class="absolute top-5 left-5 bg-white z-[4] text-black px-2 py-1 rounded flex items-center space-x-2">
+        <RIcon name="Camera" />
+        <span class="text-xl">{{ props.images[selectedIndex].date }}</span>
+      </div>
       <div class="main-content">
         <img :src="selectedImage?.src" id="zoomableImage" alt="Selected" class="max-h-full max-w-full object-contain"
           draggable="false" />

@@ -12,6 +12,8 @@ import VectorLayer from 'ol/layer/Vector'
 import Style from 'ol/style/Style'
 import Icon from 'ol/style/Icon'
 
+const MAP_DURATION = 300
+
 const emit = defineEmits<{
   (e: 'select-marker', data: any): void
   (e: 'close-drawer'): void
@@ -24,7 +26,6 @@ const map = ref<Map | null>(null)
 
 const mapStyle = computed(() => {
   return {
-    // left: props.leftDrawer ? '260px' : '0px',
     right: props.rightDrawer ? '25%' : '0px',
     transition: 'all 0.3s ease'
   }
@@ -84,7 +85,7 @@ const createMarkers = () => {
 }
 
 const handleResetCenter = (coords: number[]) => {
-  map.value?.getView().animate({ center: coords, zoom: 15 })
+  map.value?.getView().animate({ center: coords, zoom: 15, duration: MAP_DURATION })
 }
 
 onMounted(() => {
@@ -108,10 +109,20 @@ onMounted(() => {
     const coords = (e as CustomEvent).detail
     handleResetCenter(coords)
   })
+  window.addEventListener('zoom-in-map', () => {
+    const currentZoom = map.value?.getView().getZoom()
+    if (currentZoom) map.value?.getView().animate({ zoom: currentZoom + 1, duration: MAP_DURATION })
+  })
+  window.addEventListener('zoom-out-map', () => {
+    const currentZoom = map.value?.getView().getZoom()
+    if (currentZoom) map.value?.getView().animate({ zoom: currentZoom - 1, duration: MAP_DURATION })
+  })
 })
 
 onBeforeUnmount(() => {
   window.removeEventListener('reset-map-center', () => { })
+  window.removeEventListener('zoom-in-map', () => { })
+  window.removeEventListener('zoom-out-map', () => { })
 })
 </script>
 

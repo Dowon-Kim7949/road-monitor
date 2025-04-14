@@ -1,11 +1,12 @@
 <template>
   <div class="space-y-2">
-    <h3 class="text-lg font-semibold">Road History</h3>
+    <h3 class="text-lg font-semibold">{{ t('Roadhistory') }} Road History</h3>
 
     <!-- 📌 스크롤 가능한 영역 -->
-    <div class="max-h-[240px] overflow-y-auto pr-1">
+    <div class="max-h-[300px] overflow-y-auto pr-1">
       <div v-for="(item, index) in items" :key="index"
-        class="flex items-center space-x-4 cursor-pointer hover:bg-gray-30 p-2 rounded" @click="$emit('select', item)">
+        class="flex items-center space-x-4 cursor-pointer hover:bg-gray-30 px-2 py-4 rounded"
+        @click="$emit('select', item)">
         <img :src="item.image || 'https://via.placeholder.com/120x72?text=No+Image'" alt="history"
           class="w-28 h-16 object-cover rounded" />
         <div class="text-sm text-gray-800 whitespace-nowrap">
@@ -13,10 +14,18 @@
         </div>
       </div>
     </div>
+    <div class="flex w-full items-center justify-center py-2">
+      <RButton class="rounded-b-full rounded-t-full bg-gray-40 text-white border-0 hover:bg-gray-60 active:bg-gray-80"
+        type="tertiary" :label="t('button.more')" size="small" icon="chevron-down" icon-pos="right" />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+import RButton from './atom/RButton.vue'
+
+const { t } = useI18n()
 defineProps<{
   items: {
     image: string

@@ -7,6 +7,8 @@ defineEmits<{
   (e: 'toggle-left'): void
   (e: 'reset-center'): void
   (e: 'change-mode', mode: string): void
+  (e: 'zoom-in'): void
+  (e: 'zoom-out'): void
 }>()
 
 const activeMode = ref('alert')
@@ -37,8 +39,8 @@ const handleChangeMode = (mode: string) => {
 
   <!-- 우측 하단 버튼들 -->
   <div class="floating-bottom-right fixed bottom-4 z-[4] space-x-2">
-    <RButton type="icon" size="small" class="bg-white shadow rounded-sm" icon="plus" />
-    <RButton type="icon" size="small" class="bg-white shadow rounded-sm" icon="minus" />
+    <RButton type="icon" size="small" class="bg-white shadow rounded-sm" @click="$emit('zoom-in')" icon="plus" />
+    <RButton type="icon" size="small" class="bg-white shadow rounded-sm" @click="$emit('zoom-out')" icon="minus" />
   </div>
 </template>
 

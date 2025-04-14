@@ -1,3 +1,37 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import RButton from '@/components/common/atom/RButton.vue'
+import RIcon from '@/components/common/atom/RIcon.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+const props = defineProps<{ visible: boolean }>()
+const emit = defineEmits<{
+  (e: 'close'): void
+  (e: 'submit', payload: { name: string; }): void
+}>()
+
+const step = ref(1)
+const batchName = ref('2025년 1차 분석')
+
+const close = () => {
+  emit('close')
+  step.value = 1
+  batchName.value = '2025년 1차 분석'
+}
+
+const submit = () => {
+  emit('submit', { name: batchName.value })
+  close()
+}
+</script>
+
+<style scoped>
+.text-pretty {
+  text-wrap-style: balance !important;
+}
+</style>
+
 <template>
   <div v-if="visible" class="fixed inset-0 z-[9999] bg-gray-100/50 flex items-center justify-center">
     <div class="bg-white w-[410px] rounded shadow-lg px-4 pt-2 pb-4 relative">
@@ -33,73 +67,6 @@
           <RButton type="tertiary" size="small" :label="t('button.next')" @click="submit" />
         </div>
       </div>
-
-      <!-- Step 3: 도로 선택 -->
-      <!-- <div v-if="step === 3">
-        <p class="text-lg font-semibold mb-2">rPCI를 분석할 도로를 선택해주세요.</p>
-        <p class="text-sm text-gray-500 mb-2">{{ batchName }}</p>
-
-        <div class="max-h-[300px] overflow-auto border rounded mb-4">
-          <table class="w-full text-sm">
-            <thead class="bg-gray-20 text-center">
-              <tr>
-                <th class="p-2">도로명/노드링크명</th>
-                <th class="p-2">촬영 일시</th>
-              </tr>
-            </thead>
-            <tbody>
-              <template v-for="(road, idx) in roads" :key="idx">
-                <tr>
-                  <td class="p-2 border-t">
-                    <input type="checkbox" v-model="road.checked" class="mr-2" />
-                    {{ road.name }}
-                  </td>
-                  <td class="p-2 border-t text-center">YYYY-MM-DD</td>
-                </tr>
-              </template>
-</tbody>
-</table>
-</div>
-
-<div class="flex justify-end space-x-2">
-  <RButton type="tertiary" size="small" label="이전" @click="step--" />
-  <RButton type="tertiary" size="small" label="확인" @click="submit" />
-</div>
-</div> -->
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue'
-import RButton from '@/components/common/atom/RButton.vue'
-import RIcon from '@/components/common/atom/RIcon.vue'
-import { useI18n } from 'vue-i18n'
-
-const { t } = useI18n()
-const props = defineProps<{ visible: boolean }>()
-const emit = defineEmits<{
-  (e: 'close'): void
-  (e: 'submit', payload: { name: string; }): void
-}>()
-
-const step = ref(1)
-const batchName = ref('2025년 1차 분석')
-
-const close = () => {
-  emit('close')
-  step.value = 1
-  batchName.value = '2025년 1차 분석'
-}
-
-const submit = () => {
-  emit('submit', { name: batchName.value })
-  close()
-}
-</script>
-
-<style scoped>
-.text-pretty {
-  text-wrap-style: balance !important;
-}
-</style>

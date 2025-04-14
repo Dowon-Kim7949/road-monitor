@@ -21,10 +21,13 @@
     "next": "Next",
     "prev": "Prev",
     "cancel": "Cancel",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "more": "More",
+    "request": "Request"
   },
   "Roadsegment": "Road Segment",
   "Roadname": "Road name",
   "Coordinates": "Coordinates",
-  "Capture_at": "Captured at"
+  "Capture_at": "Captured at",
+  "Roadhistory": "Road History"
 }

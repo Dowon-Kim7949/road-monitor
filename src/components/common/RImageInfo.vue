@@ -27,7 +27,7 @@
     <div class="flex items-center space-x-2">
       <RIcon imgSrc="src/assets/image/time.webp" :size="20" />
       <span class="font-bold w-fit">{{ t('Capture_at') }}</span>
-      <span>2025-04-11 14</span>
+      <span>2025-04-11 14:58:35</span>
     </div>
   </div>
 </template>
