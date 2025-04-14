@@ -7,6 +7,7 @@ const modelValue = defineModel<boolean>()
 
 // props는 그대로 유지
 const props = defineProps<{
+  type: 'road' | 'rpci'
   data: {
     lat: number
     lon: number
@@ -56,7 +57,7 @@ watch(modelValue, (val) => {
         <RImageInfo :roadName="data?.roadName" :lat="data?.lat" :lon="data?.lon" :nodeLink="data?.nodeLink"
           :timestamp="data?.timestamp" @copy-coord="onCopyLatLon" />
         <hr />
-        <RImageHistory :items="historyList" @select="onSelectHistory" />
+        <RImageHistory type="road" :items="historyList" @select="onSelectHistory" />
 
       </div>
     </aside>

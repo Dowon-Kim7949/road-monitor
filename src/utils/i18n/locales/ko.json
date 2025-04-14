@@ -30,5 +30,9 @@
   "Roadname": "도로명",
   "Coordinates": "좌표",
   "Capture_at": "촬영일시",
-  "Roadhistory": "도로 히스토리"
+  "Roadhistory": "도로 히스토리",
+  "RPciHistory": "rPCI 히스토리",
+  "hazard": {
+    "pothole": "포트홀"
+  }
 }

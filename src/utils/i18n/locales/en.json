@@ -30,5 +30,9 @@
   "Roadname": "Road name",
   "Coordinates": "Coordinates",
   "Capture_at": "Captured at",
-  "Roadhistory": "Road History"
+  "Roadhistory": "Road History",
+  "RPciHistory": "rPCI History",
+  "hazard": {
+    "pothole": "Potholes"
+  }
 }

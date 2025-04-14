@@ -84,7 +84,7 @@ const handleSelectMarker = (data: typeof selectedData.value) => {
     <!-- 우측 사이드바 (Suspense + Async) -->
     <Suspense>
       <template #default>
-        <RRightDrawer v-model="rightDrawer" :data="selectedData" />
+        <RRightDrawer v-model="rightDrawer" :data="selectedData" type="road" />
       </template>
       <template #fallback>
         <div class="fixed top-0 right-0 w-1/2 h-full bg-white flex items-center justify-center z-40">
