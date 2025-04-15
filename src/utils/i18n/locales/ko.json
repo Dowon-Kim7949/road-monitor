@@ -25,7 +25,8 @@
     "more": "더 보기",
     "request": "분석 요청",
     "allSelect": "전체 선택/해제",
-    "collapse": "접기"
+    "collapse": "접기",
+    "grade": "등급"
   },
   "Roadsegment": "노드링크",
   "Roadname": "도로명",

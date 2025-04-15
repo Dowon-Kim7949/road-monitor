@@ -25,7 +25,8 @@
     "more": "More",
     "request": "Request",
     "allSelect": "Select All / Deselect All",
-    "collapse": "Collapse"
+    "collapse": "Collapse",
+    "grade": "Grade"
   },
   "Roadsegment": "Road Segment",
   "Roadname": "Road name",

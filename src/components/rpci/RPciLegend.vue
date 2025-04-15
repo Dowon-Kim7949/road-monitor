@@ -20,28 +20,31 @@ const grades = [
 </script>
 
 <template>
-  <div class="fixed top-24 right-4 z-50">
+  <div class="fixed top-5 right-5 z-50">
     <!-- 접힌 상태 버튼 -->
-    <button v-if="!isOpen" class="flex items-center bg-white shadow px-3 py-1 text-sm font-bold"
+    <button v-if="!isOpen"
+      class="flex items-center bg-white shadow px-3 py-1 text-md font-bold rounded-sm cursor-pointer"
       @click="toggleOpen">
-      <RIcon name="ChevronLeft" class="w-4 h-4 mr-1" />
-      <span>등급</span>
+      <RIcon name="ChevronLeft" class="w-4 h-4 mr-2 mt-1" />
+      <span class="pr-2 pt-1">등급</span>
     </button>
 
     <!-- 펼친 상태 레전드 -->
-    <div v-else class="bg-white rounded-xl shadow p-4 space-y-2 w-48 relative transition-all">
+    <div v-else class="bg-white rounded-xl shadow p-4 space-y-2 w-55 relative transition-all">
       <!-- 닫기 버튼 -->
-      <button class="absolute top-2 left-2 text-sm text-gray-600" @click="toggleOpen">
+      <button
+        class="absolute top-3 left-[-20px] text-md text-gray-600 bg-white px-1 py-2 rounded-tl-sm rounded-bl-sm cursor-pointer"
+        @click="toggleOpen">
         <RIcon name="ChevronRight" class="w-4 h-4" />
       </button>
 
       <!-- 등급 리스트 -->
       <div v-for="(grade, idx) in grades" :key="idx" class="flex items-center justify-between px-2">
-        <span class="text-xs font-semibold px-2 py-0.5 rounded-full"
+        <span class="text-sm font-semibold px-2 py-0.5 rounded-full"
           :style="{ backgroundColor: grade.color, color: grade.textColor }">
           {{ grade.label }}
         </span>
-        <span class="text-xs text-gray-700 font-semibold">{{ grade.range }}</span>
+        <span class="text-md text-gray-700 font-semibold">{{ grade.range }}</span>
       </div>
     </div>
   </div>
