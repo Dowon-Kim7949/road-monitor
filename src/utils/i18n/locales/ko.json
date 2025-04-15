@@ -22,9 +22,10 @@
     "prev": "이전",
     "cancel": "취소",
     "confirm": "확인",
-    "more": "더보기",
+    "more": "더 보기",
     "request": "분석 요청",
-    "allSelect": "전체 선택/해제"
+    "allSelect": "전체 선택/해제",
+    "collapse": "접기"
   },
   "Roadsegment": "노드링크",
   "Roadname": "도로명",
@@ -34,5 +35,6 @@
   "RPciHistory": "rPCI 히스토리",
   "hazard": {
     "pothole": "포트홀"
-  }
+  },
+  "rpciResult": "rPCI 분석 결과"
 }

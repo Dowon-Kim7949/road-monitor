@@ -93,7 +93,7 @@ const toggleAll = () => {
 
 <template>
   <transition name="slide-down">
-    <div v-if="visible" class="fixed top-0 right-0 bg-white p-6 w-[40%] h-full z-[5] flex flex-col">
+    <div v-if="visible" class="fixed top-0 right-0 bg-white p-6 w-[40%] h-full z-[40] flex flex-col">
       <div class="flex flex-col">
         <div class="flex flex-row justify-between items-center align-middle mb-4">
           <div class="relative w-[95%]">

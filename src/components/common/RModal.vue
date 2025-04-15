@@ -34,14 +34,14 @@ const dangerStyle = computed(() =>
     <transition name="fade">
       <div v-if="visible" class="fixed inset-0 bg-black/40 z-[9998] flex items-center justify-center"
         @keydown.esc="$emit('onClose')">
-        <div role="dialog" aria-modal="true" class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 z-[9999]">
+        <div role="dialog" aria-modal="true" class="bg-white rounded-lg shadow-lg p-6 z-[9999]">
           <!-- Title -->
-          <h3 class="text-lg font-bold text-black dark:text-white mb-3">
+          <h3 class="text-lg font-bold text-black mb-3">
             {{ title }}
           </h3>
 
           <!-- Content -->
-          <p class="text-sm text-gray-700 dark:text-gray-200 mb-5">
+          <p class="text-sm text-gray-700 mb-5">
             {{ content }}
           </p>
 
@@ -49,7 +49,7 @@ const dangerStyle = computed(() =>
           <div class="flex justify-end gap-2">
             <template v-if="showConfirm">
               <button type="button"
-                class="px-4 py-2 text-sm rounded border bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200"
+                class="px-4 py-2 text-sm rounded border bg-white hover:bg-gray-200  text-gray-800"
                 @click="$emit('onCancel')">
                 {{ cancelLabel }}
               </button>

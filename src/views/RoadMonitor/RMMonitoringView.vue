@@ -9,6 +9,7 @@ const RRightDrawer = defineAsyncComponent(() =>
   import('@/components/common/RRightDrawer.vue')
 )
 
+const imageUrl = 'https://rm-project.site/assets/test/demo_241219/CAMFront_camera2024-12-19T18_34_12_608+01_00.webp'
 const leftDrawer = ref(false)
 const rightDrawer = ref(false)
 const selectedData = ref<null | {
@@ -46,14 +47,21 @@ const testList = [
   { start: '중동초등학교', end: '중동5길', date: '2024-11-20' },
   { start: '중앙초교사거리', end: '정신여고입구삼거리', date: '2024-11-20' },
   { start: '남양교차로', end: '승리리145-4', date: '2024-11-20' },
-  { start: '중동초등학교', end: '중동5길', date: '2024-11-20' },
-  { start: '중앙초교사거리', end: '정신여고입구삼거리', date: '2024-11-20' },
-  { start: '남양교차로', end: '승리리145-4', date: '2024-11-20' },
-  { start: '중동초등학교', end: '중동5길', date: '2024-11-20' },
-  { start: '중앙초교사거리', end: '정신여고입구삼거리', date: '2024-11-20' },
-  { start: '남양교차로', end: '승리리145-4', date: '2024-11-20' },
-  { start: '중동초등학교', end: '중동5길', date: '2024-11-20' },
-  { start: '중앙초교사거리', end: '정신여고입구삼거리', date: '2024-11-20' },
+]
+
+const testhistories = [
+  { src: imageUrl, date: '2024-11-20 14:58', title: '2025년 1차 분석' },
+  { src: imageUrl, date: '2024-11-19 14:58', title: '2024년 6차 분석' },
+  { src: imageUrl, date: '2024-11-18 14:58', title: '2024년 5차 분석' },
+  { src: imageUrl, date: '2024-11-17 14:58', title: '2024년 4차 분석' },
+  { src: imageUrl, date: '2024-11-16 14:58', title: '2024년 3차 분석' },
+  { src: imageUrl, date: '2024-11-15 14:58', title: '2024년 2차 분석' },
+  { src: imageUrl, date: '2024-11-14 14:58', title: '2024년 1차 분석' },
+  { src: imageUrl, date: '2024-11-13 14:58', title: '2023년 4차 분석' },
+  { src: imageUrl, date: '2024-11-12 14:58', title: '2023년 3차 분석' },
+  { src: imageUrl, date: '2024-11-11 14:58', title: '2023년 2차 분석' },
+  { src: imageUrl, date: '2024-11-10 14:58', title: '2023년 1차 분석' },
+  { src: imageUrl, date: '2024-11-09 14:58', title: '2022년 1차 분석' },
 ]
 
 const toggleLeftDrawer = () => {
@@ -84,7 +92,7 @@ const handleSelectMarker = (data: typeof selectedData.value) => {
     <!-- 우측 사이드바 (Suspense + Async) -->
     <Suspense>
       <template #default>
-        <RRightDrawer v-model="rightDrawer" :data="selectedData" type="road" />
+        <RRightDrawer v-model="rightDrawer" :data="selectedData" type="road" :histories="testhistories" />
       </template>
       <template #fallback>
         <div class="fixed top-0 right-0 w-1/2 h-full bg-white flex items-center justify-center z-40">
@@ -98,7 +106,7 @@ const handleSelectMarker = (data: typeof selectedData.value) => {
       @close-drawer="rightDrawer = false" />
 
     <!-- 고정 버튼 모음 -->
-    <RFloatingButton @reset-center="resetCenter" @zoom-in="zoomIn" @zoom-out="zoomOut"
+    <RFloatingButton @reset-center="resetCenter" @zoom-in="zoomIn" @zoom-out="zoomOut" type="road"
       @toggle-left="toggleLeftDrawer" />
   </div>
 </template>

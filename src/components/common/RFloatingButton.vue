@@ -2,6 +2,10 @@
 import { ref } from 'vue'
 import RButton from '@/components/common/atom/RButton.vue'
 import RModeSelector from '@/components/common/RModeSelector.vue'
+import RPciLegend from '../rpci/RPciLegend.vue';
+const props = defineProps<{
+  type: 'road' | 'rpci'
+}>()
 
 defineEmits<{
   (e: 'toggle-left'): void
@@ -35,7 +39,8 @@ const handleChangeMode = (mode: string) => {
     @click="$emit('reset-center')" icon="locate-fixed" />
 
   <!-- 우측 상단 모드 선택 버튼 -->
-  <RModeSelector :activeMode="activeMode" @change-mode="handleChangeMode" />
+  <RModeSelector v-if="type === 'road'" :activeMode="activeMode" @change-mode="handleChangeMode" />
+  <RPciLegend v-else />
 
   <!-- 우측 하단 버튼들 -->
   <div class="floating-bottom-right fixed bottom-4 z-[4] space-x-2">

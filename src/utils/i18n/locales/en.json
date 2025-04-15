@@ -24,7 +24,8 @@
     "confirm": "Confirm",
     "more": "More",
     "request": "Request",
-    "allSelect": "Select All / Deselect All"
+    "allSelect": "Select All / Deselect All",
+    "collapse": "Collapse"
   },
   "Roadsegment": "Road Segment",
   "Roadname": "Road name",
@@ -34,5 +35,6 @@
   "RPciHistory": "rPCI History",
   "hazard": {
     "pothole": "Potholes"
-  }
+  },
+  "rpciResult": "rPCI Analysis Summary"
 }

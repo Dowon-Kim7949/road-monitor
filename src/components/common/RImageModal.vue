@@ -5,10 +5,11 @@ import RIcon from './atom/RIcon.vue';
 
 const props = defineProps<{
   visible: boolean
-  images: { src: string; date: string }[]
+  images: { src: string; date: string, title?: string }[]
+  type: 'road' | 'rpci'
 }>()
 
-const emit = defineEmits<{
+defineEmits<{
   (e: 'close'): void
   (e: 'upload'): void
   (e: 'play'): void
@@ -151,18 +152,27 @@ watch(() => props.visible, (value: boolean) => {
           'border-transparent': selectedIndex !== index
         }">
         <img :src="image.src" alt="history" class="w-full h-[150px] object-cover" />
-        <div class="py-1 text-sm font-semibold flex justify-center space-x-2">
-          <RIcon name="Camera" />
-          <span>{{ image.date }}</span>
+        <div class="pt-1 text-md font-semibold flex justify-center space-x-2 items-center">
+          <template v-if="type === 'rpci'">
+            <span>{{ image.title }}</span>
+          </template>
+          <template v-else>
+            <RIcon name="Camera" />
+            <span>{{ image.date }}</span>
+          </template>
         </div>
       </div>
     </div>
 
     <!-- 우측 메인 이미지 -->
     <div class="flex-1 relative flex items-center justify-center">
-      <div class="absolute top-5 left-5 bg-white z-[4] text-black px-2 py-1 rounded flex items-center space-x-2">
-        <RIcon name="Camera" />
-        <span class="text-xl">{{ props.images[selectedIndex].date }}</span>
+      <div
+        class="absolute top-5 left-5 bg-white z-[4] text-black px-2 py-1 rounded flex items-center space-x-2 flex-col">
+        <div v-if="type === 'rpci'" class="font-bold">{{ props.images[selectedIndex].title }}</div>
+        <div class="flex items-center space-x-2">
+          <RIcon name="Camera" />
+          <span class="text-md">{{ props.images[selectedIndex].date }}</span>
+        </div>
       </div>
       <div class="main-content">
         <img :src="selectedImage?.src" id="zoomableImage" alt="Selected" class="max-h-full max-w-full object-contain"
@@ -175,7 +185,7 @@ watch(() => props.visible, (value: boolean) => {
 
       <!-- 우측 상단 ⬆ upload -->
       <RButton type="icon" class="bg-white shadow absolute top-4 right-4 rounded-full" icon="upload" size="small"
-        @click="$emit('upload')" />
+        @click="$emit('upload')" v-if="type === 'road'" />
 
       <!-- 우측 하단 ◀ ▶ ✕ -->
       <div class="absolute bottom-4 right-4 flex space-x-3">

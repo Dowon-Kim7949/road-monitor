@@ -77,13 +77,13 @@ const nextPage = () => {
         <button
           class="text-xs px-3 py-1 border rounded hover:bg-gray-100 hover:text-white disabled:opacity-40 cursor-pointer"
           :disabled="currentPage === 1" @click="prevPage">
-          이전
+          {{ t('button.prev') }}
         </button>
         <div class="text-xs text-gray-500">{{ currentPage }} / {{ totalPages }}</div>
         <button
           class="text-xs px-3 py-1 border rounded hover:bg-gray-100 hover:text-white disabled:opacity-40 cursor-pointer"
           :disabled="currentPage === totalPages" @click="nextPage">
-          다음
+          {{ t('button.next') }}
         </button>
       </div>
     </div>
