@@ -20,7 +20,7 @@ const grades = [
 </script>
 
 <template>
-  <div class="fixed top-5 right-5 z-50">
+  <div class="floating-top-right fixed top-5 z-50">
     <!-- 접힌 상태 버튼 -->
     <button v-if="!isOpen"
       class="flex items-center bg-white shadow px-3 py-1 text-md font-bold rounded-sm cursor-pointer"
@@ -49,3 +49,14 @@ const grades = [
     </div>
   </div>
 </template>
+
+<style>
+.floating-top-right {
+  right: 1rem;
+  transition: right 0.3s ease;
+}
+
+body.drawer-open .floating-top-right {
+  right: 51%;
+}
+</style>

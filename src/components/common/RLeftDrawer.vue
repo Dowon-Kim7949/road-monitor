@@ -1,7 +1,46 @@
+<script setup lang="ts">
+import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+import RButton from './atom/RButton.vue'
+import RLocaleSelector from './RLocaleSelector.vue'
+import RUserMenu from './RUserMenu.vue'
+
+const modelValue = defineModel<boolean>()
+const route = useRoute()
+const { t } = useI18n()
+const props = defineProps<{
+  mode?: 'fix' | null
+}>()
+
+const menuGroups = [
+  {
+    label: 'menu.roadMonitor',
+    items: [
+      { label: 'menu.monitoring', path: '/monitoring' },
+      { label: 'menu.coverage', path: '/coverage' }
+    ]
+  },
+  {
+    label: 'menu.rapidPci',
+    items: [
+      { label: 'menu.rpcianalysis', path: '/rpci/analysis' },
+      { label: 'menu.rpcimap', path: '/rpci/map' },
+      { label: 'menu.rpcireport', path: '/rpci/report' }
+    ]
+  },
+  {
+    label: 'menu.settings',
+    items: [
+      { label: 'menu.envSetting', path: '/settings' }
+    ]
+  }
+]
+</script>
+
 <template>
   <Transition name="slide-left">
     <aside v-if="modelValue"
-      class="fixed top-0 left-0 h-full w-[240px] bg-gray-10 shadow z-[5] flex flex-col border-gray-40 border-r-1">
+      class="fixed top-0 left-0 h-full w-[240px] bg-gray-10 shadow z-[10] flex flex-col border-gray-40 border-r-1">
       <!-- 상단 로고 및 닫기 버튼 -->
       <button class="z-50 bg-transparent p-7">
         <div class="flex">
@@ -12,7 +51,7 @@
           </div>
         </div>
       </button>
-      <div class="fixed top-10 left-[239px] z-[5]">
+      <div v-if="!props.mode" class="fixed top-10 left-[239px] z-[5]">
         <RButton type="tertiary"
           class="bg-gray-10 rounded-br-sm rounded-tr-sm rounded-bl-none rounded-tl-none py-2 px-1 border-gray-40 border-r-1 border-t-1 border-b-1 border-l-0"
           icon="chevron-left" size="small" @click="modelValue = false" />
@@ -42,42 +81,6 @@
     </aside>
   </Transition>
 </template>
-
-<script setup lang="ts">
-import { useRoute } from 'vue-router'
-import { useI18n } from 'vue-i18n'
-import RButton from './atom/RButton.vue'
-import RLocaleSelector from './RLocaleSelector.vue'
-import RUserMenu from './RUserMenu.vue'
-
-const modelValue = defineModel<boolean>()
-const route = useRoute()
-const { t } = useI18n()
-
-const menuGroups = [
-  {
-    label: 'menu.roadMonitor',
-    items: [
-      { label: 'menu.monitoring', path: '/monitoring' },
-      { label: 'menu.coverage', path: '/coverage' }
-    ]
-  },
-  {
-    label: 'menu.rapidPci',
-    items: [
-      { label: 'menu.rpcianalysis', path: '/rpci/analysis' },
-      { label: 'menu.rpcimap', path: '/rpci/map' },
-      { label: 'menu.rpcireport', path: '/rpci/report' }
-    ]
-  },
-  {
-    label: 'menu.settings',
-    items: [
-      { label: 'menu.envSetting', path: '/settings' }
-    ]
-  }
-]
-</script>
 
 <style scoped>
 .slide-left-enter-from {

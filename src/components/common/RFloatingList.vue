@@ -6,12 +6,19 @@ import RButton from './atom/RButton.vue';
 const { t } = useI18n()
 const props = defineProps<{
   items: { start: string; end: string; date: string }[]
+  type?: 'cover' | null
 }>()
 
 defineEmits<{
   (e: 'cancel'): void
   (e: 'confirm'): void
 }>()
+
+const listStyle = computed(() => {
+  return {
+    left: props.type === 'cover' ? '26% !important' : ''
+  }
+})
 
 const itemsPerPage = 10
 const currentPage = ref(1)
@@ -40,7 +47,8 @@ const nextPage = () => {
   <!-- 펼쳐진 상태 -->
   <Transition name="slide-left">
     <div v-show="modelValue"
-      class="fixed w-[300px] top-20 left-4 bg-white shadow-lg rounded-sm border-gray-40 border-1 p-4 text-sm z-[4] h-[85vh] flex flex-col">
+      class="fixed w-[300px] top-20 left-4 bg-white shadow-lg rounded-sm border-gray-40 border-1 p-4 text-sm z-[1] h-[85vh] flex flex-col"
+      :style="listStyle">
 
       <!-- 접기 버튼 -->
       <div
@@ -91,9 +99,8 @@ const nextPage = () => {
 
   <!-- 접힌 상태 버튼 -->
   <Transition name="fade">
-    <div v-show="!modelValue"
-      class="fixed w-fit top-20 left-4 py-1 bg-white shadow-lg rounded-sm border-gray-40 border-1 text-sm z-[4] flex items-center cursor-pointer"
-      @click="modelValue = true">
+    <div v-show="!modelValue" :style="listStyle" @click="modelValue = true"
+      class="fixed w-fit top-20 left-4 py-1 bg-white shadow-lg rounded-sm border-gray-40 border-1 text-sm z-[4] flex items-center cursor-pointer">
       <div class="flex-1 flex items-center text-md font-bold pl-4">
         {{ t('Roadsegment') }}
         <span class="ml-2 text-white bg-red-600 rounded-full text-xs w-5 h-5 flex items-center justify-center">

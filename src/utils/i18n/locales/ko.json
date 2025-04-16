@@ -37,5 +37,8 @@
   "hazard": {
     "pothole": "포트홀"
   },
-  "rpciResult": "rPCI 분석 결과"
+  "rpciResult": "rPCI 분석 결과",
+  "deviceList": "단말기 목록",
+  "all": "전체",
+  "modelname": "모델명"
 }

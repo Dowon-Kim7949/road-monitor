@@ -1,322 +1,207 @@
+<script setup lang="ts">
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
+import RIcon from './RIcon.vue';
+const inputRef = ref<HTMLInputElement | null>(null);
+const calendarRef = ref<HTMLDivElement | null>(null);
+const isOpen = ref(false);
+const calendarPosition = ref<'top' | 'bottom'>('bottom');
+
+const today = ref(new Date());
+const currentMonth = ref(today.value.getMonth() + 1);
+const currentYear = ref(today.value.getFullYear());
+const daysOfWeek = ref(['일', '월', '화', '수', '목', '금', '토']);
+
+const startDate = ref<Date | null>(null);
+const endDate = ref<Date | null>(null);
+const isSelectingRange = ref(true); // 기간 선택 모드
+
+const displayValue = computed(() => {
+  const formatDate = (date: Date | null): string => {
+    if (!date) return 'YYYY-MM-DD';
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+  if (startDate.value && endDate.value) {
+    return `${formatDate(startDate.value)} ~ ${formatDate(endDate.value)}`;
+  } else if (startDate.value) {
+    return formatDate(startDate.value) + ' ~ YYYY-MM-DD';
+  } else {
+    return '날짜를 선택해주세요.';
+  }
+});
+
+const toggleCalendar = () => {
+  isOpen.value = !isOpen.value;
+  if (isOpen.value) {
+    today.value = startDate.value || new Date();
+    currentMonth.value = today.value.getMonth() + 1;
+    currentYear.value = today.value.getFullYear();
+  }
+};
+
+const closeCalendar = () => {
+  isOpen.value = false;
+};
+
+const prevMonth = () => {
+  currentMonth.value--;
+  if (currentMonth.value < 1) {
+    currentMonth.value = 12;
+    currentYear.value--;
+  }
+};
+
+const nextMonth = () => {
+  currentMonth.value++;
+  if (currentMonth.value > 12) {
+    currentMonth.value = 1;
+    currentYear.value++;
+  }
+};
+
+const getDaysInMonth = (year: number, month: number): Date[] => {
+  const firstDayOfMonth = new Date(year, month - 1, 1);
+  const lastDayOfMonth = new Date(year, month, 0);
+  const days: Date[] = [];
+
+  // 이전 달의 날짜 채우기
+  const firstDayWeekday = firstDayOfMonth.getDay(); // 0 (일) ~ 6 (토)
+  const daysFromPrevMonth = firstDayWeekday;
+  const lastDayOfPrevMonth = new Date(year, month - 1, 0).getDate();
+  for (let i = 0; i < daysFromPrevMonth; i++) {
+    days.unshift(new Date(year, month - 2, lastDayOfPrevMonth - i));
+  }
+
+  // 현재 달의 날짜 채우기
+  for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
+    days.push(new Date(year, month - 1, i));
+  }
+
+  // 다음 달의 날짜 채우기
+  const daysToNextMonth = 7 - (days.length % 7);
+  if (daysToNextMonth < 7) {
+    for (let i = 1; i <= daysToNextMonth; i++) {
+      days.push(new Date(year, month, i));
+    }
+  }
+
+  return days;
+};
+
+const datesInMonth = computed(() => getDaysInMonth(currentYear.value, currentMonth.value));
+
+const isNotInCurrentMonth = (date: Date): boolean => {
+  return date.getMonth() !== currentMonth.value - 1;
+};
+
+const isSelected = (date: Date): boolean => {
+  if (startDate.value && endDate.value) {
+    return date >= startDate.value && date <= endDate.value;
+  } else if (startDate.value) {
+    return date.toDateString() === startDate.value.toDateString();
+  }
+  return false;
+};
+
+const selectDate = (date: Date) => {
+  if (isSelectingRange.value) {
+    if (!startDate.value) {
+      startDate.value = date;
+    } else if (!endDate.value && date >= startDate.value) {
+      endDate.value = date;
+    } else {
+      startDate.value = date;
+      endDate.value = null;
+    }
+  } else {
+    startDate.value = date;
+    endDate.value = date;
+    closeCalendar();
+  }
+};
+
+const confirmRange = () => {
+  isOpen.value = false;
+};
+
+const cancelRange = () => {
+  startDate.value = null;
+  endDate.value = null;
+  isOpen.value = false;
+};
+
+const handleClickOutside = (event: MouseEvent) => {
+  if (calendarRef.value && !calendarRef.value.contains(event.target as Node) && inputRef.value !== event.target) {
+    isOpen.value = false;
+  }
+};
+
+onMounted(() => {
+  document.addEventListener('mousedown', handleClickOutside);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('mousedown', handleClickOutside);
+});
+
+watch(isOpen, (newIsOpen) => {
+  if (inputRef.value && newIsOpen) {
+    const inputRect = inputRef.value.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    const calendarHeight = calendarRef.value?.offsetHeight || 350;
+
+    if (inputRect.bottom + calendarHeight > windowHeight) {
+      calendarPosition.value = 'top';
+    } else {
+      calendarPosition.value = 'bottom';
+    }
+  }
+});
+</script>
+
 <template>
-  <!-- date input -->
-  <!-- 폼그룹 -->
-  <div class="form-group">
-    <div class="form-tit">
-      <label for="cal">레이블</label>
+  <div class="relative inline-block">
+    <div class="relative flex items-center" @click="toggleCalendar">
+      <input ref="inputRef" type="text"
+        class="px-3 py-2 border border-gray-300 rounded shadow cursor-pointer w-full text-center focus:outline-none text-gray-100/80 font-bold"
+        :value="displayValue" readonly />
     </div>
-    <div class="form-conts">
-      <div class="form-conts calendar-conts">
-        <div class="calendar-input">
-          <input type="number" class="krds-input datepicker cal" placeholder="YYYY.MM.DD" id="cal" />
-          <button type="button" class="krds-btn medium icon form-btn-datepicker">
-            <span class="sr-only">달력 열기</span>
-            <i class="svg-icon ico-calendar"></i>
-          </button>
-        </div>
-        <div class="krds-calendar-area">
-          <div class="calendar-wrap bottom" aria-label="달력">
-            <div class="calendar-head">
-              <button type="button" class="btn-cal-move prev"><span class="sr-only">이전 달</span></button>
-              <div class="calendar-switch-wrap">
-                <div class="calendar-drop-down">
-                  <button type="button" class="btn-cal-switch year" aria-label="연도 선택">2024년</button>
-                  <div class="calendar-select calendar-year-wrap">
-                    <ul class="sel year">
-                      <li>
-                        <button type="button">2001년</button>
-                      </li>
-                      <li>
-                        <button type="button" class="active">2002년</button>
-                      </li>
-                      <li>
-                        <button type="button" disabled>2003년</button>
-                      </li>
-                      <li>
-                        <button type="button">2004년</button>
-                      </li>
-                      <li>
-                        <button type="button">2005년</button>
-                      </li>
-                      <li>
-                        <button type="button">2006년</button>
-                      </li>
-                      <li>
-                        <button type="button">2007년</button>
-                      </li>
-                      <li>
-                        <button type="button">2008년</button>
-                      </li>
-                      <li>
-                        <button type="button">2009년</button>
-                      </li>
-                      <li>
-                        <button type="button">2010년</button>
-                      </li>
-                      <li>
-                        <button type="button">2011년</button>
-                      </li>
-                      <li>
-                        <button type="button">2012년</button>
-                      </li>
-                      <li>
-                        <button type="button">2013년</button>
-                      </li>
-                      <li>
-                        <button type="button">2014년</button>
-                      </li>
-                      <li>
-                        <button type="button">2015년</button>
-                      </li>
-                      <li>
-                        <button type="button">2016년</button>
-                      </li>
-                      <li>
-                        <button type="button">2017년</button>
-                      </li>
-                      <li>
-                        <button type="button">2018년</button>
-                      </li>
-                      <li>
-                        <button type="button">2019년</button>
-                      </li>
-                      <li>
-                        <button type="button">2020년</button>
-                      </li>
-                      <li>
-                        <button type="button">2021년</button>
-                      </li>
-                      <li>
-                        <button type="button">2022년</button>
-                      </li>
-                      <li>
-                        <button type="button">2023년</button>
-                      </li>
-                      <li>
-                        <button type="button">2024년</button>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                <div class="calendar-drop-down">
-                  <button type="button" class="btn-cal-switch month" aria-label="월 선택">12월</button>
-                  <div class="calendar-select calendar-mon-wrap">
-                    <ul class="sel month">
-                      <li>
-                        <button type="button" disabled>01월</button>
-                      </li>
-                      <li>
-                        <button type="button">02월</button>
-                      </li>
-                      <li>
-                        <button type="button">03월</button>
-                      </li>
-                      <li>
-                        <button type="button">04월</button>
-                      </li>
-                      <li>
-                        <button type="button">05월</button>
-                      </li>
-                      <li>
-                        <button type="button">06월</button>
-                      </li>
-                      <li>
-                        <button type="button">07월</button>
-                      </li>
-                      <li>
-                        <button type="button">08월</button>
-                      </li>
-                      <li>
-                        <button type="button">09월</button>
-                      </li>
-                      <li>
-                        <button type="button">10월</button>
-                      </li>
-                      <li>
-                        <button type="button">11월</button>
-                      </li>
-                      <li>
-                        <button type="button" class="active">12월</button>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <button type="button" class="btn-cal-move next"><span class="sr-only">다음 달</span></button>
-            </div>
-            <div class="calendar-body">
-              <div class="calendar-table-wrap">
-                <table class="calendar-tbl">
-                  <caption>
-                    2024년 12월
-                  </caption>
-                  <thead>
-                    <tr>
-                      <th>일</th>
-                      <th>월</th>
-                      <th>화</th>
-                      <th>수</th>
-                      <th>목</th>
-                      <th>금</th>
-                      <th>토</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td class="old day-off">
-                        <button type="button" class="btn-set-date"><span>26</span></button>
-                      </td>
-                      <td class="old">
-                        <button type="button" class="btn-set-date"><span>27</span></button>
-                      </td>
-                      <td class="old">
-                        <button type="button" class="btn-set-date"><span>28</span></button>
-                      </td>
-                      <td class="old">
-                        <button type="button" class="btn-set-date"><span>29</span></button>
-                      </td>
-                      <td class="old">
-                        <button type="button" class="btn-set-date"><span>30</span></button>
-                      </td>
-                      <td>
-                        <button type="button" class="btn-set-date"><span>1</span></button>
-                      </td>
-                      <td>
-                        <button type="button" class="btn-set-date"><span>2</span></button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="day-off">
-                        <button type="button" class="btn-set-date"><span>3</span></button>
-                      </td>
-                      <td>
-                        <button type="button" class="btn-set-date"><span>4</span></button>
-                      </td>
-                      <td>
-                        <button type="button" class="btn-set-date"><span>5</span></button>
-                      </td>
-                      <td>
-                        <button type="button" class="btn-set-date"><span>6</span></button>
-                      </td>
-                      <td class="period start">
-                        <button type="button" class="btn-set-date"><span>7</span></button>
-                      </td>
-                      <td class="period">
-                        <button type="button" class="btn-set-date"><span>8</span></button>
-                      </td>
-                      <td class="period">
-                        <button type="button" class="btn-set-date"><span>9</span></button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="period day-off">
-                        <button type="button" class="btn-set-date"><span>10</span></button>
-                      </td>
-                      <td class="period">
-                        <button type="button" class="btn-set-date"><span>11</span></button>
-                      </td>
-                      <td class="period">
-                        <button type="button" class="btn-set-date"><span>12</span></button>
-                      </td>
-                      <td class="period">
-                        <button type="button" class="btn-set-date"><span>13</span></button>
-                      </td>
-                      <td class="period">
-                        <button type="button" class="btn-set-date"><span>14</span></button>
-                      </td>
-                      <td class="period">
-                        <button type="button" class="btn-set-date"><span>15</span></button>
-                      </td>
-                      <td class="period end">
-                        <button type="button" class="btn-set-date"><span>16</span></button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="day-off">
-                        <button type="button" class="btn-set-date"><span>17</span></button>
-                      </td>
-                      <td>
-                        <button type="button" class="btn-set-date"><span>18</span></button>
-                      </td>
-                      <td>
-                        <button type="button" class="btn-set-date"><span>19</span></button>
-                      </td>
-                      <td>
-                        <button type="button" class="btn-set-date"><span>20</span></button>
-                      </td>
-                      <td>
-                        <button type="button" class="btn-set-date"><span>21</span></button>
-                      </td>
-                      <td>
-                        <button type="button" class="btn-set-date"><span>22</span></button>
-                      </td>
-                      <td>
-                        <button type="button" class="btn-set-date"><span>23</span></button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="day-off">
-                        <button type="button" class="btn-set-date"><span>24</span></button>
-                      </td>
-                      <td class="today">
-                        <button type="button" class="btn-set-date"><span>25</span></button>
-                      </td>
-                      <td class="day-event">
-                        <button type="button" class="btn-set-date"><span>26</span></button>
-                      </td>
-                      <td>
-                        <button type="button" class="btn-set-date"><span>27</span></button>
-                      </td>
-                      <td>
-                        <button type="button" class="btn-set-date"><span>28</span></button>
-                      </td>
-                      <td>
-                        <button type="button" class="btn-set-date"><span>29</span></button>
-                      </td>
-                      <td>
-                        <button type="button" class="btn-set-date"><span>30</span></button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="day-off">
-                        <button type="button" class="btn-set-date"><span>31</span></button>
-                      </td>
-                      <td class="new">
-                        <button type="button" class="btn-set-date"><span>1</span></button>
-                      </td>
-                      <td class="new">
-                        <button type="button" class="btn-set-date"><span>2</span></button>
-                      </td>
-                      <td class="new">
-                        <button type="button" class="btn-set-date"><span>3</span></button>
-                      </td>
-                      <td class="new">
-                        <button type="button" class="btn-set-date"><span>4</span></button>
-                      </td>
-                      <td class="new">
-                        <button type="button" class="btn-set-date"><span>5</span></button>
-                      </td>
-                      <td class="new">
-                        <button type="button" class="btn-set-date"><span>6</span></button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div class="calendar-footer">
-              <div class="calendar-btn-wrap">
-                <button type="button" class="krds-btn small text" id="get-today">오늘</button>
-                <button type="button" class="krds-btn small tertiary">취소</button>
-                <button type="button" class="krds-btn small primary">확인</button>
-              </div>
-            </div>
-          </div>
+    <div v-if="isOpen" ref="calendarRef" class="absolute z-10 rounded shadow-md bg-white overflow-hidden"
+      :class="calendarPosition === 'top' ? 'bottom-full mb-1' : 'top-full mt-1'" style="width: 300px;">
+      <div class="flex justify-between items-center p-4">
+        <button @click="prevMonth" class="focus:outline-none cursor-pointer">
+          <RIcon name="ChevronLeft" />
+        </button>
+        <span>{{ currentYear }}년 {{ currentMonth }}월</span>
+        <button @click="nextMonth" class="focus:outline-none cursor-pointer">
+          <RIcon name="ChevronRight" />
+        </button>
+      </div>
+      <div class="grid grid-cols-7 gap-1 p-2">
+        <div v-for="day in daysOfWeek" :key="day" class="text-center text-gray-500">{{ day }}</div>
+        <div v-for="(date, index) in datesInMonth" :key="index" class="text-center p-1 cursor-pointer" :class="{
+          'text-blue-500 font-semibold': isSelected(date),
+          'text-gray-300': isNotInCurrentMonth(date),
+          'hover:bg-blue-100 rounded-sm': !isNotInCurrentMonth(date),
+          'bg-blue-100 rounded-sm': isSelected(date),
+        }" @click="selectDate(date)">
+          {{ date.getDate() }}
         </div>
       </div>
+      <div v-if="isSelectingRange" class="p-1 border-t border-gray-200 flex justify-around">
+        <button @click="cancelRange" class="px-4 py-2 rounded cursor-pointer">취소</button>
+        <button @click="confirmRange" :disabled="!startDate || !endDate"
+          class="px-4 py-2 rounded bg-blue-500 text-white disabled:bg-gray-300 cursor-pointer">확인</button>
+      </div>
+      <div v-else class="p-4 border-t border-gray-200 flex justify-end ">
+        <button @click="closeCalendar" class="px-4 py-2 rounded cursor-pointer">닫기</button>
+      </div>
     </div>
-    <p class="form-hint">도움말</p>
   </div>
-  <!-- //폼그룹 -->
-  <!-- //date input -->
 </template>
+
+<style scoped>
+/* 필요하다면 추가적인 스타일링 */
+</style>

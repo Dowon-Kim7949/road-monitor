@@ -37,5 +37,8 @@
   "hazard": {
     "pothole": "Potholes"
   },
-  "rpciResult": "rPCI Analysis Summary"
+  "rpciResult": "rPCI Analysis Summary",
+  "deviceList": "Device List",
+  "all": "All Devices",
+  "modelname": "Model"
 }

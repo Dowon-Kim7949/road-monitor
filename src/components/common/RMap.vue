@@ -19,7 +19,7 @@ const emit = defineEmits<{
   (e: 'close-drawer'): void
 }>()
 
-const props = defineProps<{ leftDrawer: boolean; rightDrawer: boolean }>()
+const props = defineProps<{ leftDrawer: boolean; rightDrawer?: boolean, type?: 'cover' | null }>()
 
 const mapContainer = ref<HTMLElement | null>(null)
 const map = ref<Map | null>(null)
@@ -27,6 +27,7 @@ const map = ref<Map | null>(null)
 const mapStyle = computed(() => {
   return {
     right: props.rightDrawer ? '25%' : '0px',
+    left: props.type === 'cover' ? '25%' : '0px',
     transition: 'all 0.3s ease'
   }
 })
