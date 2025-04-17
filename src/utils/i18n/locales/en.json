@@ -26,17 +26,23 @@
     "request": "Request",
     "allSelect": "Select All / Deselect All",
     "collapse": "Collapse",
-    "grade": "Grade"
+    "grade": "Grade",
+    "map": "Map View",
+    "detail": "Details",
+    "reportSave": "Save Report"
   },
   "Roadsegment": "Road Segment",
   "Roadname": "Road name",
   "Coordinates": "Coordinates",
   "Capture_at": "Captured at",
+  "Analysis_at": "Analysis at",
   "Roadhistory": "Road History",
   "RPciHistory": "rPCI History",
+  "Hazard_type": "Hazard Type",
   "hazard": {
     "pothole": "Potholes"
   },
+  "score": "Score",
   "rpciResult": "rPCI Analysis Summary",
   "deviceList": "Device List",
   "all": "All Devices",

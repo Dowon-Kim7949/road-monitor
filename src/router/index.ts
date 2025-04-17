@@ -15,7 +15,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       { path: '/monitoring', component: () => import('@/views/RoadMonitor/RMMonitoringView.vue') },
       { path: '/coverage', component: () => import('@/views/RoadMonitor/RMCoverageView.vue') },
-      { path: '/settings', component: () => import('@/views/rPCI/rPCIReportView.vue') },
+      { path: '/settings', component: () => import('@/views/RoadMonitor/RMSettings.vue') },
       { path: '/rpci/map', component: () => import('@/views/rPCI/rPCIAnalyzeMapView.vue') },
       { path: '/rpci/analysis', component: () => import('@/views/rPCI/rPCIAnalyzeResultView.vue') },
       { path: '/rpci/report', component: () => import('@/views/rPCI/rPCIReportView.vue') },

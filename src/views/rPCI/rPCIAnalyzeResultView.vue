@@ -29,9 +29,9 @@ const selectOptions = ref([
   <div class="relative w-full h-screen overflow-hidden">
     <!-- 좌측 사이드바 -->
     <RLeftDrawer v-model="leftDrawer" mode="fix" />
-    <div class="w-[calc(100vw - 240px)] ml-60 p-20">
+    <div class="w-[calc(100vw - 240px)] h-full ml-60 p-20">
       <div class="flex flex-row items-center justify-between">
-        <div class="flex flex-row gap-4 items-center">
+        <div class="flex flex-row gap-5 items-center">
           <span class="text-xl font-bold">Rapid-PCI</span>
           <span class="text-xl">{{ t('menu.rpcianalysis') }}</span>
           <div class="min-w-60">
@@ -42,7 +42,7 @@ const selectOptions = ref([
           <RButton type="secondary" icon="download" label="Excel" class="bg-green-50" size="small" />
         </div>
       </div>
-      <div class="pt-4">
+      <div class="pt-4 h-full">
         <rPCITable />
       </div>
     </div>

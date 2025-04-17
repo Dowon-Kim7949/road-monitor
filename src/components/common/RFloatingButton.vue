@@ -1,11 +1,14 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import { computed, ref } from 'vue'
 import RButton from '@/components/common/atom/RButton.vue'
 import RModeSelector from '@/components/common/RModeSelector.vue'
 import RPciLegend from '../rpci/RPciLegend.vue'
 import RDatePicker from './atom/RDatePicker.vue'
 import RSelect from './atom/RSelect.vue'
+import RPciCoverage from '../rpci/RPciCoverage.vue'
 
+const { t } = useI18n()
 const props = defineProps<{
   type: 'road' | 'rpci' | 'cover' | 'report'
 }>()
@@ -61,21 +64,26 @@ const selectModel = ref<string | null>(null)
 
   <div class="fixed top-8 left-60 z-[4] bg-white text-sm rounded" :style="datePickerStyle">
     <RDatePicker v-if="props.type === 'road' || props.type === 'cover'" />
-    <div v-else-if="props.type === 'rpci' || props.type === 'report'" class="min-w-[200px]">
+    <div v-else-if="props.type === 'rpci' || props.type === 'report'" class="min-w-[200px] bg-transparent">
       <RSelect v-model="selectModel" :options="selectOptions" placeholder="회차 선택" id="round-select" />
+    </div>
+    <div v-if="props.type === 'report'" class="fixed top-8 left-115 z-[4]">
+      <RButton :label="t('button.reportSave')" size="small" class="bg-black text-white h-[38px] shadow" />
     </div>
   </div>
 
   <!-- 좌측 하단 초기화 버튼 -->
   <RButton type="icon" size="small" class="fixed bottom-4 left-4 bg-white shadow rounded-sm"
-    @click="$emit('reset-center')" icon="locate-fixed" :style="datePickerStyle" />
+    :class="type === 'report' ? 'bottom-50' : ''" @click="$emit('reset-center')" icon="locate-fixed"
+    :style="datePickerStyle" />
 
   <!-- 우측 상단 모드 선택 버튼 -->
   <RModeSelector v-if="type === 'road'" :activeMode="activeMode" @change-mode="handleChangeMode" />
-  <RPciLegend v-else-if="type === 'rpci' || type === 'report'" />
+  <RPciLegend v-else-if="type === 'rpci' || type === 'report'" :is-open="type === 'report' ? true : null" />
+  <RPciCoverage v-if="type === 'report'" />
 
   <!-- 우측 하단 버튼들 -->
-  <div class="floating-bottom-right fixed bottom-4 z-[4] space-x-2">
+  <div class="floating-bottom-right fixed bottom-4 z-[4] space-x-2" :class="type === 'report' ? 'bottom-50' : ''">
     <RButton type="icon" size="small" class="bg-white shadow rounded-sm" @click="$emit('zoom-in')" icon="plus" />
     <RButton type="icon" size="small" class="bg-white shadow rounded-sm" @click="$emit('zoom-out')" icon="minus" />
   </div>

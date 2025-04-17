@@ -1,148 +1,48 @@
-<template>
-  <div class="bg-white rounded overflow-hidden">
-    <table class="min-w-full divide-y divide-gray-200">
-      <thead>
-        <tr>
-          <th scope="col"
-            class="px-6 py-3 text-center text-xs font-medium text-black uppercase tracking-wider cursor-pointer"
-            @click="sortTable('도로명')">
-            <div class="flex gap-2 items-center justify-center">
-              <div>도로명</div>
-              <RColumnIcon :column="'도로명'" :sortColumn="sortColumn" :sortDirection="sortDirection" />
-            </div>
-          </th>
-          <th scope="col"
-            class="px-6 py-3 text-center text-xs font-medium text-black uppercase tracking-wider cursor-pointer"
-            @click="sortTable('노드링크명')">
-            <div class="flex gap-2 items-center justify-center">
-              <div>노드링크명</div>
-              <RColumnIcon :column="'노드링크명'" :sortColumn="sortColumn" :sortDirection="sortDirection" />
-            </div>
-          </th>
-          <th scope="col"
-            class="px-6 py-3 text-center text-xs font-medium text-black uppercase tracking-wider cursor-pointer"
-            @click="sortTable('rPCI등급')">
-            <div class="flex gap-2 items-center justify-center">
-              <div>rPCI 등급</div>
-              <RColumnIcon :column="'rPCI등급'" :sortColumn="sortColumn" :sortDirection="sortDirection" />
-            </div>
-          </th>
-          <th scope="col"
-            class="px-6 py-3 text-center text-xs font-medium text-black uppercase tracking-wider cursor-pointer"
-            @click="sortTable('점수')">
-            <div class="flex gap-2 items-center justify-center">
-              <div>점수</div>
-              <RColumnIcon :column="'점수'" :sortColumn="sortColumn" :sortDirection="sortDirection" />
-            </div>
-          </th>
-          <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-black uppercase tracking-wider">
-            파손유형
-          </th>
-          <th scope="col"
-            class="px-6 py-3 text-center text-xs font-medium text-black uppercase tracking-wider cursor-pointer"
-            @click="sortTable('촬영일자')">
-            <div class="flex gap-2 items-center justify-center">
-              <div>촬영일자</div>
-              <RColumnIcon :column="'촬영일자'" :sortColumn="sortColumn" :sortDirection="sortDirection" />
-            </div>
-          </th>
-          <th scope="col"
-            class="px-6 py-3 text-center text-xs font-medium text-black uppercase tracking-wider cursor-pointer"
-            @click="sortTable('분석일자')">
-            <div class="flex gap-2 items-center justify-center">
-              <div>분석일자</div>
-              <RColumnIcon :column="'분석일자'" :sortColumn="sortColumn" :sortDirection="sortDirection" />
-            </div>
-          </th>
-          <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-black uppercase tracking-wider">
-            지도 보기
-          </th>
-        </tr>
-      </thead>
-      <tbody class="bg-white divide-y divide-gray-200">
-        <tr v-for="item in displayedData" :key="item.id">
-          <td class="px-3 py-2 text-center whitespace-nowrap text-sm text-gray-900">{{ item.도로명 }}</td>
-          <td class="px-3 py-2 text-center whitespace-nowrap text-sm text-black">{{ item.노드링크명 }}</td>
-          <td class="px-3 py-2 text-center whitespace-nowrap text-sm text-black">{{ item.rPCI등급 }}</td>
-          <td class="px-3 py-2 text-center whitespace-nowrap text-sm text-black">{{ item.점수 }}</td>
-          <td class="px-3 py-2 text-center text-sm text-black underline cursor-pointer">상세보기</td>
-          <td class="px-3 py-2 text-center whitespace-nowrap text-sm text-black">{{ formatDate(item.촬영일자) }}</td>
-          <td class="px-3 py-2 text-center whitespace-nowrap text-sm text-black">{{ formatDate(item.분석일자) }}</td>
-          <td class="px-3 py-2 text-center whitespace-nowrap text-sm font-medium">
-            <button class="text-blue-500 hover:text-blue-700 focus:outline-none cursor-pointer">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M5.05 4.05a7 7 0 119.9 9.9L10 18.95l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                  clip-rule="evenodd" />
-              </svg>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="px-4 py-3 bg-gray-50 flex justify-between items-center">
-      <div class="text-sm text-gray-700">
-        {{ currentPage * pageSize + 1 }} - {{ Math.min((currentPage + 1) * pageSize, data.length) }} / {{ data.length }}
-        건
-      </div>
-      <div class="space-x-2">
-        <button :disabled="currentPage === 0"
-          class="bg-white border border-gray-300 rounded-md py-2 px-4 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          @click="prevPage">
-          이전
-        </button>
-        <button :disabled="currentPage >= pageCount - 1"
-          class="bg-white border border-gray-300 rounded-md py-2 px-4 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          @click="nextPage">
-          다음
-        </button>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import RColumnIcon from './RColumnIcon.vue';
+import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import RColumnIcon from './RColumnIcon.vue'
+import RIcon from '@/components/common/atom/RIcon.vue'
 
+const { t } = useI18n()
 // 데이터 타입 정의
 interface RoadCoverageData {
   id: number;
-  도로명: string;
-  노드링크명: string;
-  rPCI등급: string;
-  점수: number;
-  파손유형: string;
-  촬영일자: string;
-  분석일자: string;
+  roadname: string;
+  nodelink: string;
+  rpci_grade: string;
+  rpci_score: number;
+  hazard_type: string;
+  captured_at: string;
+  analysis_at: string;
 }
 
 // 초기 데이터 (API 호출 등으로 받아올 수 있습니다.)
 const data = ref<RoadCoverageData[]>([
-  { id: 1, 도로명: '동판교로', 노드링크명: '남양고가교 → 송현1교', rPCI등급: 'Satisfactory', 점수: 80, 파손유형: '균열', 촬영일자: '2024-11-19', 분석일자: '2024-11-30' },
-  { id: 2, 도로명: '동판교로', 노드링크명: '송현1교 → 남양고가교', rPCI등급: 'Satisfactory', 점수: 85, 파손유형: '포트홀', 촬영일자: '2024-11-20', 분석일자: '2024-12-01' },
-  { id: 3, 도로명: '서판교로', 노드링크명: '운중교 → 판교IC', rPCI등급: 'Good', 점수: 92, 파손유형: '소성변형', 촬영일자: '2024-11-15', 분석일자: '2024-11-25' },
-  { id: 4, 도로명: '동판교로', 노드링크명: '남양고가교 → 송현1교', rPCI등급: 'Satisfactory', 점수: 80, 파손유형: '균열', 촬영일자: '2024-11-19', 분석일자: '2024-11-30' },
-  { id: 5, 도로명: '동판교로', 노드링크명: '송현1교 → 남양고가교', rPCI등급: 'Satisfactory', 점수: 85, 파손유형: '포트홀', 촬영일자: '2024-11-20', 분석일자: '2024-12-01' },
-  { id: 6, 도로명: '서판교로', 노드링크명: '운중교 → 판교IC', rPCI등급: 'Good', 점수: 92, 파손유형: '소성변형', 촬영일자: '2024-11-15', 분석일자: '2024-11-25' },
-  { id: 7, 도로명: '동판교로', 노드링크명: '남양고가교 → 송현1교', rPCI등급: 'Satisfactory', 점수: 80, 파손유형: '균열', 촬영일자: '2024-11-19', 분석일자: '2024-11-30' },
-  { id: 8, 도로명: '동판교로', 노드링크명: '송현1교 → 남양고가교', rPCI등급: 'Satisfactory', 점수: 85, 파손유형: '포트홀', 촬영일자: '2024-11-20', 분석일자: '2024-12-01' },
-  { id: 9, 도로명: '서판교로', 노드링크명: '운중교 → 판교IC', rPCI등급: 'Good', 점수: 92, 파손유형: '소성변형', 촬영일자: '2024-11-15', 분석일자: '2024-11-25' },
-  { id: 10, 도로명: '동판교로', 노드링크명: '남양고가교 → 송현1교', rPCI등급: 'Satisfactory', 점수: 80, 파손유형: '균열', 촬영일자: '2024-11-19', 분석일자: '2024-11-30' },
-  { id: 11, 도로명: '동판교로', 노드링크명: '송현1교 → 남양고가교', rPCI등급: 'Satisfactory', 점수: 85, 파손유형: '포트홀', 촬영일자: '2024-11-20', 분석일자: '2024-12-01' },
-  { id: 12, 도로명: '서판교로', 노드링크명: '운중교 → 판교IC', rPCI등급: 'Good', 점수: 92, 파손유형: '소성변형', 촬영일자: '2024-11-15', 분석일자: '2024-11-25' },
-  { id: 13, 도로명: '동판교로', 노드링크명: '남양고가교 → 송현1교', rPCI등급: 'Satisfactory', 점수: 80, 파손유형: '균열', 촬영일자: '2024-11-19', 분석일자: '2024-11-30' },
-  { id: 14, 도로명: '동판교로', 노드링크명: '송현1교 → 남양고가교', rPCI등급: 'Satisfactory', 점수: 85, 파손유형: '포트홀', 촬영일자: '2024-11-20', 분석일자: '2024-12-01' },
-  { id: 15, 도로명: '서판교로', 노드링크명: '운중교 → 판교IC', rPCI등급: 'Good', 점수: 92, 파손유형: '소성변형', 촬영일자: '2024-11-15', 분석일자: '2024-11-25' },
-  { id: 16, 도로명: '동판교로', 노드링크명: '남양고가교 → 송현1교', rPCI등급: 'Satisfactory', 점수: 80, 파손유형: '균열', 촬영일자: '2024-11-19', 분석일자: '2024-11-30' },
-  { id: 17, 도로명: '동판교로', 노드링크명: '송현1교 → 남양고가교', rPCI등급: 'Satisfactory', 점수: 85, 파손유형: '포트홀', 촬영일자: '2024-11-20', 분석일자: '2024-12-01' },
-  { id: 18, 도로명: '서판교로', 노드링크명: '운중교 → 판교IC', rPCI등급: 'Good', 점수: 92, 파손유형: '소성변형', 촬영일자: '2024-11-15', 분석일자: '2024-11-25' },
-  { id: 19, 도로명: '동판교로', 노드링크명: '남양고가교 → 송현1교', rPCI등급: 'Satisfactory', 점수: 80, 파손유형: '균열', 촬영일자: '2024-11-19', 분석일자: '2024-11-30' },
-  { id: 20, 도로명: '동판교로', 노드링크명: '송현1교 → 남양고가교', rPCI등급: 'Satisfactory', 점수: 85, 파손유형: '포트홀', 촬영일자: '2024-11-20', 분석일자: '2024-12-01' },
-  { id: 21, 도로명: '서판교로', 노드링크명: '운중교 → 판교IC', rPCI등급: 'Good', 점수: 92, 파손유형: '소성변형', 촬영일자: '2024-11-15', 분석일자: '2024-11-25' }
+  { id: 1, roadname: '동판교로', nodelink: '남양고가교 → 송현1교', rpci_grade: 'Satisfactory', rpci_score: 80, hazard_type: '균열', captured_at: '2024-11-19', analysis_at: '2024-11-30' },
+  { id: 2, roadname: '동판교로', nodelink: '송현1교 → 남양고가교', rpci_grade: 'Satisfactory', rpci_score: 85, hazard_type: '포트홀', captured_at: '2024-11-20', analysis_at: '2024-12-01' },
+  { id: 3, roadname: '서판교로', nodelink: '운중교 → 판교IC', rpci_grade: 'Good', rpci_score: 92, hazard_type: '소성변형', captured_at: '2024-11-15', analysis_at: '2024-11-25' },
+  { id: 4, roadname: '동판교로', nodelink: '남양고가교 → 송현1교', rpci_grade: 'Satisfactory', rpci_score: 80, hazard_type: '균열', captured_at: '2024-11-19', analysis_at: '2024-11-30' },
+  { id: 5, roadname: '동판교로', nodelink: '송현1교 → 남양고가교', rpci_grade: 'Satisfactory', rpci_score: 85, hazard_type: '포트홀', captured_at: '2024-11-20', analysis_at: '2024-12-01' },
+  { id: 6, roadname: '서판교로', nodelink: '운중교 → 판교IC', rpci_grade: 'Good', rpci_score: 92, hazard_type: '소성변형', captured_at: '2024-11-15', analysis_at: '2024-11-25' },
+  { id: 7, roadname: '동판교로', nodelink: '남양고가교 → 송현1교', rpci_grade: 'Satisfactory', rpci_score: 80, hazard_type: '균열', captured_at: '2024-11-19', analysis_at: '2024-11-30' },
+  { id: 8, roadname: '동판교로', nodelink: '송현1교 → 남양고가교', rpci_grade: 'Satisfactory', rpci_score: 85, hazard_type: '포트홀', captured_at: '2024-11-20', analysis_at: '2024-12-01' },
+  { id: 9, roadname: '서판교로', nodelink: '운중교 → 판교IC', rpci_grade: 'Good', rpci_score: 92, hazard_type: '소성변형', captured_at: '2024-11-15', analysis_at: '2024-11-25' },
+  { id: 10, roadname: '동판교로', nodelink: '남양고가교 → 송현1교', rpci_grade: 'Satisfactory', rpci_score: 80, hazard_type: '균열', captured_at: '2024-11-19', analysis_at: '2024-11-30' },
+  { id: 11, roadname: '동판교로', nodelink: '송현1교 → 남양고가교', rpci_grade: 'Satisfactory', rpci_score: 85, hazard_type: '포트홀', captured_at: '2024-11-20', analysis_at: '2024-12-01' },
+  { id: 12, roadname: '서판교로', nodelink: '운중교 → 판교IC', rpci_grade: 'Good', rpci_score: 92, hazard_type: '소성변형', captured_at: '2024-11-15', analysis_at: '2024-11-25' },
+  { id: 13, roadname: '동판교로', nodelink: '남양고가교 → 송현1교', rpci_grade: 'Satisfactory', rpci_score: 80, hazard_type: '균열', captured_at: '2024-11-19', analysis_at: '2024-11-30' },
+  { id: 14, roadname: '동판교로', nodelink: '송현1교 → 남양고가교', rpci_grade: 'Satisfactory', rpci_score: 85, hazard_type: '포트홀', captured_at: '2024-11-20', analysis_at: '2024-12-01' },
+  { id: 15, roadname: '서판교로', nodelink: '운중교 → 판교IC', rpci_grade: 'Good', rpci_score: 92, hazard_type: '소성변형', captured_at: '2024-11-15', analysis_at: '2024-11-25' },
+  { id: 16, roadname: '동판교로', nodelink: '남양고가교 → 송현1교', rpci_grade: 'Satisfactory', rpci_score: 80, hazard_type: '균열', captured_at: '2024-11-19', analysis_at: '2024-11-30' },
+  { id: 17, roadname: '동판교로', nodelink: '송현1교 → 남양고가교', rpci_grade: 'Satisfactory', rpci_score: 85, hazard_type: '포트홀', captured_at: '2024-11-20', analysis_at: '2024-12-01' },
+  { id: 18, roadname: '서판교로', nodelink: '운중교 → 판교IC', rpci_grade: 'Good', rpci_score: 92, hazard_type: '소성변형', captured_at: '2024-11-15', analysis_at: '2024-11-25' },
+  { id: 19, roadname: '동판교로', nodelink: '남양고가교 → 송현1교', rpci_grade: 'Satisfactory', rpci_score: 80, hazard_type: '균열', captured_at: '2024-11-19', analysis_at: '2024-11-30' },
+  { id: 20, roadname: '동판교로', nodelink: '송현1교 → 남양고가교', rpci_grade: 'Satisfactory', rpci_score: 85, hazard_type: '포트홀', captured_at: '2024-11-20', analysis_at: '2024-12-01' },
+  { id: 21, roadname: '서판교로', nodelink: '운중교 → 판교IC', rpci_grade: 'Good', rpci_score: 92, hazard_type: '소성변형', captured_at: '2024-11-15', analysis_at: '2024-11-25' }
 ]);
 
-const sortColumn = ref<keyof RoadCoverageData>('id');
+const sortColumn = ref<keyof RoadCoverageData>('analysis_at');
 const sortDirection = ref<'asc' | 'desc'>('asc');
 const currentPage = ref(0);
 const pageSize = ref(10);
@@ -192,7 +92,7 @@ const prevPage = () => {
 };
 
 const nextPage = () => {
-  if (currentPage.value > pageCount.value - 1) {
+  if (currentPage.value < pageCount.value - 1) {
     currentPage.value++;
   }
 };
@@ -205,6 +105,107 @@ const formatDate = (dateString: string): string => {
   return `${year} -${month} -${day}`;
 };
 </script>
+
+<template>
+  <div class="flex flex-col bg-white rounded overflow-hidden">
+    <div class="flex flex-1 max-h-[53vh]">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead>
+          <tr>
+            <th scope="col"
+              class="px-6 py-3 text-center text-sm font-bold text-black uppercase tracking-wider cursor-pointer"
+              @click="sortTable('roadname')">
+              <div class="flex gap-2 items-center justify-center">
+                <div>{{ t('Roadname') }}</div>
+                <RColumnIcon :column="'roadname'" :sortColumn="sortColumn" :sortDirection="sortDirection" />
+              </div>
+            </th>
+            <th scope="col"
+              class="px-6 py-3 text-center text-sm font-bold text-black uppercase tracking-wider cursor-pointer"
+              @click="sortTable('nodelink')">
+              <div class="flex gap-2 items-center justify-center">
+                <div>{{ t('Roadsegment') }}</div>
+                <RColumnIcon :column="'nodelink'" :sortColumn="sortColumn" :sortDirection="sortDirection" />
+              </div>
+            </th>
+            <th scope="col"
+              class="px-6 py-3 text-center text-sm font-bold text-black uppercase tracking-wider cursor-pointer"
+              @click="sortTable('rpci_grade')">
+              <div class="flex gap-2 items-center justify-center">
+                <div>rPCI {{ t('button.grade') }}</div>
+                <RColumnIcon :column="'rpci_grade'" :sortColumn="sortColumn" :sortDirection="sortDirection" />
+              </div>
+            </th>
+            <th scope="col"
+              class="px-6 py-3 text-center text-sm font-bold text-black uppercase tracking-wider cursor-pointer"
+              @click="sortTable('rpci_score')">
+              <div class="flex gap-2 items-center justify-center">
+                <div>{{ t('score') }}</div>
+                <RColumnIcon :column="'rpci_score'" :sortColumn="sortColumn" :sortDirection="sortDirection" />
+              </div>
+            </th>
+            <th scope="col" class="px-6 py-3 text-center text-sm font-bold text-black uppercase tracking-wider">
+              {{ t('Hazard_type') }}
+            </th>
+            <th scope="col"
+              class="px-6 py-3 text-center text-sm font-bold text-black uppercase tracking-wider cursor-pointer"
+              @click="sortTable('captured_at')">
+              <div class="flex gap-2 items-center justify-center">
+                <div>{{ t('Capture_at') }}</div>
+                <RColumnIcon :column="'captured_at'" :sortColumn="sortColumn" :sortDirection="sortDirection" />
+              </div>
+            </th>
+            <th scope="col"
+              class="px-6 py-3 text-center text-sm font-bold text-black uppercase tracking-wider cursor-pointer"
+              @click="sortTable('analysis_at')">
+              <div class="flex gap-2 items-center justify-center">
+                <div>{{ t('Analysis_at') }}</div>
+                <RColumnIcon :column="'analysis_at'" :sortColumn="sortColumn" :sortDirection="sortDirection" />
+              </div>
+            </th>
+            <th scope="col" class="px-6 py-3 text-center text-sm font-bold text-black uppercase tracking-wider">
+              {{ t('button.map') }}
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr v-for="item in displayedData" :key="item.id">
+            <td class="px-3 py-3 text-center whitespace-nowrap text-sm text-gray-900">{{ item.roadname }}</td>
+            <td class="px-3 py-3 text-center whitespace-nowrap text-sm text-black">{{ item.nodelink }}</td>
+            <td class="px-3 py-3 text-center whitespace-nowrap text-sm text-black">{{ item.rpci_grade }}</td>
+            <td class="px-3 py-3 text-center whitespace-nowrap text-sm text-black">{{ item.rpci_score }}</td>
+            <td class="px-3 py-3 text-center text-sm text-black underline cursor-pointer">{{ t('button.detail') }}</td>
+            <td class="px-3 py-3 text-center whitespace-nowrap text-sm text-black">{{ formatDate(item.captured_at) }}
+            </td>
+            <td class="px-3 py-3 text-center whitespace-nowrap text-sm text-black">{{ formatDate(item.analysis_at) }}
+            </td>
+            <td class="px-3 py-3 text-center whitespace-nowrap text-sm font-medium">
+              <div class="flex items-center justify-center">
+                <RIcon name="SquareArrowOutUpRight" class="cursor-pointer" />
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="flex px-4 py-3 bg-white justify-between items-center border-gray-20 border-t-1">
+      <div class="text-sm text-black">
+        {{ currentPage * pageSize + 1 }} - {{ Math.min((currentPage + 1) * pageSize, data.length) }} / {{ data.length }}
+        건
+      </div>
+      <div class="space-x-2">
+        <button @click="prevPage" :disabled="currentPage === 0"
+          class="text-sm px-3 py-1 border rounded text-black hover:bg-gray-100 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer">
+          {{ t('button.prev') }}
+        </button>
+        <button @click="nextPage" :disabled="currentPage >= pageCount - 1"
+          class="text-sm px-3 py-1 border rounded text-black hover:bg-gray-100 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer">
+          {{ t('button.next') }}
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .cursor-pointer {
