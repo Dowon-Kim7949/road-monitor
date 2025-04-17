@@ -17,4 +17,11 @@ export default defineConfig({
       '@': path.resolve(__dirname, 'src'),
     },
   },
+  build: {
+    // top-level await를 지원하는 타겟으로 변경
+    // 예시 1: 최신 ECMAScript 기능 사용
+    target: 'esnext',
+    // 예시 2: 특정 브라우저 버전 이상 지정 (top-level await 지원 버전 확인 필요)
+    // target: ['chrome91', 'firefox90', 'safari15', 'edge91'],
+  },
 })

@@ -26,7 +26,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import RPieChart from '../common/atom/RPieChart.vue'
+import RPieChart from '@/components/common/atom/RPieChart.vue'
 import RPciScoreDetailPopup from '@/components/rpci/RPciScoreDetailPopup.vue'
 
 // Props로 PCI 점수를 받을 수 있도록 정의
