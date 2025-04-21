@@ -33,6 +33,7 @@ const RAW_RUNTIME_STATE =
           ["@types/crypto-js", "npm:4.2.2"],\
           ["@types/jsdom", "npm:21.1.7"],\
           ["@types/node", "npm:22.13.10"],\
+          ["@types/ol", "npm:7.0.0"],\
           ["@vitejs/plugin-vue", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:5.2.3"],\
           ["@vitest/eslint-plugin", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:1.1.38"],\
           ["@vue/eslint-config-prettier", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:10.2.0"],\
@@ -3740,6 +3741,16 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["@types/ol", [\
+      ["npm:7.0.0", {\
+        "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/@types-ol-npm-7.0.0-0abcf3c338-10c0.zip/node_modules/@types/ol/",\
+        "packageDependencies": [\
+          ["@types/ol", "npm:7.0.0"],\
+          ["ol", "npm:10.5.0"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["@types/rbush", [\
       ["npm:4.0.0", {\
         "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/@types-rbush-npm-4.0.0-fa9a06bad6-10c0.zip/node_modules/@types/rbush/",\
@@ -7249,6 +7260,18 @@ const RAW_RUNTIME_STATE =
           ["rbush", "npm:4.0.1"]\
         ],\
         "linkType": "HARD"\
+      }],\
+      ["npm:10.5.0", {\
+        "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/ol-npm-10.5.0-a129bdb058-10c0.zip/node_modules/ol/",\
+        "packageDependencies": [\
+          ["@types/rbush", "npm:4.0.0"],\
+          ["earcut", "npm:3.0.1"],\
+          ["geotiff", "npm:2.1.3"],\
+          ["ol", "npm:10.5.0"],\
+          ["pbf", "npm:4.0.1"],\
+          ["rbush", "npm:4.0.1"]\
+        ],\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["open", [\
@@ -7807,6 +7830,7 @@ const RAW_RUNTIME_STATE =
           ["@types/crypto-js", "npm:4.2.2"],\
           ["@types/jsdom", "npm:21.1.7"],\
           ["@types/node", "npm:22.13.10"],\
+          ["@types/ol", "npm:7.0.0"],\
           ["@vitejs/plugin-vue", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:5.2.3"],\
           ["@vitest/eslint-plugin", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:1.1.38"],\
           ["@vue/eslint-config-prettier", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:10.2.0"],\

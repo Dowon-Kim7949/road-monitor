@@ -29,3 +29,5 @@ coverage
 
 *.tsbuildinfo
 *.zip
+public/road_points_5m.json
+public/road_data.json

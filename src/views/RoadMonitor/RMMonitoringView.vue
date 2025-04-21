@@ -77,8 +77,11 @@ const resetCenter = () => {
 const zoomIn = () => window.dispatchEvent(new CustomEvent('zoom-in-map'))
 const zoomOut = () => window.dispatchEvent(new CustomEvent('zoom-out-map'))
 
-const handleSelectMarker = (data: typeof selectedData.value) => {
+const handleSelectMarker = (data: any) => {
   selectedData.value = data
+  if (selectedData.value) {
+    selectedData.value.roadName = `${data.name ? data.name : '-'} (${data.length}m)`
+  }
   rightDrawer.value = true
   if (leftDrawer.value) leftDrawer.value = false
 }
@@ -102,7 +105,7 @@ const handleSelectMarker = (data: typeof selectedData.value) => {
     </Suspense>
 
     <!-- 지도 영역 -->
-    <RMap :leftDrawer="leftDrawer" :rightDrawer="rightDrawer" @select-marker="handleSelectMarker"
+    <RMap :leftDrawer="leftDrawer" :rightDrawer="rightDrawer" @select-feature="handleSelectMarker"
       @close-drawer="rightDrawer = false" />
 
     <!-- 고정 버튼 모음 -->
