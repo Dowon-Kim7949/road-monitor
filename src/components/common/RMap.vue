@@ -212,14 +212,14 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="relative w-full h-full">
-    <div ref="mapContainer" class="absolute top-0 left-0 w-full h-full" :style="mapStyle"></div>
+    <div ref="mapContainer" class="absolute top-0 left-0 h-full" :style="mapStyle"></div>
 
     <Transition name="fade">
       <div v-if="isLoading"
-        class="absolute inset-0 bg-gray-100 bg-opacity-60 flex items-center justify-center z-50 pointer-events-none">
+        class="absolute inset-0 bg-white bg-opacity-60 flex items-center justify-center z-50 pointer-events-none">
         <div
-          class="text-white text-xl bg-gray-100 bg-opacity-90 px-6 py-4 rounded-lg shadow-xl flex flex-col items-center space-y-3 w-150">
-          <Settings :size="48" class="spin text-blue-400" />
+          class="text-gray-600 text-center font-semibold text-xl bg-white bg-opacity-90 px-6 py-4 rounded-lg flex flex-col items-center space-y-3 w-150">
+          <Settings :size="48" class="spin text-green-600" />
           <span class="loading-text">
             서비스 로딩 중
             <span class="loading-dots" />
