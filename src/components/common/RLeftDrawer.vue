@@ -63,7 +63,7 @@ const menuGroups = [
           <p class="text-sm font-bold mb-1">{{ t(group.label) }}</p>
           <ul v-if="group.items" class="space-y-1 pl-2">
             <li v-for="(item, iIdx) in group.items" :key="iIdx">
-              <RouterLink :to="item.path" class="block w-full text-sm py-1 px-2 rounded hover:bg-gray-200" :class="{
+              <RouterLink :to="item.path" class="block w-full text-md py-1 px-2 rounded hover:bg-gray-200" :class="{
                 'text-blue-600 font-semibold bg-gray-200': route.path === item.path
               }">
                 {{ t(item.label) }}
@@ -74,7 +74,7 @@ const menuGroups = [
       </nav>
 
       <!-- 하단 설정 -->
-      <div class="p-7 space-y-2 text-sm w-full">
+      <div class="p-7 space-y-2 text-md w-full">
         <RLocaleSelector />
         <RUserMenu />
       </div>

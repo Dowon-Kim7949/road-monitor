@@ -13,14 +13,7 @@ const RRightDrawer = defineAsyncComponent(() =>
 
 const leftDrawer = ref(false)
 const rightDrawer = ref(false)
-const selectedData = ref<null | {
-  lat: number
-  lon: number
-  roadName: string
-  image: string
-  nodeLink: string
-  timestamp: string
-}>(null)
+const selectedData = ref<any>(null)
 
 const testList = [
   { start: '남양교차로', end: '승리리145-4', date: '2024-11-20' },
@@ -78,8 +71,12 @@ const resetCenter = () => {
 const zoomIn = () => window.dispatchEvent(new CustomEvent('zoom-in-map'))
 const zoomOut = () => window.dispatchEvent(new CustomEvent('zoom-out-map'))
 
-const handleSelectMarker = (data: typeof selectedData.value) => {
+const handleSelectMarker = (data: any) => {
+  console.log(data)
   selectedData.value = data
+  if (selectedData.value) {
+    selectedData.value.roadName = `${data.name ? data.name : '-'} (${data.length}m)`
+  }
   rightDrawer.value = true
   if (leftDrawer.value) leftDrawer.value = false
 }
@@ -103,8 +100,8 @@ const handleSelectMarker = (data: typeof selectedData.value) => {
     </Suspense>
 
     <!-- 지도 영역 -->
-    <RMap :leftDrawer="leftDrawer" :rightDrawer="rightDrawer" @select-marker="handleSelectMarker"
-      @close-drawer="rightDrawer = false" />
+    <RMap :leftDrawer="leftDrawer" :rightDrawer="rightDrawer" @select-feature="handleSelectMarker"
+      @close-drawer="rightDrawer = false" type="rpci" />
 
     <!-- 고정 버튼 모음 -->
     <RFloatingButton @reset-center="resetCenter" @zoom-in="zoomIn" @zoom-out="zoomOut" type="rpci"

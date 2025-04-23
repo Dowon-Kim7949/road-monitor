@@ -106,7 +106,7 @@ const handleSelectMarker = (data: any) => {
 
     <!-- 지도 영역 -->
     <RMap :leftDrawer="leftDrawer" :rightDrawer="rightDrawer" @select-feature="handleSelectMarker"
-      @close-drawer="rightDrawer = false" />
+      @close-drawer="rightDrawer = false" type="road" />
 
     <!-- 고정 버튼 모음 -->
     <RFloatingButton @reset-center="resetCenter" @zoom-in="zoomIn" @zoom-out="zoomOut" type="road"
