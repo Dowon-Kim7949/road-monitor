@@ -34,25 +34,25 @@ const handleChangeMode = (mode: string) => {
 }
 
 const selectOptions = ref([
-  { value: '2025년_1차', label: '2025년 1차 분석' },
-  { value: '2024년_6차', label: '2024년 6차 분석' },
-  { value: '2024년_5차', label: '2024년 5차 분석' },
-  { value: '2024년_4차', label: '2024년 4차 분석' },
-  { value: '2024년_3차', label: '2024년 3차 분석' },
-  { value: '2024년_2차', label: '2024년 2차 분석' },
-  { value: '2024년_1차', label: '2024년 1차 분석' },
-  { value: '2023년_4차', label: '2023년 4차 분석' },
-  { value: '2023년_3차', label: '2023년 3차 분석' },
-  { value: '2023년_2차', label: '2023년 2차 분석' },
-  { value: '2023년_1차', label: '2023년 1차 분석' },
-  { value: '2022년_1차', label: '2022년 1차 분석' },
+  { value: '2025년_1차', label: '2025년 1차 분석', analyze_at: '2025-01-01 ~ 2025-04-23' },
+  { value: '2024년_6차', label: '2024년 6차 분석', analyze_at: '2024-01-01 ~ 2024-04-23' },
+  { value: '2024년_5차', label: '2024년 5차 분석', analyze_at: '2024-01-01 ~ 2024-04-23' },
+  { value: '2024년_4차', label: '2024년 4차 분석', analyze_at: '2024-01-01 ~ 2024-04-23' },
+  { value: '2024년_3차', label: '2024년 3차 분석', analyze_at: '2024-01-01 ~ 2024-04-23' },
+  { value: '2024년_2차', label: '2024년 2차 분석', analyze_at: '2024-01-01 ~ 2024-04-23' },
+  { value: '2024년_1차', label: '2024년 1차 분석', analyze_at: '2024-01-01 ~ 2024-04-23' },
+  { value: '2023년_4차', label: '2023년 4차 분석', analyze_at: '2023-01-01 ~ 2023-04-23' },
+  { value: '2023년_3차', label: '2023년 3차 분석', analyze_at: '2023-01-01 ~ 2023-04-23' },
+  { value: '2023년_2차', label: '2023년 2차 분석', analyze_at: '2023-01-01 ~ 2023-04-23' },
+  { value: '2023년_1차', label: '2023년 1차 분석', analyze_at: '2023-01-01 ~ 2023-04-23' },
+  { value: '2022년_1차', label: '2022년 1차 분석', analyze_at: '2022-01-01 ~ 2022-04-23' },
 ])
 const selectModel = ref<string | null>(null)
 </script>
 
 <template>
   <!-- 좌측 상단 로고 버튼 -->
-  <button class="fixed top-4 left-4 z-[4] bg-transparent p-3 cursor-pointer" @click="$emit('toggle-left')">
+  <!-- <button class="fixed top-4 left-4 z-[4] bg-transparent p-0 cursor-pointer" @click="$emit('toggle-left')">
     <div class="flex">
       <img src="../../assets/image/CI.webp" alt="logo" class="h-15" />
       <div class="text-left pl-2">
@@ -60,15 +60,26 @@ const selectModel = ref<string | null>(null)
         <div class="text-gray-70 font-bold text-xs">ver1.0.0</div>
       </div>
     </div>
+  </button> -->
+
+  <button
+    class="fixed top-4 left-4 z-[4] flex items-center py-2 px-4 border-1 border-gray-200  bg-white bg-opacity-90  rounded-lg shadow-md hover:bg-opacity-100 hover:shadow-lg active:shadow-sm active:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-150 ease-in-out cursor-pointer group"
+    @click="$emit('toggle-left')" aria-label="메인 메뉴 열기/닫기">
+    <img src="../../assets/image/CI.webp" alt="RoadMonitor 로고" class="h-10 flex-shrink-0" />
+    <div class="text-left pl-2">
+      <div class="text-red-60 font-bold text-lg leading-tight group-hover:text-red-70 transition-colors">RoadMonitor
+      </div>
+      <div class="text-gray-70 font-bold text-xs leading-tight">ver1.0.0</div>
+    </div>
   </button>
 
-  <div class="fixed top-8 left-60 z-[4] bg-white text-sm rounded" :style="datePickerStyle">
+  <div class="fixed top-6 left-60 z-[4] bg-white text-sm rounded" :style="datePickerStyle">
     <RDatePicker v-if="props.type === 'road' || props.type === 'cover'" />
-    <div v-else-if="props.type === 'rpci' || props.type === 'report'" class="min-w-[200px] bg-transparent">
+    <div v-else-if="props.type === 'rpci' || props.type === 'report'" class="min-w-90 bg-transparent">
       <RSelect v-model="selectModel" :options="selectOptions" placeholder="회차 선택" id="round-select" />
     </div>
-    <div v-if="props.type === 'report'" class="fixed top-8 left-115 z-[4]">
-      <RButton :label="t('button.reportSave')" size="small" class="bg-black text-white h-[38px] shadow" />
+    <div v-if="props.type === 'report'" class="fixed top-6 left-155 z-[4]">
+      <RButton type="secondary" icon="download" label="PDF" />
     </div>
   </div>
 

@@ -145,7 +145,7 @@ watch(() => props.visible, (value: boolean) => {
 <template>
   <div v-if="visible" class="fixed inset-0 z-[9999] bg-black bg-opacity-90 flex text-white">
     <!-- 좌측 이미지 리스트 -->
-    <div class="w-[300px] overflow-y-auto space-y-0 bg-gray-900 thin-scrollbar">
+    <div v-if="type !== 'rpci'" class="w-[300px] overflow-y-auto space-y-0 bg-gray-900 thin-scrollbar">
       <div v-for="(image, index) in images" :key="index" @click="selectImage(index)"
         class="cursor-pointer border-2 rounded overflow-hidden transition-all duration-200" :class="{
           'border-blue-500': selectedIndex === index,
@@ -153,13 +153,8 @@ watch(() => props.visible, (value: boolean) => {
         }">
         <img :src="image.src" alt="history" class="w-full h-[150px] object-cover" />
         <div class="pt-1 text-md font-semibold flex justify-center space-x-2 items-center">
-          <template v-if="type === 'rpci'">
-            <span>{{ image.title }}</span>
-          </template>
-          <template v-else>
-            <RIcon name="Camera" />
-            <span>{{ image.date }}</span>
-          </template>
+          <RIcon name="Camera" />
+          <span>{{ image.date }}</span>
         </div>
       </div>
     </div>
@@ -180,19 +175,21 @@ watch(() => props.visible, (value: boolean) => {
       </div>
 
       <!-- 좌측 하단 ▶ play -->
-      <RButton type="icon" class="bg-white shadow absolute bottom-4 left-4 rounded-full" icon="play" size="small"
-        @click="$emit('play')" />
+      <RButton type="icon" :strokeWidth="2" class="bg-gray-100/0 text-white rounded-full absolute bottom-5 left-5"
+        :icon-size="30" :stroke-shadow="true" icon="circle-play" @click="$emit('play')" />
 
       <!-- 우측 상단 ⬆ upload -->
-      <RButton type="icon" class="bg-white shadow absolute top-4 right-4 rounded-full" icon="upload" size="small"
-        @click="$emit('upload')" v-if="type === 'road'" />
+      <RButton type="icon" :strokeWidth="3" class="bg-gray-100/0 text-white rounded-full absolute top-4 right-4"
+        :stroke-shadow="true" icon="upload" size="small" @click="$emit('upload')" v-if="type === 'road'" />
 
       <!-- 우측 하단 ◀ ▶ ✕ -->
       <div class="absolute bottom-4 right-4 flex space-x-3">
-        <RButton type="icon" class="bg-white shadow rounded-full" icon="chevron-left" size="small" @click="prev" />
-        <RButton type="icon" class="bg-white shadow rounded-full" icon="chevron-right" size="small" @click="next" />
-        <RButton type="icon" class="bg-white shadow rounded-full" icon="minimize" size="small"
-          @click="$emit('close')" />
+        <RButton type="icon" :strokeWidth="3" class="bg-gray-100/0 text-white rounded-full" icon="chevron-left"
+          :stroke-shadow="true" size="small" @click="prev" />
+        <RButton type="icon" :strokeWidth="3" class="bg-gray-100/0 text-white rounded-full" icon="chevron-right"
+          :stroke-shadow="true" size="small" @click="next" />
+        <RButton type="icon" :strokeWidth="3" class="bg-gray-100/0 text-white rounded-full" icon="maximize" size="small"
+          :stroke-shadow="true" @click="$emit('close')" />
       </div>
     </div>
   </div>

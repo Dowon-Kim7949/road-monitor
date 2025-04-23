@@ -8,6 +8,7 @@ import { ChevronDown } from 'lucide-vue-next';
 interface Option {
   value: string | number
   label: string
+  analyze_at?: string,
   disabled?: boolean
 }
 
@@ -351,7 +352,7 @@ onUnmounted(() => {
         }" @click="clickOption(option)" @mouseenter="focusedOptionIndex = index" @mouseleave="focusedOptionIndex = -1"
         :title="option.label.length > 30 ? option.label : undefined">
         <span class="block truncate" :class="{ 'font-semibold': option.value === props.modelValue }">
-          {{ option.label }}
+          {{ option.label }} ({{ option.analyze_at }})
         </span>
         <span v-if="option.value === props.modelValue"
           class="absolute inset-y-0 right-0 flex items-center pr-4 text-indigo-600">

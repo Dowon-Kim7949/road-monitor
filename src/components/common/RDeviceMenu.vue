@@ -12,28 +12,27 @@
     <div class="px-4 pt-4">
       <h2 class="text-lg font-semibold text-black mb-4">{{ t('deviceList') }}</h2>
     </div>
-    <div class="p-4 flex flex-row h-[80%]">
-      <div class="col-auto w-[50%] space-y-2 pr-4 pt-4 border-r-1 border-gray-40">
+    <div class="p-4 flex flex-row h-[80%] ">
+      <div class="col-auto w-[50%] space-y-2 pr-4 pt-4 border-r-1 border-gray-40 text-center">
         <button
-          class="w-full py-2 px-4 rounded-md text-sm text-white bg-gray-40 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 cursor-pointer"
+          class="w-[80%] py-2 px-4 rounded-md text-sm text-white bg-gray-40 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 cursor-pointer"
           :class="selectedDeviceId === 'all' ? 'bg-gray-100' : ''" @click="selectAllDevices">
           {{ t('all') }}
         </button>
         <button v-for="device in devices" :key="device.id"
-          class="w-full py-2 px-4 rounded-md text-sm text-white bg-gray-40 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 cursor-pointer"
+          class="w-[80%] py-2 px-4 rounded-md text-sm text-white bg-gray-40 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 cursor-pointer"
           :class="selectedDeviceId === device.id ? 'bg-gray-100' : ''" @click="selectDevice(device.id)">
           {{ device.model }}
-          <span class="text-xs text-white ml-2">({{ device.id }})</span>
         </button>
       </div>
-      <div class="col w-[50%] font-bold pl-4 pt-5 space-y-4">
+      <div class="col w-[50%] pl-7 pt-5 space-y-4">
         <div class="w-full flex flex-row">
-          <div class="text-lg w-17">{{ t('modelname') }}</div>
-          <div class="text-lg w-17">ARA_30</div>
+          <div class="text-md w-17">{{ t('modelname') }}</div>
+          <div class="text-md w-17">ARA_30</div>
         </div>
         <div class="w-full flex flex-row">
-          <div class="text-lg w-17">ID</div>
-          <div class="text-lg w-17">01225367219</div>
+          <div class="text-md w-17">ID</div>
+          <div class="text-md w-17">01225367219</div>
         </div>
       </div>
     </div>
@@ -59,10 +58,10 @@ const selectedDeviceId = ref<string>('all');
 const fetchDevices = () => {
   // 실제 API 호출 로직으로 대체
   devices.value = [
-    { id: 'device001', model: '모델A' },
-    { id: 'device002', model: '모델B' },
-    { id: 'device003', model: '모델C' },
-    { id: 'device004', model: '모델D' },
+    { id: '001', model: '00다 0001' },
+    { id: '002', model: '00다 0002' },
+    { id: '003', model: '00다 0003' },
+    { id: '004', model: '00다 0004' },
   ];
 };
 

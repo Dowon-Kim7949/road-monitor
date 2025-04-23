@@ -47,7 +47,7 @@ const nextPage = () => {
   <!-- 펼쳐진 상태 -->
   <Transition name="slide-left">
     <div v-show="modelValue"
-      class="fixed w-[300px] top-20 left-4 bg-white shadow-lg rounded-sm border-gray-40 border-1 p-4 text-sm z-[1] h-[85vh] flex flex-col"
+      class="fixed w-[300px] top-22 left-4 bg-white shadow-lg rounded-sm border-gray-40 border-1 p-4 text-sm z-[1] h-[76vh] flex flex-col"
       :style="listStyle">
 
       <!-- 접기 버튼 -->
@@ -62,7 +62,8 @@ const nextPage = () => {
       <div class="flex items-center font-semibold border-gray-40 border-b-1 pb-2 px-3">
         <div class="flex-1 flex items-center pl-2">
           노드링크
-          <span class="ml-2 text-white bg-red-600 rounded-full text-xs w-5 h-5 flex items-center justify-center">
+          <span v-if="!modelValue"
+            class="ml-2 text-white bg-red-600 rounded-full text-xs w-5 h-5 flex items-center justify-center">
             {{ props.items.length }}
           </span>
         </div>
@@ -100,7 +101,7 @@ const nextPage = () => {
   <!-- 접힌 상태 버튼 -->
   <Transition name="fade">
     <div v-show="!modelValue" :style="listStyle" @click="modelValue = true"
-      class="fixed w-fit top-20 left-4 py-1 bg-white shadow-lg rounded-sm border-gray-40 border-1 text-sm z-[4] flex items-center cursor-pointer">
+      class="fixed w-fit top-22 left-4 py-1 bg-white shadow-lg rounded-sm border-gray-40 border-1 text-sm z-[4] flex items-center cursor-pointer">
       <div class="flex-1 flex items-center text-md font-bold pl-4">
         {{ t('Roadsegment') }}
         <span class="ml-2 text-white bg-red-600 rounded-full text-xs w-5 h-5 flex items-center justify-center">

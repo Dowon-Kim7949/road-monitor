@@ -3,6 +3,9 @@
     <RIcon v-if="sortDirection === 'asc'" name="ChevronDown" />
     <RIcon v-else name="ChevronUp" />
   </span>
+  <span v-else>
+    <RIcon name="ChevronDown" color="#c0c0c0" />
+  </span>
 </template>
 
 <script setup lang="ts">

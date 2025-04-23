@@ -1,14 +1,14 @@
 {
   "menu": {
     "roadMonitor": "Road Monitor",
-    "monitoring": "Road Monitoring",
-    "coverage": "Drive Coverage",
+    "monitoring": "Monitoring",
+    "coverage": "Coverage",
     "rapidPci": "Rapid-PCI",
-    "rpcianalysis": "rPCI Analysis Results",
+    "rpcianalysis": "rPCI Score",
     "rpcimap": "rPCI Map",
     "rpcireport": "rPCI Report",
     "settings": "Settings",
-    "envSetting": "Environment Settings"
+    "envSetting": "Preferences"
   },
   "lang": {
     "ko": "Korean",

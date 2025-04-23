@@ -4,7 +4,7 @@ import OLMap from 'ol/Map'
 import View from 'ol/View'
 import TileLayer from 'ol/layer/Tile'
 import VectorLayer from 'ol/layer/Vector'
-import OSM from 'ol/source/OSM'
+import XYZ from 'ol/source/XYZ'
 import VectorSource from 'ol/source/Vector'
 import { fromLonLat } from 'ol/proj'
 import GeoJSON from 'ol/format/GeoJSON'
@@ -16,7 +16,8 @@ import { MapBrowserEvent } from 'ol';
 import { Cog } from 'lucide-vue-next';
 
 const MAP_DURATION = 300
-const ZOOM_THRESHOLD = 20 // 점/선 전환 레벨
+const ZOOM_THRESHOLD = 19 // 점/선 전환 레벨
+const ZOOM_DEFAULT = 17
 
 const emit = defineEmits<{
   (e: 'select-feature', properties: any): void
@@ -280,17 +281,23 @@ const loadLayers = async () => {
 }
 // <<< loadLayers 끝 >>>
 
-const handleResetCenter = (coords: number[]) => { /* ... */ }
-const mapResetHandler = (e: Event) => { /* ... */ };
+const handleResetCenter = () => {
+  map.value?.getView().animate({ center: center, zoom: ZOOM_DEFAULT, duration: MAP_DURATION })
+}
 
+const vworldTileLayer = new TileLayer({
+  source: new XYZ({
+    url: 'https://api.vworld.kr/req/wmts/1.0.0/1FD1DD92-D087-3EE3-9739-7459C1D23F72/Base/{z}/{y}/{x}.png'
+  })
+})
 
 onMounted(async () => {
   console.log(props.type)
   if (!mapContainer.value) return
   map.value = new OLMap({
     target: mapContainer.value,
-    layers: [new TileLayer({ source: new OSM() })],
-    view: new View({ center, zoom: 14 })
+    layers: [vworldTileLayer],
+    view: new View({ center, zoom: ZOOM_DEFAULT })
   })
   await loadLayers();
 
@@ -393,7 +400,7 @@ onMounted(async () => {
   // --- End Zoom Change Listener ---
 
   // --- Other Listeners ---
-  window.addEventListener('reset-map-center', mapResetHandler);
+  window.addEventListener('reset-map-center', handleResetCenter);
   window.addEventListener('zoom-in-map', () => { const currentZoom = map.value?.getView().getZoom(); if (currentZoom) map.value?.getView().animate({ zoom: currentZoom + 1, duration: MAP_DURATION }) });
   window.addEventListener('zoom-out-map', () => { const currentZoom = map.value?.getView().getZoom(); if (currentZoom) map.value?.getView().animate({ zoom: currentZoom - 1, duration: MAP_DURATION }) });
   // --- End Other Listeners ---
@@ -401,7 +408,7 @@ onMounted(async () => {
 
 onBeforeUnmount(() => { /* ... */
   if (map.value) { map.value.setTarget(undefined); map.value = null; }
-  window.removeEventListener('reset-map-center', mapResetHandler);
+  window.removeEventListener('reset-map-center', handleResetCenter);
   // TODO: Remove other listeners
 })
 </script>

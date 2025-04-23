@@ -21,6 +21,7 @@ const props = defineProps({
   iconSize: { type: Number, default: 20 },
   iconColor: { type: String, default: "currentColor" },
   strokeWidth: { type: Number, default: 2 },
+  strokeShadow: { type: Boolean, default: false },
   iconPos: {
     type: String,
     default: "left",
@@ -62,7 +63,7 @@ const typeClasses = computed(() =>
     "bg-primary-5 text-primary border border-primary hover:bg-primary-10 active:bg-primary-20 focus-visible:ring-2 focus-visible:ring-primary-40",
   tertiary:
     "text-gray-90 border border-gray-50 hover:bg-gray-10 active:bg-gray-20 focus-visible:ring-2 focus-visible:ring-gray-60",
-  icon: "bg-white text-black hover:text-white hover:bg-gray-80 active:bg-black-70 focus-visible:ring-2 focus-visible:ring-primary-40",
+  icon: "text-black hover:text-white hover:bg-gray-80 active:bg-black-70 focus-visible:ring-2 focus-visible:ring-primary-40",
   select: "hover:text-white hover:bg-gray-80 active:bg-black-70 focus-visible:ring-2 focus-visible:ring-primary-40"
 }[props.type])
 );
@@ -78,7 +79,7 @@ const typeClasses = computed(() =>
   ]" :aria-label="label">
     <template v-if="iconPos === 'left'">
       <component v-if="selectedIcon" :is="selectedIcon" :size="iconSize" :stroke-width="strokeWidth"
-        class="stroke-current" />
+        class="stroke-current" :class="strokeShadow ? 'filter drop-shadow-[0_0_2px_#0f0f0f]' : ''" />
       <template v-if="isLoaded">
         <Spinner :size="size" />
       </template>
@@ -86,7 +87,7 @@ const typeClasses = computed(() =>
     <span v-if="!isIconOnly" class="whitespace-nowrap">{{ label }}</span>
     <template v-if="iconPos === 'right'">
       <component v-if="selectedIcon" :is="selectedIcon" :size="iconSize" :stroke-width="strokeWidth"
-        class="stroke-current" />
+        class="stroke-current" :class="strokeShadow ? 'filter drop-shadow-[0_0_2px_#0f0f0f]' : ''" />
       <template v-if="isLoaded">
         <Spinner :size="size" />
       </template>
