@@ -31,10 +31,10 @@ const titleData = ref({
   coverage: '커버리지 12km',
 })
 const tableHeaders = ref([
-  { text: '도로명', key: 'roadName', filterable: true },
-  { text: '노드링크', key: 'nodeLink' },
-  { text: '점수', key: 'score' },
-  { text: '파손 유형', key: 'action' },
+  { text: '도로명', key: 'roadName', sortable: true },
+  { text: '노드링크', key: 'nodeLink', sortable: true },
+  { text: '점수', key: 'score', sortable: true },
+  { text: '파손 유형', key: 'action', sortable: false }
 ])
 const tableData = ref([
   { score: 80, action: '상세 보기', roadName: '동탄순환대로', nodeLink: '남양교차로 -> 송림리145-4 (878m)', },

@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useSettingsStore } from '@/stores/settings'
-import RColumnIcon from './atom/RColumnIcon.vue'
+import RColumnIcon from '../common/atom/RColumnIcon.vue'
 import RIcon from '@/components/common/atom/RIcon.vue'
 
 const { t } = useI18n()
@@ -176,11 +176,9 @@ const getLevelDetailsByScore = (score: number) => {
                 <RColumnIcon :column="'nodelink'" :sortColumn="sortColumn" :sortDirection="sortDirection" />
               </div>
             </th>
-            <th scope="col" class="px-6 py-3 text-center text-sm font-bold text-black tracking-wider cursor-pointer"
-              @click="sortTable('rpci_score')">
+            <th scope="col" class="px-6 py-3 text-center text-sm font-bold text-black tracking-wider">
               <div class="flex gap-2 items-center justify-center">
                 <div>rPCI {{ t('button.grade') }}</div>
-                <RColumnIcon :column="'rpci_grade'" :sortColumn="sortColumn" :sortDirection="sortDirection" />
               </div>
             </th>
             <th scope="col"

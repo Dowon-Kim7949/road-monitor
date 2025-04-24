@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import RButton from '../common/atom/RButton.vue'
 import RIcon from '../common/atom/RIcon.vue'
 import RCheckbox from '../common/atom/RCheckbox.vue'
+import RModal from '../common/RModal.vue'
 
 interface NodeLink {
   linkname: string
@@ -30,14 +31,23 @@ defineEmits<{
 
 const expanded = ref<string[]>([])
 const selected = ref<string[]>([])
+const updateBatchName = ref('')
+const isUpdateBatchName = ref(false)
+const showUpdateConfirm = ref(false)
+const showCompleteConfirm = ref(false)
+const showCancelConfirm = ref(false)
 
 watchEffect(() => {
   if (props.visible) {
     // 모든 도로 펼치기
     expanded.value = props.items.map(i => i.roadname)
-
     // 모든 노드 선택하기
     selected.value = props.items.flatMap(i => i.nodelinks.map(n => n.linkname))
+    updateBatchName.value = props.analysisTitle
+  } else {
+    expanded.value = []
+    selected.value = []
+    updateBatchName.value = ''
   }
 })
 
@@ -89,6 +99,29 @@ const toggleAll = () => {
     selected.value = props.items.flatMap(i => i.nodelinks.map(n => n.linkname))
   }
 }
+
+const actionEditButton = () => {
+  if (!isUpdateBatchName.value) {
+    showUpdateConfirm.value = true
+  } else {
+    showCompleteConfirm.value = true
+  }
+}
+
+const onUpdateBatchName = () => {
+  isUpdateBatchName.value = true
+  showUpdateConfirm.value = false
+}
+
+const onCompleteBatchName = () => {
+  isUpdateBatchName.value = false
+  showCompleteConfirm.value = false
+}
+
+const onCancelBatchName = () => {
+  isUpdateBatchName.value = false
+  showCancelConfirm.value = false
+}
 </script>
 
 <template>
@@ -105,8 +138,16 @@ const toggleAll = () => {
             <RIcon name="X" />
           </button>
         </div>
-        <p class="font-semibold mb-1">rPCI를 분석할 도로를 선택해주세요.</p>
-        <p class="text-gray-700 mb-2">{{ analysisTitle }}</p>
+        <p class="font-semibold mb-2">rPCI를 분석할 도로를 선택해주세요.</p>
+        <div class="flex space-x-2 items-center pb-4">
+          <input v-model="updateBatchName" type="text"
+            class="min-w-60 max-w-full border rounded px-3 py-2 text-sm focus:ring focus:outline-none not-valid:opacity-50 not-valid:cursor-not-allowed"
+            :disabled="!isUpdateBatchName" />
+          <RButton @click="actionEditButton" size="xsmall" type="icon" icon-color="black"
+            :icon="!isUpdateBatchName ? 'pencil' : 'file-pen-line'" class="rounded-sm hover:rounded-sm" />
+          <RButton v-if="isUpdateBatchName" @click="showCancelConfirm = true" size="xsmall" type="icon"
+            icon-color="black" icon="x" class="rounded-sm hover:rounded-sm" />
+        </div>
 
         <!-- 전체 선택 체크박스 -->
         <div class="mb-4 flex items-center">
@@ -153,6 +194,12 @@ const toggleAll = () => {
       </div>
     </div>
   </transition>
+  <RModal :visible="showUpdateConfirm" type="confirm" title="분석 회차명 변경" content="rPCI 분석 회차명을 변경하시겠습니까?" okText="확인"
+    cancelText="취소" @onCancel="showUpdateConfirm = false" @onConfirm="onUpdateBatchName" />
+  <RModal :visible="showCancelConfirm" type="confirm" title="분석 회차명 변경 취소" content="rPCI 분석 회차명 변경을 취소하시겠습니까?"
+    okText="확인" cancelText="취소" @onCancel="showCancelConfirm = false" @onConfirm="onCancelBatchName" />
+  <RModal :visible="showCompleteConfirm" type="confirm" title="분석 회차명 확정" content="rPCI 분석 회차명을 입력하신 내용으로로 변경하시겠습니까?"
+    okText="확인" cancelText="취소" @onCancel="showCompleteConfirm = false" @onConfirm="onCompleteBatchName" />
 </template>
 
 <style scoped>

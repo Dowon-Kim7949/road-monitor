@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import RLeftDrawer from '@/components/common/RLeftDrawer.vue'
 import RSelect from '@/components/common/atom/RSelect.vue'
 import RButton from '@/components/common/atom/RButton.vue'
-import rPCITable from '@/components/common/rPCITable.vue'
+import RPciTable from '@/components/rpci/RPciTable.vue'
 
 const { t } = useI18n()
 const leftDrawer = ref(true)
@@ -43,7 +43,7 @@ const selectOptions = ref([
         </div>
       </div>
       <div class="pt-4 h-full">
-        <rPCITable />
+        <RPciTable />
       </div>
     </div>
   </div>

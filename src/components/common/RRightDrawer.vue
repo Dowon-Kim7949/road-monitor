@@ -9,6 +9,7 @@ import RPciAnalysisModal from '../rpci/RPciAnalysisModal.vue'
 import RPciAnalysisSelectModal from '../rpci/RPciAnalysisSelectModal.vue'
 import RModal from './RModal.vue'
 import { type history, type testData } from '@/types'
+import { useI18n } from 'vue-i18n'
 
 const selelctItems = [
   {
@@ -68,6 +69,7 @@ const props = defineProps<{
   histories: history[]
 }>()
 
+const { t } = useI18n()
 const showModal = ref(false)
 const showAlert = ref(false)
 const showConfirm = ref(false)
@@ -132,22 +134,21 @@ watch(modelValue, (val) => {
 
 <template>
   <Transition name="slide-right">
-    <aside v-if="modelValue" class="fixed top-0 right-0 h-full w-[40%] bg-white shadow z-40 overflow-hidden">
+    <aside v-if="modelValue" class="fixed top-0 right-0 h-full w-[40%] bg-white shadow z-40 overflow-y-auto">
       <!-- 기본 화면 -->
       <Transition name="slide-fade">
         <div v-if="!isFullHistoryMode" class="p-6 space-y-2 h-full overflow-hidden">
           <RImageViewer :src="props.data?.image" :type="type" :histories="histories" @fullscreen="onFullScreen"
             @upload="handleUpload" />
+          <RPciResultSummary v-if="type === 'rpci'" :score="80" pciLabel="Satisfactory" pciColor="#00C853"
+            :potholes="2" />
           <RImageInfo :roadName="data?.roadName" :lat="data?.lat" :lon="data?.lon" :nodeLink="data?.nodeLink"
-            :timestamp="data?.timestamp" @copy-coord="onCopyLatLon" :type="type" />
-
-          <template v-if="type === 'rpci'">
-            <hr class="border-gray-30" />
-            <RPciResultSummary start="남양교차로" end="승리리145-4" distance="878m" round="2025년 1차 분석" :score="80"
-              pciLabel="Satisfactory" pciColor="#00C853" :potholes="2" />
-          </template>
-
+            :timestamp="data?.timestamp" @copy-coord="onCopyLatLon" :type="type" class="pb-2" />
           <hr class="border-gray-30" />
+          <h3 class="text-lg font-semibold pt-2">{{ t(type === 'rpci' ? 'RPciHistory' : 'Roadhistory') }} </h3>
+          <div v-if="type === 'rpci'" class="text-sm text-gray-600 font-semibold">
+            {{ '남양교차로' }} → {{ '송림리145-4' }} ({{ '878m' }})
+          </div>
           <RImageHistory :type="type" :items="histories" @select="onSelectHistory" @expand="onToggleHistoryFull(true)"
             :full="isFullHistoryMode" />
         </div>
@@ -169,7 +170,7 @@ watch(modelValue, (val) => {
   <RPciAnalysisModal :visible="showRPciModal" @close="showRPciModal = false" @submit="onSubmit" />
   <RPciAnalysisSelectModal :analysisTitle="analysisTitle" :items="selelctItems" :visible="showSelectRPciModal"
     @close="selectModalClose" @request="onRequest" />
-  <RModal :visible="showConfirm" type="confirm" title="분석 요청 취소" content="분석 요청을 취소하시겠습니까? 이 작업은 되돌릴 수 없습니다."
+  <RModal :visible="showConfirm" type="confirm" title="분석 시작 취소" content="rPCI 분석을 진행하지 않으시겠습니까? 이 작업은 되돌릴 수 없습니다"
     okText="확인" cancelText="취소" @onCancel="showConfirm = false" @onConfirm="onCancel" />
   <RModal :visible="showAlert" :title="modalTitle" :content="modalContent" type="alert" okText="확인" @onOk="onOk" />
 </template>

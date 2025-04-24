@@ -21,10 +21,11 @@ const toggleOpen = () => {
     </button>
   </div>
   <!-- 펼친 상태 레전드 -->
-  <div v-else class="floating-top-right fixed bottom-62 right-1 bg-white rounded-xl shadow py-4 px-7 w-60 shadow">
+  <div v-else
+    class="floating-top-right fixed bottom-62 right-1 bg-white rounded-sm rounded-tl-none shadow py-4 px-7 w-55">
     <!-- 닫기 버튼 -->
     <button
-      class="absolute top-3 left-[-20px] text-md text-gray-600 bg-white px-1 py-2 rounded-tl-sm rounded-bl-sm cursor-pointer"
+      class="absolute top-0 left-[-20px] text-md text-gray-600 bg-white px-1 py-2 rounded-tl-sm rounded-bl-sm cursor-pointer"
       @click="toggleOpen">
       <RIcon name="ChevronRight" class="w-4 h-4" />
     </button>

@@ -45,7 +45,7 @@ const grades = settingsStore.getLegendLevels
             {{ grade.label }}
           </p>
         </div>
-        <div class="w-20">
+        <div class="w-20 text-right">
           <span class="text-[14px] font-semibold text-shadow" :style="{ color: grade.color }">
             {{ grade.minScore }}~{{ grade.maxScore }}
           </span>

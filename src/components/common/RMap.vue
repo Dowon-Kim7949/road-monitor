@@ -13,6 +13,7 @@ import Stroke from 'ol/style/Stroke'
 import Circle from 'ol/style/Circle'
 import Fill from 'ol/style/Fill'
 import { MapBrowserEvent } from 'ol';
+import { defaults as defaultInteractions, MouseWheelZoom } from 'ol/interaction'
 import { Cog } from 'lucide-vue-next';
 
 const MAP_DURATION = 300
@@ -291,13 +292,20 @@ const vworldTileLayer = new TileLayer({
   })
 })
 
+const customInteractions = defaultInteractions().extend([
+  new MouseWheelZoom({
+    constrainResolution: true, // 이 옵션을 true로 설정합니다.
+  }),
+])
+
 onMounted(async () => {
   console.log(props.type)
   if (!mapContainer.value) return
   map.value = new OLMap({
     target: mapContainer.value,
     layers: [vworldTileLayer],
-    view: new View({ center, zoom: ZOOM_DEFAULT })
+    view: new View({ center, zoom: ZOOM_DEFAULT, minZoom: 15, maxZoom: 21 }),
+    interactions: customInteractions
   })
   await loadLayers();
 

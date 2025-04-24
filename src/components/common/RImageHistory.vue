@@ -4,6 +4,9 @@ import { useI18n } from 'vue-i18n'
 import RButton from './atom/RButton.vue'
 import RIcon from './atom/RIcon.vue'
 import type { history } from '@/types'
+import { useSettingsStore } from '@/stores/settings'
+
+const settingsStore = useSettingsStore()
 
 const { t } = useI18n()
 
@@ -19,7 +22,6 @@ defineEmits<{
   (e: 'collapse'): void
 }>()
 
-const expanded = ref(false)
 const currentPage = ref(1)
 const itemsPerPage = 10
 
@@ -42,18 +44,20 @@ const prevPage = () => {
 const nextPage = () => {
   if (currentPage.value < totalPages.value) currentPage.value++
 }
+
+const getLevelDetailsByScore = (score: number) => {
+  return settingsStore.getLevelDetailsByScore(score, settingsStore.getLegendLevels)
+}
 </script>
 
 <template>
   <div class="space-y-2 flex flex-col" :class="[full ? 'h-full' : '']">
-    <h3 class="text-lg font-semibold">{{ t(type === 'rpci' ? 'RPciHistory' : 'Roadhistory') }} </h3>
-
     <!-- 리스트 -->
     <div class="flex flex-1 flex-col" :class="['overflow-y-auto pr-1', full ? 'max-h-[90vh]' : '']">
       <div v-for="(item, index) in displayedItems" :key="index" @click="$emit('select', item)"
         class="flex items-center space-x-4 cursor-pointer hover:bg-gray-30 px-2 py-2 rounded">
         <!-- 썸네일 -->
-        <img :src="item.src || 'https://via.placeholder.com/120x72?text=No+Image'" alt="history"
+        <img v-if="type === 'road'" :src="item.src || 'https://via.placeholder.com/120x72?text=No+Image'" alt="history"
           class="w-28 h-16 object-cover rounded" />
 
         <!-- 텍스트 -->
@@ -64,14 +68,16 @@ const nextPage = () => {
               <div v-if="item.title" class="font-bold">
                 {{ item.title }}
               </div>
-              <span>{{ item.date }}</span>
+              <span>({{ item.date }})</span>
             </div>
             <div class="flex items-center space-x-3 text-sm">
               <span class="text-xs font-semibold px-2 py-0.5 rounded-b-full rounded-t-full"
-                :style="{ backgroundColor: item.pciColor, color: '#fff' }">
-                {{ item.pciLabel }}
+                :style="{ backgroundColor: getLevelDetailsByScore(item.score!)?.color, color: getLevelDetailsByScore(item.score!)?.textColor }">
+                {{ getLevelDetailsByScore(item.score!)?.label }}
               </span>
-              <span class="text-red-500 font-bold" :style="{ color: item.pciColor }">{{ item.score }}점</span>
+              <span class="text-red-500 font-bold" :style="{ color: getLevelDetailsByScore(item.score!)?.color }">
+                {{ item.score }}점
+              </span>
               <span class="text-red-500 text-xs flex items-center space-x-2 font-bold">
                 <RIcon name="AlertTriangle" class="w-4 h-4" />
                 <span>{{ t('hazard.pothole') }} {{ item.potholes }}개</span>

@@ -1,21 +1,26 @@
 <template>
-  <div class="flex h-screen bg-white rm_setting">
-    <RLeftDrawer class="shrink-0" v-model="leftDrawer" mode="fix" />
-
-    <main class="flex-1 overflow-y-auto">
-      <div class="py-10 px-8 xl:py-12 xl:px-10">
-        <div class="content-header">
-          <h1 class="text-2xl font-semibold mb-6 text-gray-800">Settings 변경 설정</h1>
+  <div class="relative w-full h-screen overflow-hidden">
+    <!-- 좌측 사이드바 -->
+    <RLeftDrawer v-model="leftDrawer" mode="fix" />
+    <div class="w-[calc(100vw - 240px)] h-full ml-60 p-20">
+      <div class="flex flex-row items-center justify-between">
+        <div class="flex flex-row gap-5 items-center h-10">
+          <span class="text-xl font-bold">Settings</span>
+          <span class="text-xl">{{ '환경 설정' }}</span>
         </div>
-
-        <div class="content-body bg-white p-6 md:p-8">
+        <div>
+          <RButton type="secondary" icon="download" label="Excel" size="small" />
+        </div>
+      </div>
+      <div class="pt-6 pl-6">
+        <div class="content-body bg-white">
           <section class="mb-10">
-            <h2 class="text-xl font-semibold mb-5 text-gray-900 border-b border-gray-200 pb-2.5">Road Monitor</h2>
+            <h2 class="text-lg font-semibold mb-2 text-gray-900 border-b border-gray-200 pb-2">Road Monitor</h2>
             <div class="flex flex-col sm:flex-row items-center gap-10 mb-5">
-              <div class="setting-label">
-                <label for="duplicate-removal" class="font-medium text-gray-800 block mb-1">중복 촬영 데이터 제거</label>
+              <div class="setting-label pl-6">
+                <label for="duplicate-removal" class="font-bold text-gray-600 block mb-1">중복 촬영 데이터 제거</label>
                 <p class="text-sm text-gray-600">
-                  1일 내 동일한 지점을 촬영한 경우, 최초 1회 데이터를 제외하고 삭제합니다.
+                  같은 날 동일한 지점을 촬영한 경우, 그 중 최신 데이터만 보관합니다.
                 </p>
               </div>
               <div class="flex shrink-0 items-center sm:pt-0 ml-5">
@@ -30,21 +35,22 @@
             </div>
           </section>
 
-          <section class=" mb-10">
-            <h2 class="text-xl font-semibold mb-5 text-gray-900 border-b border-gray-200 pb-2.5">Rapid-PCI</h2>
-            <div class="setting-label mb-4">
-              <label class="font-medium text-gray-800 block mb-1">rPCI 등급 설정</label>
+          <section class="mb-10">
+            <h2 class="text-lg font-semibold mb-2 text-gray-900 border-b border-gray-200 pb-2">Rapid-PCI</h2>
+            <div class="setting-label mb-2 pl-6">
+              <label class="font-bold text-gray-600 block mb-1">rPCI 등급 설정</label>
               <p class="text-sm text-gray-600">
-                rPCI 분석 시 사용할 등급을 아래에서 원하는 대로 설정할 수 있습니다. 변경된 등급 체계는 이후 분석부터 적용됩니다.
+                rPCI 분석 에 사용할 등급/점수을 아래에서 원하는 대로 설정할 수 있습니다. <br />
+                변경된 등급 체계는 이후 분석부터 적용됩니다.
               </p>
             </div>
             <div class="pt-5">
-              <RMLevelSetting v-model="selectedGrade" />
+              <RMLevelSetting v-model="selectedGrade" class="pl-6" />
             </div>
           </section>
         </div>
       </div>
-    </main>
+    </div>
   </div>
 </template>
 

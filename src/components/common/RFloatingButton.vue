@@ -7,6 +7,7 @@ import RPciLegend from '../rpci/RPciLegend.vue'
 import RDatePicker from './atom/RDatePicker.vue'
 import RSelect from './atom/RSelect.vue'
 import RPciCoverage from '../rpci/RPciCoverage.vue'
+import RModal from './RModal.vue'
 
 const { t } = useI18n()
 const props = defineProps<{
@@ -28,7 +29,7 @@ const datePickerStyle = computed(() => {
 })
 
 const activeMode = ref('alert')
-
+const showConfirm = ref(false)
 const handleChangeMode = (mode: string) => {
   activeMode.value = mode
 }
@@ -48,6 +49,10 @@ const selectOptions = ref([
   { value: '2022년_1차', label: '2022년 1차 분석', analyze_at: '2022-01-01 ~ 2022-04-23' },
 ])
 const selectModel = ref<string | null>(null)
+
+const onSavePDF = () => {
+  showConfirm.value = false
+}
 </script>
 
 <template>
@@ -78,13 +83,13 @@ const selectModel = ref<string | null>(null)
     <div v-else-if="props.type === 'rpci' || props.type === 'report'" class="min-w-90 bg-transparent">
       <RSelect v-model="selectModel" :options="selectOptions" placeholder="회차 선택" id="round-select" />
     </div>
-    <div v-if="props.type === 'report'" class="fixed top-6 left-155 z-[4]">
-      <RButton type="secondary" icon="download" label="PDF" />
+    <div v-if="props.type === 'report'" class="fixed top-7 left-155 z-[4]">
+      <RButton type="secondary" size="small" class="text-sm" icon="download" label="PDF" @click="showConfirm = true" />
     </div>
   </div>
 
   <!-- 좌측 하단 초기화 버튼 -->
-  <RButton type="icon" size="small" class="fixed bottom-4 left-4 bg-white shadow rounded-sm"
+  <RButton type=" icon" size="small" class="fixed bottom-4 left-4 bg-white shadow rounded-sm"
     :class="type === 'report' ? 'bottom-50' : ''" @click="$emit('reset-center')" icon="locate-fixed"
     :style="datePickerStyle" />
 
@@ -98,6 +103,9 @@ const selectModel = ref<string | null>(null)
     <RButton type="icon" size="small" class="bg-white shadow rounded-sm" @click="$emit('zoom-in')" icon="plus" />
     <RButton type="icon" size="small" class="bg-white shadow rounded-sm" @click="$emit('zoom-out')" icon="minus" />
   </div>
+
+  <RModal :visible="showConfirm" type="confirm" title="PDF 파일 저장" content="현재 조회 중인 회차의 리포트를 PDF파일로 저장하시겠습니까?"
+    okText="확인" cancelText="취소" @onCancel="showConfirm = false" @onConfirm="onSavePDF" />
 </template>
 
 <style scoped>

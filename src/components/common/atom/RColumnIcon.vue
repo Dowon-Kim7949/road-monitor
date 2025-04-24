@@ -19,7 +19,8 @@ defineProps({
   },
   sortColumn: {
     type: String,
-    default: null,
+    default: '',
+    required: false
   },
   sortDirection: {
     type: String,

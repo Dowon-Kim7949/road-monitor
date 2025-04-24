@@ -49,18 +49,19 @@ const dangerStyle = computed(() =>
           <div class="flex justify-end gap-2">
             <template v-if="showConfirm">
               <button type="button"
-                class="px-4 py-2 text-sm rounded border bg-white hover:bg-gray-200  text-gray-800"
+                class="px-4 py-2 text-sm rounded border bg-white hover:bg-gray-200  text-gray-800 cursor-pointer"
                 @click="$emit('onCancel')">
                 {{ cancelLabel }}
               </button>
-              <button type="button" class="px-4 py-2 text-sm rounded" :class="dangerStyle" @click="$emit('onConfirm')">
+              <button type="button" class="px-4 py-2 text-sm rounded cursor-pointer" :class="dangerStyle"
+                @click="$emit('onConfirm')">
                 {{ okLabel }}
               </button>
             </template>
 
             <template v-else>
               <button type="button"
-                class="px-4 py-2 text-sm rounded cursor-pointer bg-blue-600 text-white hover:bg-blue-700"
+                class="px-4 py-2 text-sm rounded bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
                 @click="$emit('onOk')">
                 {{ okLabel }}
               </button>

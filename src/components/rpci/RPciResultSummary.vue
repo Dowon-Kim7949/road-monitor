@@ -1,11 +1,5 @@
 <template>
-  <div class="text-sm text-black space-y-2">
-    <!-- 상단 텍스트 -->
-    <div class="font-bold text-md">
-      {{ start }} → <span class="font-bold">{{ end }}</span> ({{ distance }}) {{ t('rpciResult') }} -
-      <span class="font-bold">{{ round }}</span>
-    </div>
-
+  <div class="text-sm text-black space-y-2 pt-2">
     <!-- 하단 결과 정보 -->
     <div class="flex items-center space-x-4">
       <!-- PCI 등급 -->
@@ -30,10 +24,6 @@ import { useI18n } from 'vue-i18n';
 import RIcon from '../common/atom/RIcon.vue'
 
 defineProps<{
-  start: string
-  end: string
-  distance: string // 예: "878m"
-  round: string    // 예: "2025년 1차 분석"
   score: number
   pciLabel: string // 예: "Satisfactory"
   pciColor: string // 예: "#00C853"
