@@ -1,41 +1,3 @@
-<template>
-  <div class="flex flex-col gap-6">
-    <div v-for="option in gradeOptions" :key="option.value" class="flex items-center gap-4">
-      <label class="flex items-center cursor-pointer whitespace-nowrap shrink-0 w-24 text-sm">
-        <input type="radio" :name="radioGroupName" :value="option.value" :checked="modelValue === option.value"
-          @change="updateSelection(option.value)"
-          class="form-radio mr-2 h-4 w-4 border-gray-400 text-slate-600 focus:ring-slate-500" />
-        <span>{{ option.label }}</span>
-      </label>
-
-      <div class="flex-grow relative pt-3.5 pb-6 min-h-[50px]">
-        <div class="w-full h-1 bg-gray-300 rounded-sm relative mt-2.5">
-          <span v-for="(tickPosition, index) in option.ticks" :key="`tick-${option.value}-${index}`"
-            class="absolute w-px h-3.5 bg-gray-400 top-1/2 -translate-y-1/2 -translate-x-1/2"
-            :style="{ left: `${tickPosition}%` }"></span>
-        </div>
-
-        <div v-if="option.details" class="absolute w-full top-4 left-0">
-          <div class="relative w-full h-4 mt-5.5">
-            <span v-for="detail in option.details" :key="`num-${detail.value}`"
-              class="absolute -translate-x-1/2 text-xs text-gray-500 whitespace-nowrap"
-              :style="{ left: `${detail.position}%` }">
-              {{ detail.value }}
-            </span>
-          </div>
-          <div class="relative w-full h-5 mt-1">
-            <span v-for="(detail, index) in option.details.slice(0, -1)" :key="`cat-${detail.value}`"
-              class="absolute text-sm font-medium whitespace-nowrap" :class="getCategoryClass(detail.category)"
-              :style="getCategoryStyle(option.details, index)">
-              {{ detail.category }}
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup>
 import { ref, computed } from 'vue';
 
@@ -123,3 +85,41 @@ function getCategoryStyle(details, index) {
 }
 
 </script>
+
+<template>
+  <div class="flex flex-col gap-6">
+    <div v-for="option in gradeOptions" :key="option.value" class="flex items-center gap-4">
+      <label class="flex items-center cursor-pointer whitespace-nowrap shrink-0 w-24 text-sm">
+        <input type="radio" :name="radioGroupName" :value="option.value" :checked="modelValue === option.value"
+          @change="updateSelection(option.value)"
+          class="form-radio mr-2 h-4 w-4 border-gray-400 text-slate-600 focus:ring-slate-500" />
+        <span>{{ option.label }}</span>
+      </label>
+
+      <div class="flex-grow relative pt-3.5 pb-6 min-h-[50px]">
+        <div class="w-full h-1 bg-gray-300 rounded-sm relative mt-2.5">
+          <span v-for="(tickPosition, index) in option.ticks" :key="`tick-${option.value}-${index}`"
+            class="absolute w-px h-3.5 bg-gray-400 top-1/2 -translate-y-1/2 -translate-x-1/2"
+            :style="{ left: `${tickPosition}%` }"></span>
+        </div>
+
+        <div v-if="option.details" class="absolute w-full top-4 left-0">
+          <div class="relative w-full h-4 mt-5.5">
+            <span v-for="detail in option.details" :key="`num-${detail.value}`"
+              class="absolute -translate-x-1/2 text-xs text-gray-500 whitespace-nowrap"
+              :style="{ left: `${detail.position}%` }">
+              {{ detail.value }}
+            </span>
+          </div>
+          <div class="relative w-full h-5 mt-1">
+            <span v-for="(detail, index) in option.details.slice(0, -1)" :key="`cat-${detail.value}`"
+              class="absolute text-sm font-medium whitespace-nowrap" :class="getCategoryClass(detail.category)"
+              :style="getCategoryStyle(option.details, index)">
+              {{ detail.category }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

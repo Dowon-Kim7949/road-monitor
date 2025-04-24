@@ -162,7 +162,7 @@ watch(() => props.visible, (value: boolean) => {
     <!-- 우측 메인 이미지 -->
     <div class="flex-1 relative flex items-center justify-center">
       <div
-        class="absolute top-5 left-5 bg-white z-[4] text-black px-2 py-1 rounded flex items-center space-x-2 flex-col">
+        class="absolute top-5 left-5 bg-white z-[4] text-black px-2 py-1 rounded flex items-start space-x-2 flex-col">
         <div v-if="type === 'rpci'" class="font-bold">{{ props.images[selectedIndex].title }}</div>
         <div class="flex items-center space-x-2">
           <RIcon name="Camera" />

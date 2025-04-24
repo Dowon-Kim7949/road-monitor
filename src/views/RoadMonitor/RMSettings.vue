@@ -1,3 +1,22 @@
+<script setup>
+import { ref } from 'vue'
+// '@/...'는 src/'...'를 의미하는 경우가 많습니다. 경로를 확인하세요.
+import RMLevelSetting from '@/components/roadmonitor/RMLevelSetting.vue'
+import RLeftDrawer from '@/components/common/RLeftDrawer.vue'
+import RButton from '@/components/common/atom/RButton.vue'
+import { useI18n } from 'vue-i18n'
+// --- State ---
+const { t } = useI18n()
+const duplicateRemovalEnabled = ref(true); // 토글 스위치 상태
+const leftDrawer = ref(true); // 왼쪽 드로어 상태 (RLeftDrawer에서 사용될 수 있음)
+const selectedGrade = ref('7'); // RMLevelSetting 컴포넌트와 연결된 값
+
+// --- 사용되지 않는 변수 제거 ---
+// pciGradeSystem, indicatorStyle 등은 현재 템플릿에서 직접 사용되지 않으므로 제거했습니다.
+// RMLevelSetting 내부 로직에 필요하다면 유지해야 합니다.
+
+</script>
+
 <template>
   <div class="relative w-full h-screen overflow-hidden">
     <!-- 좌측 사이드바 -->
@@ -50,26 +69,12 @@
           </section>
         </div>
       </div>
+      <div class="flex w-full justify-end">
+        <RButton class="absolute bottom-20 right-" :label="t('button.save')" />
+      </div>
     </div>
   </div>
 </template>
-
-<script setup>
-import { ref } from 'vue'
-// '@/...'는 src/'...'를 의미하는 경우가 많습니다. 경로를 확인하세요.
-import RMLevelSetting from '@/components/roadmonitor/RMLevelSetting.vue';
-import RLeftDrawer from '@/components/common/RLeftDrawer.vue';
-
-// --- State ---
-const duplicateRemovalEnabled = ref(true); // 토글 스위치 상태
-const leftDrawer = ref(true); // 왼쪽 드로어 상태 (RLeftDrawer에서 사용될 수 있음)
-const selectedGrade = ref('7'); // RMLevelSetting 컴포넌트와 연결된 값
-
-// --- 사용되지 않는 변수 제거 ---
-// pciGradeSystem, indicatorStyle 등은 현재 템플릿에서 직접 사용되지 않으므로 제거했습니다.
-// RMLevelSetting 내부 로직에 필요하다면 유지해야 합니다.
-
-</script>
 
 <style scoed>
 .rm_setting {

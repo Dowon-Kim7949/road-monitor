@@ -29,7 +29,8 @@
     "grade": "Grade",
     "map": "Map View",
     "detail": "Details",
-    "reportSave": "Save Report"
+    "reportSave": "Save Report",
+    "save": "Save"
   },
   "Roadsegment": "Road Segment",
   "Roadname": "Road name",

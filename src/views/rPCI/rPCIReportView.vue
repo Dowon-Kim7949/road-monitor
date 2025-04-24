@@ -4,6 +4,7 @@ import RMap from '@/components/common/RMap.vue'
 import RFloatingButton from '@/components/common/RFloatingButton.vue'
 import RLeftDrawer from '@/components/common/RLeftDrawer.vue'
 import RPciScoreBoard from '@/components/rpci/RPciScoreBoard.vue'
+
 const leftDrawer = ref(false)
 const rightDrawer = ref(false)
 const selectedData = ref<any>(null)

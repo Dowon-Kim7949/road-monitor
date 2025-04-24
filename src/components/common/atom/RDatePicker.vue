@@ -11,8 +11,8 @@ const currentMonth = ref(today.value.getMonth() + 1);
 const currentYear = ref(today.value.getFullYear());
 const daysOfWeek = ref(['일', '월', '화', '수', '목', '금', '토']);
 
-const startDate = ref<Date | null>(null);
-const endDate = ref<Date | null>(null);
+const startDate = ref<Date | null>(new Date(new Date().getFullYear(), new Date().getMonth() - 1, new Date().getDate()));
+const endDate = ref<Date | null>(new Date());
 const isSelectingRange = ref(true); // 기간 선택 모드
 
 const displayValue = computed(() => {
@@ -28,7 +28,7 @@ const displayValue = computed(() => {
   } else if (startDate.value) {
     return formatDate(startDate.value) + ' ~ YYYY-MM-DD';
   } else {
-    return '날짜를 선택해주세요.';
+    return `${formatDate(startDate.value)} ~ ${formatDate(endDate.value)}`;
   }
 });
 

@@ -441,7 +441,7 @@ onBeforeUnmount(() => { /* ... */
 /* ... 이전과 동일 ... */
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.5s ease;
+  transition: opacity 0.5s ease-in;
 }
 
 .fade-enter-from,

@@ -30,7 +30,8 @@
     "map": "지도 보기",
     "detail": "상세보기",
     "coverage": "커버리지",
-    "reportSave": "리포트 저장"
+    "reportSave": "리포트 저장",
+    "save": "저장"
   },
   "Roadsegment": "노드링크",
   "Roadname": "도로명",
