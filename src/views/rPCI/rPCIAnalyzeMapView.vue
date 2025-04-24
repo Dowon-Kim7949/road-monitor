@@ -44,18 +44,18 @@ const testList = [
 ]
 
 const testhistories = [
-  { src: imageUrl, date: '2025-01-01 ~ 2025-04-23', title: '2025년 1차 분석', score: 80, pciLabel: "Satisfactory", pciColor: "#00C853", potholes: 2 },
+  { src: imageUrl, date: '2025-01-01 ~ 2025-04-23', title: '2025년 1차 분석', score: 90, pciLabel: "Satisfactory", pciColor: "#00C853", potholes: 2 },
   { src: imageUrl, date: '2024-01-01 ~ 2024-04-23', title: '2024년 6차 분석', score: 80, pciLabel: "Satisfactory", pciColor: "#00C853", potholes: 2 },
-  { src: imageUrl, date: '2024-01-01 ~ 2024-04-23', title: '2024년 5차 분석', score: 80, pciLabel: "Satisfactory", pciColor: "#00C853", potholes: 2 },
-  { src: imageUrl, date: '2024-01-01 ~ 2024-04-23', title: '2024년 4차 분석', score: 80, pciLabel: "Satisfactory", pciColor: "#00C853", potholes: 2 },
-  { src: imageUrl, date: '2024-01-01 ~ 2024-04-23', title: '2024년 3차 분석', score: 80, pciLabel: "Satisfactory", pciColor: "#00C853", potholes: 2 },
-  { src: imageUrl, date: '2024-01-01 ~ 2024-04-23', title: '2024년 2차 분석', score: 80, pciLabel: "Satisfactory", pciColor: "#00C853", potholes: 2 },
-  { src: imageUrl, date: '2024-01-01 ~ 2024-04-23', title: '2024년 1차 분석', score: 80, pciLabel: "Satisfactory", pciColor: "#00C853", potholes: 2 },
-  { src: imageUrl, date: '2023-01-01 ~ 2023-04-23', title: '2023년 4차 분석', score: 80, pciLabel: "Satisfactory", pciColor: "#00C853", potholes: 2 },
-  { src: imageUrl, date: '2023-01-01 ~ 2023-04-23', title: '2023년 3차 분석', score: 80, pciLabel: "Satisfactory", pciColor: "#00C853", potholes: 2 },
-  { src: imageUrl, date: '2023-01-01 ~ 2023-04-23', title: '2023년 2차 분석', score: 80, pciLabel: "Satisfactory", pciColor: "#00C853", potholes: 2 },
-  { src: imageUrl, date: '2023-01-01 ~ 2023-04-23', title: '2023년 1차 분석', score: 80, pciLabel: "Satisfactory", pciColor: "#00C853", potholes: 2 },
-  { src: imageUrl, date: '2022-01-01 ~ 2022-04-23', title: '2022년 1차 분석', score: 80, pciLabel: "Satisfactory", pciColor: "#00C853", potholes: 2 },
+  { src: imageUrl, date: '2024-01-01 ~ 2024-04-23', title: '2024년 5차 분석', score: 70, pciLabel: "Satisfactory", pciColor: "#00C853", potholes: 2 },
+  { src: imageUrl, date: '2024-01-01 ~ 2024-04-23', title: '2024년 4차 분석', score: 60, pciLabel: "Satisfactory", pciColor: "#00C853", potholes: 2 },
+  { src: imageUrl, date: '2024-01-01 ~ 2024-04-23', title: '2024년 3차 분석', score: 50, pciLabel: "Satisfactory", pciColor: "#00C853", potholes: 2 },
+  { src: imageUrl, date: '2024-01-01 ~ 2024-04-23', title: '2024년 2차 분석', score: 40, pciLabel: "Satisfactory", pciColor: "#00C853", potholes: 2 },
+  { src: imageUrl, date: '2024-01-01 ~ 2024-04-23', title: '2024년 1차 분석', score: 30, pciLabel: "Satisfactory", pciColor: "#00C853", potholes: 2 },
+  { src: imageUrl, date: '2023-01-01 ~ 2023-04-23', title: '2023년 4차 분석', score: 20, pciLabel: "Satisfactory", pciColor: "#00C853", potholes: 2 },
+  { src: imageUrl, date: '2023-01-01 ~ 2023-04-23', title: '2023년 3차 분석', score: 10, pciLabel: "Satisfactory", pciColor: "#00C853", potholes: 2 },
+  { src: imageUrl, date: '2023-01-01 ~ 2023-04-23', title: '2023년 2차 분석', score: 5, pciLabel: "Satisfactory", pciColor: "#00C853", potholes: 2 },
+  { src: imageUrl, date: '2023-01-01 ~ 2023-04-23', title: '2023년 1차 분석', score: 85, pciLabel: "Satisfactory", pciColor: "#00C853", potholes: 2 },
+  { src: imageUrl, date: '2022-01-01 ~ 2022-04-23', title: '2022년 1차 분석', score: 45, pciLabel: "Satisfactory", pciColor: "#00C853", potholes: 2 },
 ]
 
 const toggleLeftDrawer = () => {

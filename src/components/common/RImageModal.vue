@@ -175,8 +175,9 @@ watch(() => props.visible, (value: boolean) => {
       </div>
 
       <!-- 좌측 하단 ▶ play -->
-      <RButton type="icon" :strokeWidth="2" class="bg-gray-100/0 text-white rounded-full absolute bottom-5 left-5"
-        :icon-size="30" :stroke-shadow="true" icon="circle-play" @click="$emit('play')" />
+      <RButton type="icon" :strokeWidth="2"
+        class="bg-gray-100/0 text-white rounded-full absolute bottom-4 left-4 px-1 py-1" :icon-size="30"
+        :stroke-shadow="true" icon="circle-play" @click="$emit('play')" />
 
       <!-- 우측 상단 ⬆ upload -->
       <RButton type="icon" :strokeWidth="3" class="bg-gray-100/0 text-white rounded-full absolute top-4 right-4"

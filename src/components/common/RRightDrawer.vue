@@ -137,7 +137,7 @@ watch(modelValue, (val) => {
     <aside v-if="modelValue" class="fixed top-0 right-0 h-full w-[40%] bg-white shadow z-40 overflow-y-auto">
       <!-- 기본 화면 -->
       <Transition name="slide-fade">
-        <div v-if="!isFullHistoryMode" class="p-6 space-y-2 h-full overflow-hidden">
+        <div class="p-6 space-y-2 h-full overflow-hidden">
           <RImageViewer :src="props.data?.image" :type="type" :histories="histories" @fullscreen="onFullScreen"
             @upload="handleUpload" />
           <RPciResultSummary v-if="type === 'rpci'" :score="80" pciLabel="Satisfactory" pciColor="#00C853"
@@ -150,15 +150,7 @@ watch(modelValue, (val) => {
             {{ '남양교차로' }} → {{ '송림리145-4' }} ({{ '878m' }})
           </div>
           <RImageHistory :type="type" :items="histories" @select="onSelectHistory" @expand="onToggleHistoryFull(true)"
-            :full="isFullHistoryMode" />
-        </div>
-      </Transition>
-
-      <!-- 확장된 History 전용 화면 -->
-      <Transition name="slide-up-down">
-        <div v-if="isFullHistoryMode" class="p-6 h-full overflow-y-auto">
-          <RImageHistory :type="type" :items="histories" @select="onSelectHistory"
-            @collapse="() => onToggleHistoryFull(false)" :full="isFullHistoryMode" />
+            :full="isFullHistoryMode" @collapse="() => onToggleHistoryFull(false)" />
         </div>
       </Transition>
     </aside>
@@ -199,27 +191,6 @@ watch(modelValue, (val) => {
 .slide-fade-leave-to {
   opacity: 0;
   transform: translateY(10px);
-}
-
-/* slide-up-down: history 확장 시 */
-.slide-up-down-enter-active,
-.slide-up-down-leave-active {
-  transition: all 0.3s ease;
-}
-
-.slide-up-down-enter-from {
-  transform: translateY(100%);
-  opacity: 1;
-}
-
-.slide-up-down-enter-to {
-  transform: translateY(0);
-  opacity: 0;
-}
-
-.slide-up-down-leave-to {
-  transform: translateY(100%);
-  opacity: 1;
 }
 </style>
 
