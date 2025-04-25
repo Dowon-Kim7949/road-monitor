@@ -38,7 +38,6 @@ const { isOpen, toggle } = useDropdownControl('user')
 
 const logout = () => {
   toggle() // 드롭다운 닫기
-  console.log('로그아웃 처리')
 }
 
 // 드롭다운 열릴 때 방향 계산

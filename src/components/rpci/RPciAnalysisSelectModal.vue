@@ -126,18 +126,12 @@ const onCancelBatchName = () => {
 
 <template>
   <transition name="slide-down">
-    <div
-      v-if="visible"
-      class="fixed top-0 right-0 bg-white p-6 w-[40%] h-full z-[40] flex flex-col"
-    >
+    <div v-if="visible" class="fixed top-0 right-0 bg-white p-6 w-[40%] h-full z-[40] flex flex-col">
       <div class="flex flex-col">
         <div class="flex flex-row justify-between items-center align-middle mb-4">
           <div class="relative w-[95%]">
             <div class="flex h-2 overflow-hidden rounded bg-gray-30 text-xs">
-              <div
-                style="width: 100%"
-                class="bg-gray-80 transition-all duration-500 ease-out"
-              ></div>
+              <div style="width: 100%" class="bg-gray-80 transition-all duration-500 ease-out"></div>
             </div>
           </div>
           <button class="text-black cursor-pointer" @click="$emit('close')">
@@ -146,39 +140,19 @@ const onCancelBatchName = () => {
         </div>
         <p class="font-semibold mb-2">rPCI를 분석할 도로를 선택해주세요.</p>
         <div class="flex space-x-2 items-center pb-4">
-          <input
-            v-model="updateBatchName"
-            type="text"
+          <input v-model="updateBatchName" type="text"
             class="min-w-60 max-w-full border rounded px-3 py-2 text-sm focus:ring focus:outline-none not-valid:opacity-50 not-valid:cursor-not-allowed"
-            :disabled="!isUpdateBatchName"
-          />
-          <RButton
-            @click="actionEditButton"
-            size="xsmall"
-            type="icon"
-            icon-color="black"
-            :icon="!isUpdateBatchName ? 'pencil' : 'file-pen-line'"
-            class="rounded-sm hover:rounded-sm"
-          />
-          <RButton
-            v-if="isUpdateBatchName"
-            @click="showCancelConfirm = true"
-            size="xsmall"
-            type="icon"
-            icon-color="black"
-            icon="x"
-            class="rounded-sm hover:rounded-sm"
-          />
+            :disabled="!isUpdateBatchName" />
+          <RButton @click="actionEditButton" size="xsmall" type="icon" icon-color="black"
+            :icon="!isUpdateBatchName ? 'pencil' : 'file-pen-line'" class="rounded-sm hover:rounded-sm" />
+          <RButton v-if="isUpdateBatchName" @click="showCancelConfirm = true" size="xsmall" type="icon"
+            icon-color="black" icon="x" class="rounded-sm hover:rounded-sm" />
         </div>
 
         <!-- 전체 선택 체크박스 -->
         <div class="mb-4 flex items-center">
-          <RCheckbox
-            id="all"
-            :modelValue="isAllChecked"
-            @update:modelValue="toggleAll"
-            :label="t('button.allSelect')"
-          />
+          <RCheckbox id="all" :modelValue="isAllChecked" @update:modelValue="toggleAll"
+            :label="t('button.allSelect')" />
         </div>
       </div>
 
@@ -192,11 +166,7 @@ const onCancelBatchName = () => {
           <div v-for="(road, idx) in items" :key="idx" class="rounded">
             <!-- 도로명 -->
             <div class="flex items-center px-4 py-2 border-b border-gray-10 hover:bg-blue-50">
-              <RCheckbox
-                :id="`road-${idx}`"
-                :modelValue="isAllSelected(road)"
-                @update:modelValue="toggleRoad(road)"
-              />
+              <RCheckbox :id="`road-${idx}`" :modelValue="isAllSelected(road)" @update:modelValue="toggleRoad(road)" />
               <button class="ml-2 mr-2" @click="toggleExpand(road.roadname)">
                 <RIcon :name="expanded.includes(road.roadname) ? 'ChevronDown' : 'ChevronRight'" />
               </button>
@@ -205,18 +175,11 @@ const onCancelBatchName = () => {
 
             <!-- 노드링크 -->
             <div v-if="expanded.includes(road.roadname)">
-              <div
-                v-for="(link, i) in road.nodelinks"
-                :key="i"
-                class="grid grid-cols-2 px-6 py-2 hover:bg-blue-50 text-sm border-b border-gray-10 last:border-0 rounded items-center"
-              >
+              <div v-for="(link, i) in road.nodelinks" :key="i"
+                class="grid grid-cols-2 px-6 py-2 hover:bg-blue-50 text-sm border-b border-gray-10 last:border-0 rounded items-center">
                 <div class="flex items-center space-x-2 pl-5">
-                  <RCheckbox
-                    :id="`node-${idx}-${i}`"
-                    :modelValue="selected.includes(link.linkname)"
-                    :label="link.linkname"
-                    @update:modelValue="toggleSelect(link.linkname)"
-                  />
+                  <RCheckbox :id="`node-${idx}-${i}`" :modelValue="selected.includes(link.linkname)"
+                    :label="link.linkname" @update:modelValue="toggleSelect(link.linkname)" />
                 </div>
                 <div class="pl-12">{{ link.captured_at }}</div>
               </div>
@@ -227,45 +190,16 @@ const onCancelBatchName = () => {
 
       <div class="pt-4 flex justify-end space-x-2 border-t-1 border-gray-10">
         <RButton type="tertiary" size="small" :label="t('button.cancel')" @click="$emit('close')" />
-        <RButton
-          type="primary"
-          size="small"
-          :label="t('button.request')"
-          @click="$emit('request')"
-        />
+        <RButton type="primary" size="small" :label="t('button.request')" @click="$emit('request')" />
       </div>
     </div>
   </transition>
-  <RModal
-    :visible="showUpdateConfirm"
-    type="confirm"
-    title="분석 회차명 변경"
-    content="rPCI 분석 회차명을 변경하시겠습니까?"
-    okText="확인"
-    cancelText="취소"
-    @onCancel="showUpdateConfirm = false"
-    @onConfirm="onUpdateBatchName"
-  />
-  <RModal
-    :visible="showCancelConfirm"
-    type="confirm"
-    title="분석 회차명 변경 취소"
-    content="rPCI 분석 회차명 변경을 취소하시겠습니까?"
-    okText="확인"
-    cancelText="취소"
-    @onCancel="showCancelConfirm = false"
-    @onConfirm="onCancelBatchName"
-  />
-  <RModal
-    :visible="showCompleteConfirm"
-    type="confirm"
-    title="분석 회차명 확정"
-    content="rPCI 분석 회차명을 입력하신 내용으로로 변경하시겠습니까?"
-    okText="확인"
-    cancelText="취소"
-    @onCancel="showCompleteConfirm = false"
-    @onConfirm="onCompleteBatchName"
-  />
+  <RModal :visible="showUpdateConfirm" type="confirm" title="분석 회차명 변경" content="rPCI 분석 회차명을 변경하시겠습니까?" okText="확인"
+    cancelText="취소" @onCancel="showUpdateConfirm = false" @onConfirm="onUpdateBatchName" />
+  <RModal :visible="showCancelConfirm" type="confirm" title="분석 회차명 변경 취소" content="rPCI 분석 회차명 변경을 취소하시겠습니까?"
+    okText="확인" cancelText="취소" @onCancel="showCancelConfirm = false" @onConfirm="onCancelBatchName" />
+  <RModal :visible="showCompleteConfirm" type="confirm" title="분석 회차명 확정" content="rPCI 분석 회차명을 입력하신 내용으로로 변경하시겠습니까?"
+    okText="확인" cancelText="취소" @onCancel="showCompleteConfirm = false" @onConfirm="onCompleteBatchName" />
 </template>
 
 <style scoped>

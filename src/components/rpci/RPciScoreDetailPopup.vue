@@ -318,9 +318,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div
-    v-show="visible"
-    ref="popupContainerRef"
+  <div v-show="visible" ref="popupContainerRef"
     class="fixed z-50 bg-white rounded-lg shadow-lg w-146 max-w-[700px] min-h-[300px] max-h-[70vh] flex flex-col overflow-hidden"
     :style="[
       popupStyle,
@@ -330,36 +328,26 @@ onBeforeUnmount(() => {
         right: props.initialPosition.right,
         bottom: props.initialPosition.bottom,
       },
-    ]"
-    :class="{ 'select-none': isDragging, 'shadow-xl': isDragging }"
-  >
-    <div
-      class="flex justify-between items-center p-3 border-b border-gray-200 bg-gray-100/5 select-none"
-      :class="{ 'cursor-grabbing': isDragging, 'cursor-grab': !isDragging }"
-      @mousedown.prevent="startDrag"
-    >
+    ]" :class="{ 'select-none': isDragging, 'shadow-xl': isDragging }">
+    <div class="flex justify-between items-center p-3 border-b border-gray-200 bg-gray-100/5 select-none"
+      :class="{ 'cursor-grabbing': isDragging, 'cursor-grab': !isDragging }" @mousedown.prevent="startDrag">
       <div class="flex items-center gap-2">
         <RIcon name="GripVertical" :size="15" />
         <span class="text-xs font-medium text-gray-600">{{ titleData.level }}:</span>
         <span v-if="typeof titleData.status === 'number'">
-          <p
-            class="text-xs font-semibold px-2 py-0.5 rounded-full text-center w-25"
-            :style="{
-              backgroundColor: getLevelDetails(titleData.status)?.color ?? '#ccc',
-              color: getLevelDetails(titleData.status)?.textColor ?? '#000',
-            }"
-          >
+          <p class="text-xs font-semibold px-2 py-0.5 rounded-full text-center w-25" :style="{
+            backgroundColor: getLevelDetails(titleData.status)?.color ?? '#ccc',
+            color: getLevelDetails(titleData.status)?.textColor ?? '#000',
+          }">
             {{ getLevelDetails(titleData.status)?.label ?? 'N/A' }}
           </p>
         </span>
         <span class="text-xs font-medium text-gray-600">{{ titleData.coverage }}</span>
       </div>
       <div>
-        <button
-          type="button"
+        <button type="button"
           class="text-xs px-2 py-2 cursor-pointer rounded bg-gray hover:bg-gray-200 disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-1 focus:ring-gray-400"
-          @click="closePopup"
-        >
+          @click="closePopup">
           <RIcon name="X" :size="18" />
         </button>
       </div>
@@ -369,32 +357,20 @@ onBeforeUnmount(() => {
       <table class="w-full border-collapse">
         <thead class="sticky top-0 bg-white z-10">
           <tr>
-            <th
-              v-for="(header, index) in tableHeaders"
-              :key="`header-${index}`"
+            <th v-for="(header, index) in tableHeaders" :key="`header-${index}`"
               class="p-3 text-center border-b border-gray-200 text-sm font-semibold whitespace-nowrap select-none"
               :class="{
                 'text-center': index === tableHeaders.length - 1,
                 'cursor-pointer': header.sortable !== false, // 정렬 가능할 때만 커서 변경
                 'cursor-default': header.sortable === false, // 정렬 불가능하면 기본 커서
-              }"
-              @click="sortBy(header.key)"
-            >
+              }" @click="sortBy(header.key)">
               <div class="flex items-center justify-center gap-1">
                 <span>{{ header.text }}</span>
-                <button
-                  v-if="header.filterable"
-                  type="button"
+                <button v-if="header.filterable" type="button"
                   class="bg-transparent border-none p-0 ml-1 align-middle cursor-pointer text-gray-500 hover:text-gray-200 focus:outline-none"
-                  @click.stop="emitFilter(header.key)"
-                  aria-label="Filter column"
-                ></button>
-                <RColumnIcon
-                  v-if="header.sortable !== false"
-                  :column="header.key"
-                  :sort-column="sortKey"
-                  :sort-direction="sortDirection"
-                />
+                  @click.stop="emitFilter(header.key)" aria-label="Filter column"></button>
+                <RColumnIcon v-if="header.sortable !== false" :column="header.key" :sort-column="sortKey"
+                  :sort-direction="sortDirection" />
               </div>
             </th>
           </tr>
@@ -405,33 +381,21 @@ onBeforeUnmount(() => {
               데이터가 없습니다.
             </td>
           </tr>
-          <tr
-            v-for="(row, rowIndex) in paginatedData"
-            :key="`row-${rowIndex}`"
-            class="hover:bg-gray-200"
-          >
-            <td
-              v-for="(header, colIndex) in tableHeaders"
-              :key="`cell-${rowIndex}-${colIndex}`"
-              class="p-3 border-b border-gray-200 text-sm align-middle"
-              :class="{
+          <tr v-for="(row, rowIndex) in paginatedData" :key="`row-${rowIndex}`" class="hover:bg-gray-200">
+            <td v-for="(header, colIndex) in tableHeaders" :key="`cell-${rowIndex}-${colIndex}`"
+              class="p-3 border-b border-gray-200 text-sm align-middle" :class="{
                 'text-center': colIndex === tableHeaders.length - 1 || header.key === 'score',
-              }"
-            >
+              }">
               <template v-if="header.key === 'score' && typeof row[header.key] === 'number'">
-                <div
-                  class="inline-block font-medium text-center"
-                  :style="{ color: getLevelDetails(row[header.key])?.color ?? 'inherit' }"
-                >
+                <div class="inline-block font-medium text-center"
+                  :style="{ color: getLevelDetails(row[header.key])?.color ?? 'inherit' }">
                   {{ row[header.key] }}
                 </div>
               </template>
               <template v-else-if="header.key === 'action'">
-                <button
-                  type="button"
+                <button type="button"
                   class="bg-transparent border-none text-blue-600 hover:text-blue-800 cursor-pointer p-0 underline text-sm focus:outline-none focus:ring-1 focus:ring-blue-400 rounded"
-                  @click="emitAction(row)"
-                >
+                  @click="emitAction(row)">
                   {{ row[header.key] || '상세 보기' }}
                 </button>
               </template>
@@ -444,47 +408,30 @@ onBeforeUnmount(() => {
       </table>
     </div>
 
-    <div
-      v-if="totalPages > 1"
-      class="p-3 border-t border-gray-200 bg-white flex justify-center items-center gap-1"
-    >
-      <button
-        type="button"
+    <div v-if="totalPages > 1" class="p-3 border-t border-gray-200 bg-white flex justify-center items-center gap-1">
+      <button type="button"
         class="text-xs px-3 py-1 border cursor-pointer border-gray-300 rounded bg-white hover:bg-gray-200 disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-1 focus:ring-gray-400"
-        :disabled="currentPage === 1"
-        @click="prevPage"
-        aria-label="Previous page"
-      >
+        :disabled="currentPage === 1" @click="prevPage" aria-label="Previous page">
         이전
       </button>
       <template v-for="(page, index) in displayedPageNumbers" :key="`page-${index}`">
-        <button
-          v-if="typeof page === 'number'"
-          type="button"
+        <button v-if="typeof page === 'number'" type="button"
           class="text-xs px-3 py-1 rounded cursor-pointer border border-transparent hover:bg-blue-100 hover:text-blue-700 disabled:cursor-not-allowed focus:outline-none focus:ring-1 focus:ring-blue-400"
           :class="{
             'bg-blue-500 text-white hover:bg-blue-600 border-blue-500 cursor-default':
               page === currentPage,
             'bg-white text-gray-700 border-gray-300': page !== currentPage,
-          }"
-          :disabled="page === currentPage"
-          @click="goToPage(page)"
-          :aria-label="`Go to page ${page}`"
-          :aria-current="page === currentPage ? 'page' : undefined"
-        >
+          }" :disabled="page === currentPage" @click="goToPage(page)" :aria-label="`Go to page ${page}`"
+          :aria-current="page === currentPage ? 'page' : undefined">
           {{ page }}
         </button>
         <span v-else class="px-2 py-1 text-gray-500" aria-hidden="true">
           {{ page }}
         </span>
       </template>
-      <button
-        type="button"
+      <button type="button"
         class="text-xs px-3 py-1 border cursor-pointer border-gray-300 rounded bg-white hover:bg-gray-200 disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-1 focus:ring-gray-400"
-        :disabled="currentPage === totalPages"
-        @click="nextPage"
-        aria-label="Next page"
-      >
+        :disabled="currentPage === totalPages" @click="nextPage" aria-label="Next page">
         다음
       </button>
     </div>

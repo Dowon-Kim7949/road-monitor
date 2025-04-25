@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import OLMap from 'ol/Map'
 import View from 'ol/View'
 import TileLayer from 'ol/layer/Tile'
@@ -15,9 +15,12 @@ import Fill from 'ol/style/Fill'
 import { MapBrowserEvent } from 'ol'
 import { defaults as defaultInteractions, MouseWheelZoom } from 'ol/interaction'
 import { Cog } from 'lucide-vue-next'
+import type LineString from 'ol/geom/LineString'
+import type Point from 'ol/geom/Point'
+import type { FeatureLike } from 'ol/Feature'
 
 const MAP_DURATION = 300
-const ZOOM_THRESHOLD = 19 // 점/선 전환 레벨
+const ZOOM_THRESHOLD = 19
 const ZOOM_DEFAULT = 17
 
 const emit = defineEmits<{
@@ -33,13 +36,15 @@ const props = defineProps<{
 
 const mapContainer = ref<HTMLElement | null>(null)
 const map = ref<OLMap | null>(null)
-const roadLineLayer = ref<any>(null)
-const roadPointLayer = ref<any | null>(null)
+const roadLineLayer = ref<VectorLayer<VectorSource<LineString | any>> | null>(null)
+const roadPointLayer = ref<VectorLayer<VectorSource<Point | any>> | null>(null)
 const selectedWayId = ref<string | null>(null)
 const selectedPointCoords = ref<any>(null)
 const isLoading = ref(false)
 
-// --- Helper Functions ---
+const BORDER_COLOR = 'rgba(0, 0, 0, 0.8)' // 흰색 테두리 (반투명)
+const BORDER_EXTRA_WIDTH = 4 // 테두리 두께 (양쪽 2px씩)
+
 const compareCoordinates = (coords1: any, coords2: any): boolean => {
   if (
     !coords1 ||
@@ -72,27 +77,23 @@ const hexToRgba = (hex: string, alpha: number): string => {
   }
   return `rgba(${r}, ${g}, ${b}, ${alpha})`
 }
-// --- End Helpers ---
 
-// --- RPCI 색상 정보 ---
 const rpciColors: { [key: string]: string } = {
-  green: '#00CC25', // 60%
-  yellow: '#FEFD33', // 30%
-  orange: '#FF2B06', // 5%
-  darkRed: '#AB1803', // 3%
-  darkGreen: '#007e12', // 2% - 사용자 지정 유지
+  green: '#00CC25',
+  yellow: '#FEFD33',
+  orange: '#FF2B06',
+  darkRed: '#AB1803',
+  darkGreen: '#007e12',
   default: '#808080',
 }
 const rpciColorDistribution = [
   { color: rpciColors.green, threshold: 0.6 },
-  { color: rpciColors.yellow, threshold: 0.9 }, // 60 + 30
-  { color: rpciColors.orange, threshold: 0.95 }, // 90 + 5
-  { color: rpciColors.darkRed, threshold: 0.98 }, // 95 + 3
-  { color: rpciColors.darkGreen, threshold: 1.0 }, // 98 + 2
+  { color: rpciColors.yellow, threshold: 0.9 },
+  { color: rpciColors.orange, threshold: 0.95 },
+  { color: rpciColors.darkRed, threshold: 0.98 },
+  { color: rpciColors.darkGreen, threshold: 1.0 },
 ]
-// --- End RPCI Info ---
 
-// --- 스타일 객체 미리 생성 (road 모드용) ---
 const roadSelectedLineStyle = new Style({
   stroke: new Stroke({ color: 'rgba(80, 80, 80, 1)', width: 10 }),
 })
@@ -110,136 +111,151 @@ const roadRelatedPointStyle = new Style({
 const roadDefaultPointStyle = new Style({
   image: new Circle({ radius: 6, fill: new Fill({ color: 'rgba(80, 80, 80, 0.5)' }) }),
 })
-// --- 스타일 객체 미리 생성 끝 ---
+const roadSelectedLineBorderStyle = new Style({
+  stroke: new Stroke({
+    color: BORDER_COLOR,
+    width: 10 + BORDER_EXTRA_WIDTH,
+  }),
+  zIndex: 0,
+})
 
-// --- Style Function (모드별 분기) ---
-const layerStyleFunction = (feature: any): Style | undefined => {
+const layerStyleFunction = (feature: FeatureLike): Style | Style[] | undefined => {
   const currentZoom = map.value?.getView().getZoom()
   if (!currentZoom) return undefined
-  const geometry = feature.getGeometry()
+  const geometry: any = feature.getGeometry()
   if (!geometry) return undefined
   const featureType = geometry.getType()
   const properties = feature.getProperties()
   const featureWayId =
-    featureType === 'LineString' ? properties['@id'] : properties['parent_way_id']
+    featureType === 'LineString' ? feature.getId() : properties['parent_way_id']?.toString()
 
-  // 기본 선택 상태 판단
-  const isSelectedLine = selectedWayId.value != null && selectedWayId.value === featureWayId
+  const isSelectedLine =
+    selectedWayId.value != null && selectedWayId.value === featureWayId?.toString()
   let isSelectedPoint = false
   if (featureType === 'Point' && selectedPointCoords.value) {
-    const currentCoords = geometry.getCoordinates()
+    const currentCoords = (geometry as Point).getCoordinates() // 타입 단언
     isSelectedPoint = compareCoordinates(currentCoords, selectedPointCoords.value)
   }
-  const isGenerallySelected =
-    (featureType === 'LineString' && isSelectedLine) || (featureType === 'Point' && isSelectedPoint)
-  const isLineRelatedSelected = selectedWayId.value != null && selectedWayId.value === featureWayId
 
   switch (props.type) {
     case 'cover':
-      // 단순 회색 선만 항상 표시
       if (featureType === 'LineString') {
-        // road 모드의 기본 스타일 재사용 또는 단순 스타일 생성
         return roadDefaultLineStyle
-        // return new Style({ stroke: new Stroke({ color: 'rgba(128, 128, 128, 0.7)', width: 3 }) });
       } else {
-        return undefined // 점 숨김
+        return undefined
       }
-
     case 'report':
-      // rpci 색상 선만 항상 표시 (임시 색상 사용)
       if (featureType === 'LineString') {
         const assignedColorHex = properties['assigned_rpci_color'] || rpciColors['default']
-        // 선택 없으므로 기본 투명도 적용
         const colorRgba = hexToRgba(assignedColorHex, 0.7)
-        return new Style({ stroke: new Stroke({ color: colorRgba, width: 5 }) }) // 약간 굵게
+        return new Style({ stroke: new Stroke({ color: colorRgba, width: 5 }) })
       } else {
-        return undefined // 점 숨김
+        return undefined
       }
-
     case 'rpci':
-      // rpci 색상 + 선택 효과 + 줌 레벨별 표시 (임시 색상 사용)
       const assignedColorHex = properties['assigned_rpci_color'] || rpciColors['default']
       const selectedOpacity = 1.0
       const defaultOpacity = 0.7
       const pointDefaultOpacity = 0.6
 
-      // 선택된 선 또는 선택된 점이 속한 선이면 불투명, 아니면 기본 투명도
-      const currentOpacity = isLineRelatedSelected
-        ? selectedOpacity
-        : featureType === 'Point'
-          ? pointDefaultOpacity
-          : defaultOpacity
-      const currentColor = hexToRgba(assignedColorHex, currentOpacity)
+      if (featureType === 'LineString') {
+        // --- RPCI 선 스타일 ---
+        const mainStrokeWidth = isSelectedLine ? 10 : 6
+        const mainOpacity = isSelectedLine ? selectedOpacity : defaultOpacity
+        const mainColor = hexToRgba(assignedColorHex, mainOpacity)
 
-      // 선택된 선/점은 굵게/크게
-      const currentLineWidth = isLineRelatedSelected ? 10 : 6
-      const currentPointRadius = isSelectedPoint ? 10 : 6 // 선택된 '점'만 크게
+        const mainStyle = new Style({
+          stroke: new Stroke({ color: mainColor, width: mainStrokeWidth }),
+          zIndex: isSelectedLine ? 1 : 0, // 선택 시 위에 오도록
+        })
 
-      if (currentZoom < ZOOM_THRESHOLD) {
-        // 줌 아웃: 선 표시, 선택된 점만 표시
-        if (featureType === 'LineString') {
-          return new Style({ stroke: new Stroke({ color: currentColor, width: currentLineWidth }) })
-        } else if (featureType === 'Point' && isSelectedPoint) {
-          // 선택된 점은 grade 색상, 불투명, 크게
+        if (isSelectedLine && currentZoom < ZOOM_THRESHOLD) {
+          // 선택되었고, 줌 아웃 상태일 때만 테두리 추가
+          const borderStyle = new Style({
+            stroke: new Stroke({
+              color: BORDER_COLOR,
+              width: mainStrokeWidth + BORDER_EXTRA_WIDTH,
+            }),
+            zIndex: 0, // 테두리는 아래에
+          })
+          return [borderStyle, mainStyle] // 배열 반환
+        } else if (currentZoom < ZOOM_THRESHOLD) {
+          // 선택 안되었고, 줌 아웃 상태
+          return mainStyle // 기본 스타일만 반환
+        } else {
+          return undefined // 줌 인 상태에서는 선 숨김
+        }
+      } else if (featureType === 'Point') {
+        // --- RPCI 점 스타일 ---
+        const currentPointRadius = isSelectedPoint ? 10 : 6
+        const isRelated = !isSelectedPoint && isSelectedLine // 선택된 점 아니고, 관련 선 위의 점
+        // 점 색상은 선택 여부와 관계없이 RPCI 색상, 투명도는 관련 여부로 결정
+        const pointColor = hexToRgba(
+          assignedColorHex,
+          isSelectedPoint || isRelated ? selectedOpacity : pointDefaultOpacity,
+        )
+
+        if (currentZoom >= ZOOM_THRESHOLD) {
+          // 줌 인 상태에서만 점 표시
           return new Style({
             image: new Circle({
               radius: currentPointRadius,
-              fill: new Fill({ color: hexToRgba(assignedColorHex, selectedOpacity) }),
+              fill: new Fill({ color: isSelectedPoint ? 'rgba(255, 0, 0, 1.0)' : pointColor }),
+            }),
+            zIndex: isSelectedPoint ? 2 : isRelated ? 1 : 0,
+          })
+        } else if (isSelectedPoint) {
+          // 줌 아웃 상태에서는 선택된 점만 표시
+          return new Style({
+            image: new Circle({
+              radius: currentPointRadius,
+              fill: new Fill({ color: 'rgba(255, 0, 0, 1.0)' }), // 불투명
             }),
             zIndex: 2,
           })
         } else {
-          return undefined
+          return undefined // 나머지 점 숨김
         }
       } else {
-        // currentZoom >= ZOOM_THRESHOLD
-        // 줌 인: 점 표시, 선 숨김
-        if (featureType === 'Point') {
-          // 선택된 점: grade 색상, 불투명, 크게
-          // 관련된 선 위의 다른 점: grade 색상, 불투명, 작게
-          // 다른 점: grade 색상, 기본 투명도, 작게
-          return new Style({
-            image: new Circle({
-              radius: currentPointRadius,
-              fill: new Fill({ color: currentColor }), // isLineRelatedSelected로 투명도 조절됨
-            }),
-            zIndex: isSelectedPoint ? 2 : isLineRelatedSelected ? 1 : 0,
-          })
-        } else {
-          return undefined
-        }
+        return undefined
       }
-
-    case 'road': // 기본 회색 스타일 모드
+    case 'road':
     default:
-      // 미리 생성된 스타일 객체 사용 + 줌 레벨별 표시
       if (currentZoom < ZOOM_THRESHOLD) {
+        // 줌 아웃 시 선 표시
         if (featureType === 'LineString') {
-          return isSelectedLine ? roadSelectedLineStyle : roadDefaultLineStyle
+          if (isSelectedLine) {
+            // roadSelectedLineBorderStyle와 roadSelectedLineStyle을 배열로 반환
+            return [roadSelectedLineBorderStyle, roadSelectedLineStyle]
+          } else {
+            return roadDefaultLineStyle
+          }
         } else if (featureType === 'Point' && isSelectedPoint) {
+          // 선택된 점만 표시
           return roadSelectedPointStyle
         } else {
-          return undefined
+          return undefined // 나머지 숨김
         }
       } else {
+        // 줌 인 시 점 표시
         if (featureType === 'Point') {
           if (isSelectedPoint) {
             return roadSelectedPointStyle
           } else if (isSelectedLine) {
+            // isSelectedLine은 isLineRelatedSelected와 같음
             return roadRelatedPointStyle
           } else {
             return roadDefaultPointStyle
           }
         } else {
+          // 선 숨김
           return undefined
         }
       }
   }
 }
-// --- End Style Function ---
 
 const mapStyle = computed(() => {
-  /* ... */
   return {
     right: props.rightDrawer ? '25%' : '0px',
     left: props.type === 'cover' ? '25%' : '0px',
@@ -248,15 +264,17 @@ const mapStyle = computed(() => {
 })
 const center = fromLonLat([127.128, 37.378])
 
-// <<< 통합된 레이어 로드 함수 (모드별 로드) >>>
 const loadLayers = async () => {
   if (!map.value) return
   isLoading.value = true
-  // 임시 색상 저장용 Map (rpci, report 모드에서 사용)
   const wayIdToColorMap = new Map<string, string>()
 
+  if (roadLineLayer.value) map.value.removeLayer(roadLineLayer.value as any)
+  if (roadPointLayer.value) map.value.removeLayer(roadPointLayer.value as any)
+  roadLineLayer.value = null
+  roadPointLayer.value = null
+
   try {
-    // --- 선 데이터 로드 (항상 수행) ---
     const lineResponse = await fetch('/road_data.json')
     if (!lineResponse.ok) throw new Error(`Line data HTTP error! status: ${lineResponse.status}`)
     const lineData = await lineResponse.json()
@@ -265,9 +283,16 @@ const loadLayers = async () => {
       featureProjection: map.value.getView().getProjection(),
     })
 
-    // --- 'rpci', 'report' 모드일 경우 임시 색상 할당 ---
-    if (props.type === 'rpci' || props.type === 'report') {
-      lineFeatures.forEach((feature: any) => {
+    lineFeatures.forEach((feature: any) => {
+      const properties = feature.getProperties()
+      // --- GeoJSON properties의 'pid'를 피처 ID로 설정 ---
+      const wayId = properties['pid']?.toString() // pid 사용 확인
+      if (wayId) {
+        feature.setId(wayId) // Feature 객체에 ID 설정
+      }
+      // --- ID 설정 끝 ---
+
+      if (props.type === 'rpci' || props.type === 'report') {
         const rand = Math.random()
         let assignedColor = rpciColors['default']
         for (let i = 0; i < rpciColorDistribution.length; i++) {
@@ -276,29 +301,21 @@ const loadLayers = async () => {
             break
           }
         }
-        feature.set('assigned_rpci_color', assignedColor) // 피처에 임시 속성 설정
-
-        const wayId = feature.getId()
+        feature.set('assigned_rpci_color', assignedColor)
         if (wayId) {
-          wayIdToColorMap.set(wayId.toString(), assignedColor)
+          // 설정된 wayId 사용
+          wayIdToColorMap.set(wayId, assignedColor)
         }
-      })
-    }
-    // --- 임시 색상 할당 끝 ---
-
-    // --- 선 레이어 생성 및 추가 ---
-    const lineSource = new VectorSource({ features: lineFeatures })
-    lineSource.getFeatures().forEach((feature: any) => {
-      const properties = feature.getProperties()
-      if (properties['@id']) {
-        feature.setId(properties['@id'])
+      } else {
+        // 다른 모드에서도 기본 색상 설정 (스타일 함수 오류 방지)
+        feature.set('assigned_rpci_color', rpciColors['default'])
       }
     })
-    roadLineLayer.value = new VectorLayer({ source: lineSource, style: layerStyleFunction })
-    map.value.addLayer(roadLineLayer.value)
-    // --- 선 레이어 생성 및 추가 끝 ---
 
-    // --- 점 데이터 로드 ('road', 'rpci' 모드) ---
+    const lineSource = new VectorSource<any>({ features: lineFeatures })
+    roadLineLayer.value = new VectorLayer({ source: lineSource, style: layerStyleFunction })
+    map.value.addLayer(roadLineLayer.value as any)
+
     if (props.type === 'road' || props.type === 'rpci') {
       const pointResponse = await fetch('/road_points_5m.json')
       if (!pointResponse.ok)
@@ -309,37 +326,38 @@ const loadLayers = async () => {
         featureProjection: map.value.getView().getProjection(),
       })
 
-      // 'rpci' 모드일 경우 점에 부모 선 색상 상속
       if (props.type === 'rpci') {
         pointFeatures.forEach((feature: any) => {
-          const props = feature.getProperties()
-          const parentId = props['parent_way_id']?.toString()
+          const propsFs = feature.getProperties()
+          const parentId = propsFs['parent_way_id']?.toString() // 부모 ID 가져오기
           if (parentId && wayIdToColorMap.has(parentId)) {
             feature.set('assigned_rpci_color', wayIdToColorMap.get(parentId))
           } else {
             feature.set('assigned_rpci_color', rpciColors['default'])
           }
         })
+      } else {
+        pointFeatures.forEach((feature: any) => {
+          feature.set('assigned_rpci_color', rpciColors['default']) // road 모드 기본 색상
+        })
       }
 
-      const pointSource = new VectorSource({ features: pointFeatures })
+      const pointSource = new VectorSource<any>({ features: pointFeatures })
       roadPointLayer.value = new VectorLayer({
         source: pointSource,
         style: layerStyleFunction,
-        renderBuffer: 0,
+        renderBuffer: 20, // 점이 많을 경우 renderBuffer 늘리기 고려
       })
-      map.value.addLayer(roadPointLayer.value)
+      map.value.addLayer(roadPointLayer.value as any) // as any 제거 가능
     } else {
-      roadPointLayer.value = null // 다른 모드에서는 null 유지
+      roadPointLayer.value = null
     }
-    // --- 점 데이터 로드 끝 ---
   } catch (error) {
     alert(`Error loading layers: ${error}`)
   } finally {
     isLoading.value = false
   }
 }
-// <<< loadLayers 끝 >>>
 
 const handleResetCenter = () => {
   map.value?.getView().animate({ center: center, zoom: ZOOM_DEFAULT, duration: MAP_DURATION })
@@ -353,7 +371,7 @@ const vworldTileLayer = new TileLayer({
 
 const customInteractions = defaultInteractions().extend([
   new MouseWheelZoom({
-    constrainResolution: true, // 이 옵션을 true로 설정합니다.
+    constrainResolution: true,
   }),
 ])
 
@@ -367,10 +385,8 @@ onMounted(async () => {
   })
   await loadLayers()
 
-  // --- Click Handler (모드별 동작 분기 확인) ---
   map.value?.on('singleclick', (e: MapBrowserEvent<UIEvent>) => {
     if (props.type === 'cover' || props.type === 'report') {
-      // <<< 'cover', 'report' 클릭 무시
       return
     }
 
@@ -398,16 +414,16 @@ onMounted(async () => {
     let lineFirstCoord: number[] | null = null
 
     if (clickedFeatureInstance) {
-      const props = clickedFeatureInstance.getProperties()
+      const propsFs = clickedFeatureInstance.getProperties()
       const geometry = clickedFeatureInstance.getGeometry()
       const type = geometry?.getType()
       if (type === 'LineString') {
-        clickedWayId = props['@id']
+        clickedWayId = propsFs['pid']
         isLineClick = true
         clickedPointCoords = null
         lineFirstCoord = geometry.getFirstCoordinate()
       } else if (type === 'Point') {
-        clickedWayId = props['parent_way_id']
+        clickedWayId = propsFs['parent_way_id']
         clickedPointCoords = geometry.getCoordinates()
         isPointClick = true
       }
@@ -430,7 +446,6 @@ onMounted(async () => {
           .animate({ zoom: ZOOM_THRESHOLD, center: lineFirstCoord, duration: MAP_DURATION })
       } else if (isPointClick && map.value && clickedPointCoords) {
         map.value.getView().animate({ center: clickedPointCoords, duration: MAP_DURATION })
-        // emit은 점 클릭 시에만 ('road', 'rpci'는 이미 위에서 필터링됨)
         const properties = clickedFeatureInstance.getProperties()
         if (properties.geometry) {
           delete properties.geometry
@@ -444,21 +459,17 @@ onMounted(async () => {
         roadLineLayer.value?.getSource()?.changed()
         roadPointLayer.value?.getSource()?.changed()
       }
-      // emit은 'road', 'rpci' 모드에서만
       if (props.type === 'road' || props.type === 'rpci') {
         emit('close-drawer')
       }
     }
   })
-  // --- End Click Handler ---
 
-  // --- Hover Handler (모드별 동작 분기 확인) ---
   map.value?.on('pointermove', (e: MapBrowserEvent<UIEvent>) => {
     if (e.dragging) return
     const pixel = map.value?.getEventPixel(e.originalEvent)
     if (!pixel || !map.value) return
 
-    // <<< 호버 가능 레이어 결정
     const hoverableLayers: any[] = []
     if (roadLineLayer.value) hoverableLayers.push(roadLineLayer.value)
     if ((props.type === 'road' || props.type === 'rpci') && roadPointLayer.value) {
@@ -471,7 +482,6 @@ onMounted(async () => {
     })
     const targetElement = map.value.getTargetElement() as HTMLElement | undefined
     if (targetElement) {
-      // <<< 'cover', 'report' 모드에서는 커서 변경 안함
       if (props.type === 'cover' || props.type === 'report') {
         targetElement.style.cursor = ''
       } else {
@@ -479,16 +489,12 @@ onMounted(async () => {
       }
     }
   })
-  // --- End Hover Handler ---
 
-  // --- Zoom Change Listener ---
   map.value?.getView().on('change:resolution', () => {
     roadLineLayer.value?.getSource()?.changed()
-    roadPointLayer.value?.getSource()?.changed() // 존재할 때만 내부적으로 처리됨
+    roadPointLayer.value?.getSource()?.changed()
   })
-  // --- End Zoom Change Listener ---
 
-  // --- Other Listeners ---
   window.addEventListener('reset-map-center', handleResetCenter)
   window.addEventListener('zoom-in-map', () => {
     const currentZoom = map.value?.getView().getZoom()
@@ -498,17 +504,14 @@ onMounted(async () => {
     const currentZoom = map.value?.getView().getZoom()
     if (currentZoom) map.value?.getView().animate({ zoom: currentZoom - 1, duration: MAP_DURATION })
   })
-  // --- End Other Listeners ---
 })
 
 onBeforeUnmount(() => {
-  /* ... */
   if (map.value) {
     map.value.setTarget(undefined)
     map.value = null
   }
   window.removeEventListener('reset-map-center', handleResetCenter)
-  // TODO: Remove other listeners
 })
 </script>
 
@@ -516,10 +519,13 @@ onBeforeUnmount(() => {
   <div class="relative w-full h-full">
     <div ref="mapContainer" class="absolute top-0 left-0 h-full" :style="mapStyle"></div>
     <Transition name="fade">
-      <div v-if="isLoading"
-        class="absolute inset-0 bg-white bg-opacity-60 flex items-center justify-center z-50 pointer-events-none">
+      <div
+        v-if="isLoading"
+        class="absolute inset-0 bg-white bg-opacity-60 flex items-center justify-center z-50 pointer-events-none"
+      >
         <div
-          class="text-black text-xl bg-white bg-opacity-90 px-6 py-4 rounded-lg flex flex-row items-center space-x-3">
+          class="text-black text-xl bg-white bg-opacity-90 px-6 py-4 rounded-lg flex flex-row items-center space-x-3"
+        >
           <Cog :size="48" class="spin text-green-600" />
           <span class="loading-text">Loading RoadMonitor</span>
         </div>

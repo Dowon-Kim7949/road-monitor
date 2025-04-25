@@ -14,24 +14,19 @@ const toggleOpen = () => {
 <template>
   <!-- 접힌 상태 버튼 -->
   <div v-if="!isOpen" class="floating-top-right fixed bottom-62 right-1 z-50 shadow">
-    <button
-      class="flex items-center bg-white shadow px-3 py-1 text-md font-bold rounded-sm cursor-pointer"
-      @click="toggleOpen"
-    >
+    <button class="flex items-center bg-white shadow px-3 py-1 text-md font-bold rounded-sm cursor-pointer"
+      @click="toggleOpen">
       <RIcon name="ChevronLeft" class="w-4 h-4 mr-2 mt-1" />
       <span class="pr-2 pt-1">{{ t('button.coverage') }}</span>
     </button>
   </div>
   <!-- 펼친 상태 레전드 -->
-  <div
-    v-else
-    class="floating-top-right fixed bottom-62 right-1 bg-white rounded-sm rounded-tl-none shadow py-4 px-7 w-55"
-  >
+  <div v-else
+    class="floating-top-right fixed bottom-62 right-1 bg-white rounded-sm rounded-tl-none shadow py-4 px-7 w-55">
     <!-- 닫기 버튼 -->
     <button
       class="absolute top-0 left-[-20px] text-md text-gray-600 bg-white px-1 py-2 rounded-tl-sm rounded-bl-sm cursor-pointer"
-      @click="toggleOpen"
-    >
+      @click="toggleOpen">
       <RIcon name="ChevronRight" class="w-4 h-4" />
     </button>
 

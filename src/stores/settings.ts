@@ -74,13 +74,10 @@ export const useSettingsStore = defineStore('settings', {
             )
           ) {
             this.legendLevels = parsedSettings
-            console.log('Legend settings loaded from storage.')
           } else {
-            console.warn('Invalid legend settings structure in storage. Using defaults.')
             // 필요시 기본값으로 강제 재설정하는 로직 추가 가능
           }
         } else {
-          console.log('No saved legend settings found, using default.')
         }
       } catch (error) {
         console.error('Failed to load settings:', error)
@@ -94,10 +91,7 @@ export const useSettingsStore = defineStore('settings', {
       this.legendLevels = newLevels
       try {
         localStorage.setItem('appLegendSettings', JSON.stringify(newLevels))
-        console.log('Legend settings saved.')
-      } catch (error) {
-        console.error('Failed to save settings:', error)
-      }
+      } catch (error) {}
     },
 
     getLevelDetailsByScore(

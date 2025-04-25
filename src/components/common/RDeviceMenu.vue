@@ -16,18 +16,12 @@
       <div class="col-auto w-[50%] space-y-2 pr-4 pt-4 border-r-1 border-gray-40 text-center">
         <button
           class="w-[80%] py-2 px-4 rounded-md text-sm text-white bg-gray-40 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 cursor-pointer"
-          :class="selectedDeviceId === 'all' ? 'bg-gray-100' : ''"
-          @click="selectAllDevices"
-        >
+          :class="selectedDeviceId === 'all' ? 'bg-gray-100' : ''" @click="selectAllDevices">
           {{ t('all') }}
         </button>
-        <button
-          v-for="device in devices"
-          :key="device.id"
+        <button v-for="device in devices" :key="device.id"
           class="w-[80%] py-2 px-4 rounded-md text-sm text-white bg-gray-40 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 cursor-pointer"
-          :class="selectedDeviceId === device.id ? 'bg-gray-100' : ''"
-          @click="selectDevice(device.id)"
-        >
+          :class="selectedDeviceId === device.id ? 'bg-gray-100' : ''" @click="selectDevice(device.id)">
           {{ device.model }}
         </button>
       </div>

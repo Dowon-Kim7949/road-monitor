@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { onUnmounted, ref, watch } from 'vue'
 import RImageViewer from './RImageViewer.vue'
 import RImageInfo from './RImageInfo.vue'
 import RImageHistory from './RImageHistory.vue'
@@ -116,9 +116,7 @@ const onSelectHistory = (item: any) => {
   showModal.value = true
 }
 
-const onCopyLatLon = () => {
-  console.log('copy')
-}
+const onCopyLatLon = () => { }
 
 const onToggleHistoryFull = (expand: boolean) => {
   isFullHistoryMode.value = expand
@@ -134,41 +132,24 @@ watch(
   },
   { immediate: true },
 )
+
+onUnmounted(() => {
+  document.body.classList.remove('drawer-open')
+})
 </script>
 
 <template>
   <Transition name="slide-right">
-    <aside
-      v-if="modelValue"
-      class="fixed top-0 right-0 h-full w-[40%] bg-white shadow z-40 overflow-y-auto"
-    >
+    <aside v-if="modelValue" class="fixed top-0 right-0 h-full w-[40%] bg-white shadow z-40 overflow-y-auto">
       <!-- 기본 화면 -->
       <Transition name="slide-fade">
         <div class="p-6 space-y-2 h-full overflow-hidden">
-          <RImageViewer
-            :src="props.data?.image"
-            :type="type"
-            :histories="histories"
-            @fullscreen="onFullScreen"
-            @upload="handleUpload"
-          />
-          <RPciResultSummary
-            v-if="type === 'rpci'"
-            :score="80"
-            pciLabel="Satisfactory"
-            pciColor="#00C853"
-            :potholes="2"
-          />
-          <RImageInfo
-            :roadName="data?.roadName"
-            :lat="data?.lat"
-            :lon="data?.lon"
-            :nodeLink="data?.nodeLink"
-            :timestamp="data?.timestamp"
-            @copy-coord="onCopyLatLon"
-            :type="type"
-            class="pb-2"
-          />
+          <RImageViewer :src="props.data?.image" :type="type" :histories="histories" @fullscreen="onFullScreen"
+            @upload="handleUpload" />
+          <RPciResultSummary v-if="type === 'rpci'" :score="80" pciLabel="Satisfactory" pciColor="#00C853"
+            :potholes="2" />
+          <RImageInfo :roadName="data?.roadName" :lat="data?.lat" :lon="data?.lon" :nodeLink="data?.nodeLink"
+            :timestamp="data?.timestamp" @copy-coord="onCopyLatLon" :type="type" class="pb-2" />
           <hr class="border-gray-30" />
           <h3 class="text-lg font-semibold pt-2">
             {{ t(type === 'rpci' ? 'RPciHistory' : 'Roadhistory') }}
@@ -176,52 +157,21 @@ watch(
           <div v-if="type === 'rpci'" class="text-sm text-gray-600 font-semibold">
             {{ '남양교차로' }} → {{ '송림리145-4' }} ({{ '878m' }})
           </div>
-          <RImageHistory
-            :type="type"
-            :items="histories"
-            @select="onSelectHistory"
-            @expand="onToggleHistoryFull(true)"
-            :full="isFullHistoryMode"
-            @collapse="() => onToggleHistoryFull(false)"
-          />
+          <RImageHistory :type="type" :items="histories" @select="onSelectHistory" @expand="onToggleHistoryFull(true)"
+            :full="isFullHistoryMode" @collapse="() => onToggleHistoryFull(false)" />
         </div>
       </Transition>
     </aside>
   </Transition>
 
-  <RImageModal
-    :visible="showModal"
-    :type="type"
-    :images="histories"
-    @close="showModal = false"
-    @upload="handleUpload"
-  />
+  <RImageModal :visible="showModal" :type="type" :images="histories" @close="showModal = false"
+    @upload="handleUpload" />
   <RPciAnalysisModal :visible="showRPciModal" @close="showRPciModal = false" @submit="onSubmit" />
-  <RPciAnalysisSelectModal
-    :analysisTitle="analysisTitle"
-    :items="selelctItems"
-    :visible="showSelectRPciModal"
-    @close="selectModalClose"
-    @request="onRequest"
-  />
-  <RModal
-    :visible="showConfirm"
-    type="confirm"
-    title="분석 시작 취소"
-    content="rPCI 분석을 진행하지 않으시겠습니까? 이 작업은 되돌릴 수 없습니다"
-    okText="확인"
-    cancelText="취소"
-    @onCancel="showConfirm = false"
-    @onConfirm="onCancel"
-  />
-  <RModal
-    :visible="showAlert"
-    :title="modalTitle"
-    :content="modalContent"
-    type="alert"
-    okText="확인"
-    @onOk="onOk"
-  />
+  <RPciAnalysisSelectModal :analysisTitle="analysisTitle" :items="selelctItems" :visible="showSelectRPciModal"
+    @close="selectModalClose" @request="onRequest" />
+  <RModal :visible="showConfirm" type="confirm" title="분석 시작 취소" content="rPCI 분석을 진행하지 않으시겠습니까? 이 작업은 되돌릴 수 없습니다"
+    okText="확인" cancelText="취소" @onCancel="showConfirm = false" @onConfirm="onCancel" />
+  <RModal :visible="showAlert" :title="modalTitle" :content="modalContent" type="alert" okText="확인" @onOk="onOk" />
 </template>
 
 <style scoped>

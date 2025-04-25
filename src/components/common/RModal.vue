@@ -32,11 +32,8 @@ const dangerStyle = computed(() =>
 <template>
   <Teleport to="body">
     <transition name="fade">
-      <div
-        v-if="visible"
-        class="fixed inset-0 bg-black/40 z-[9998] flex items-center justify-center"
-        @keydown.esc="$emit('onClose')"
-      >
+      <div v-if="visible" class="fixed inset-0 bg-black/40 z-[9998] flex items-center justify-center"
+        @keydown.esc="$emit('onClose')">
         <div role="dialog" aria-modal="true" class="bg-white rounded-lg shadow-lg p-6 z-[9999]">
           <!-- Title -->
           <h3 class="text-lg font-bold text-black mb-3">
@@ -51,29 +48,21 @@ const dangerStyle = computed(() =>
           <!-- Buttons -->
           <div class="flex justify-end gap-2">
             <template v-if="showConfirm">
-              <button
-                type="button"
+              <button type="button"
                 class="px-4 py-2 text-sm rounded border bg-white hover:bg-gray-200 text-gray-800 cursor-pointer"
-                @click="$emit('onCancel')"
-              >
+                @click="$emit('onCancel')">
                 {{ cancelLabel }}
               </button>
-              <button
-                type="button"
-                class="px-4 py-2 text-sm rounded cursor-pointer"
-                :class="dangerStyle"
-                @click="$emit('onConfirm')"
-              >
+              <button type="button" class="px-4 py-2 text-sm rounded cursor-pointer" :class="dangerStyle"
+                @click="$emit('onConfirm')">
                 {{ okLabel }}
               </button>
             </template>
 
             <template v-else>
-              <button
-                type="button"
+              <button type="button"
                 class="px-4 py-2 text-sm rounded bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
-                @click="$emit('onOk')"
-              >
+                @click="$emit('onOk')">
                 {{ okLabel }}
               </button>
             </template>

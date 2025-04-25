@@ -35,19 +35,13 @@ const submit = () => {
 </style>
 
 <template>
-  <div
-    v-if="visible"
-    class="fixed inset-0 z-[9999] bg-gray-100/50 flex items-center justify-center"
-  >
+  <div v-if="visible" class="fixed inset-0 z-[9999] bg-gray-100/50 flex items-center justify-center">
     <div class="bg-white w-[410px] rounded shadow-lg px-4 pt-2 pb-4 relative">
       <!-- 닫기 버튼 -->
       <div class="flex pb-2 justify-between w-full">
         <div class="relative w-[90%] pt-[15px]">
           <div class="mb-4 flex h-2 overflow-hidden rounded bg-gray-30 text-xs">
-            <div
-              :style="{ width: `${step * 33.3}%` }"
-              class="bg-gray-80 transition-all duration-500 ease-out"
-            ></div>
+            <div :style="{ width: `${step * 33.3}%` }" class="bg-gray-80 transition-all duration-500 ease-out"></div>
           </div>
         </div>
         <button class="text-gray-500 cursor-pointer" @click="close">
@@ -74,11 +68,8 @@ const submit = () => {
       <!-- Step 2: 회차명 입력 -->
       <div v-if="step === 2">
         <p class="text-lg font-semibold mb-4">새롭게 생성될 회차의 이름을 입력해주세요.</p>
-        <input
-          v-model="batchName"
-          type="text"
-          class="w-full border rounded px-3 py-2 mb-6 text-sm focus:ring focus:outline-none"
-        />
+        <input v-model="batchName" type="text"
+          class="w-full border rounded px-3 py-2 mb-6 text-sm focus:ring focus:outline-none" />
         <div class="flex justify-end space-x-2">
           <RButton type="tertiary" size="small" :label="t('button.prev')" @click="step--" />
           <RButton type="tertiary" size="small" :label="t('button.next')" @click="submit" />

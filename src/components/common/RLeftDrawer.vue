@@ -37,10 +37,8 @@ const menuGroups = [
 
 <template>
   <Transition name="slide-left">
-    <aside
-      v-if="modelValue"
-      class="fixed top-0 left-0 h-full w-[240px] bg-gray-10 shadow z-[10] flex flex-col border-gray-40 border-r-1"
-    >
+    <aside v-if="modelValue"
+      class="fixed top-0 left-0 h-full w-[240px] bg-gray-10 shadow z-[10] flex flex-col border-gray-40 border-r-1">
       <!-- 상단 로고 및 닫기 버튼 -->
       <button class="z-50 bg-transparent p-7">
         <div class="flex">
@@ -52,13 +50,9 @@ const menuGroups = [
         </div>
       </button>
       <div v-if="!props.mode" class="fixed top-10 left-[239px] z-[5]">
-        <RButton
-          type="tertiary"
+        <RButton type="tertiary"
           class="bg-gray-10 rounded-br-sm rounded-tr-sm rounded-bl-none rounded-tl-none py-2 px-1 border-gray-40 border-r-1 border-t-1 border-b-1 border-l-0"
-          icon="chevron-left"
-          size="small"
-          @click="modelValue = false"
-        />
+          icon="chevron-left" size="small" @click="modelValue = false" />
       </div>
 
       <!-- 메뉴 섹션 -->
@@ -67,13 +61,9 @@ const menuGroups = [
           <p class="text-sm font-bold mb-1">{{ t(group.label) }}</p>
           <ul v-if="group.items" class="space-y-1 pl-2">
             <li v-for="(item, iIdx) in group.items" :key="iIdx">
-              <RouterLink
-                :to="item.path"
-                class="block w-full text-md py-1 px-2 rounded hover:bg-gray-200"
-                :class="{
-                  'text-blue-600 font-semibold bg-gray-200': route.path === item.path,
-                }"
-              >
+              <RouterLink :to="item.path" class="block w-full text-md py-1 px-2 rounded hover:bg-gray-200" :class="{
+                'text-blue-600 font-semibold bg-gray-200': route.path === item.path,
+              }">
                 {{ t(item.label) }}
               </RouterLink>
             </li>

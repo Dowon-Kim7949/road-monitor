@@ -167,7 +167,6 @@ const zoomIn = () => window.dispatchEvent(new CustomEvent('zoom-in-map'))
 const zoomOut = () => window.dispatchEvent(new CustomEvent('zoom-out-map'))
 
 const handleSelectMarker = (data: any) => {
-  console.log(data)
   selectedData.value = data
   if (selectedData.value) {
     selectedData.value.roadName = `${data.name ? data.name : '-'} (${data.length}m)`
@@ -185,38 +184,21 @@ const handleSelectMarker = (data: any) => {
     <!-- 우측 사이드바 (Suspense + Async) -->
     <Suspense>
       <template #default>
-        <RRightDrawer
-          v-model="rightDrawer"
-          :data="selectedData"
-          type="rpci"
-          :histories="testhistories"
-        />
+        <RRightDrawer v-model="rightDrawer" :data="selectedData" type="rpci" :histories="testhistories" />
       </template>
       <template #fallback>
-        <div
-          class="fixed top-0 right-0 w-1/2 h-full bg-white flex items-center justify-center z-40"
-        >
+        <div class="fixed top-0 right-0 w-1/2 h-full bg-white flex items-center justify-center z-40">
           <span class="text-gray-400 text-sm animate-pulse">데이터를 불러오는 중입니다...</span>
         </div>
       </template>
     </Suspense>
 
     <!-- 지도 영역 -->
-    <RMap
-      :leftDrawer="leftDrawer"
-      :rightDrawer="rightDrawer"
-      @select-feature="handleSelectMarker"
-      @close-drawer="rightDrawer = false"
-      type="rpci"
-    />
+    <RMap :leftDrawer="leftDrawer" :rightDrawer="rightDrawer" @select-feature="handleSelectMarker"
+      @close-drawer="rightDrawer = false" type="rpci" />
 
     <!-- 고정 버튼 모음 -->
-    <RFloatingButton
-      @reset-center="resetCenter"
-      @zoom-in="zoomIn"
-      @zoom-out="zoomOut"
-      type="rpci"
-      @toggle-left="toggleLeftDrawer"
-    />
+    <RFloatingButton @reset-center="resetCenter" @zoom-in="zoomIn" @zoom-out="zoomOut" type="rpci"
+      @toggle-left="toggleLeftDrawer" />
   </div>
 </template>

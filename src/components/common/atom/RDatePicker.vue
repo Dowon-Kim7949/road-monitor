@@ -170,21 +170,12 @@ watch(isOpen, (newIsOpen) => {
 <template>
   <div class="relative inline-block">
     <div class="relative flex items-center" @click="toggleCalendar">
-      <input
-        ref="inputRef"
-        type="text"
+      <input ref="inputRef" type="text"
         class="px-3 py-2 border border-gray-300 rounded shadow cursor-pointer w-full text-center focus:outline-none text-gray-100/80 font-bold"
-        :value="displayValue"
-        readonly
-      />
+        :value="displayValue" readonly />
     </div>
-    <div
-      v-if="isOpen"
-      ref="calendarRef"
-      class="absolute z-10 rounded shadow-md bg-white overflow-hidden"
-      :class="calendarPosition === 'top' ? 'bottom-full mb-1' : 'top-full mt-1'"
-      style="width: 300px"
-    >
+    <div v-if="isOpen" ref="calendarRef" class="absolute z-10 rounded shadow-md bg-white overflow-hidden"
+      :class="calendarPosition === 'top' ? 'bottom-full mb-1' : 'top-full mt-1'" style="width: 300px">
       <div class="flex justify-between items-center p-4">
         <button @click="prevMonth" class="focus:outline-none cursor-pointer">
           <RIcon name="ChevronLeft" />
@@ -196,28 +187,19 @@ watch(isOpen, (newIsOpen) => {
       </div>
       <div class="grid grid-cols-7 gap-1 p-2">
         <div v-for="day in daysOfWeek" :key="day" class="text-center text-gray-500">{{ day }}</div>
-        <div
-          v-for="(date, index) in datesInMonth"
-          :key="index"
-          class="text-center p-1 cursor-pointer"
-          :class="{
-            'text-blue-500 font-semibold': isSelected(date),
-            'text-gray-300': isNotInCurrentMonth(date),
-            'hover:bg-blue-100 rounded-sm': !isNotInCurrentMonth(date),
-            'bg-blue-100 rounded-sm': isSelected(date),
-          }"
-          @click="selectDate(date)"
-        >
+        <div v-for="(date, index) in datesInMonth" :key="index" class="text-center p-1 cursor-pointer" :class="{
+          'text-blue-500 font-semibold': isSelected(date),
+          'text-gray-300': isNotInCurrentMonth(date),
+          'hover:bg-blue-100 rounded-sm': !isNotInCurrentMonth(date),
+          'bg-blue-100 rounded-sm': isSelected(date),
+        }" @click="selectDate(date)">
           {{ date.getDate() }}
         </div>
       </div>
       <div v-if="isSelectingRange" class="p-1 border-t border-gray-200 flex justify-around">
         <button @click="cancelRange" class="px-4 py-2 rounded cursor-pointer">취소</button>
-        <button
-          @click="confirmRange"
-          :disabled="!startDate || !endDate"
-          class="px-4 py-2 rounded bg-blue-500 text-white disabled:bg-gray-300 cursor-pointer"
-        >
+        <button @click="confirmRange" :disabled="!startDate || !endDate"
+          class="px-4 py-2 rounded bg-blue-500 text-white disabled:bg-gray-300 cursor-pointer">
           확인
         </button>
       </div>

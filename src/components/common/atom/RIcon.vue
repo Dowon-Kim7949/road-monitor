@@ -28,15 +28,8 @@ const mergedProps = computed(() => ({
   <component v-if="iconComponent && !props.imgSrc" :is="iconComponent" v-bind="mergedProps" />
 
   <!-- 이미지 아이콘 사용 시 -->
-  <img
-    v-else-if="isImageIcon"
-    :src="props.imgSrc"
-    :alt="'icon'"
-    :width="props.size"
-    :height="props.size"
-    class="inline-block object-contain"
-    v-bind="attrs"
-  />
+  <img v-else-if="isImageIcon" :src="props.imgSrc" :alt="'icon'" :width="props.size" :height="props.size"
+    class="inline-block object-contain" v-bind="attrs" />
 
   <!-- fallback -->
   <span v-else class="text-red-500 text-xs">Invalid icon</span>

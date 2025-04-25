@@ -48,9 +48,7 @@ const resetCenter = () => {
 const zoomIn = () => window.dispatchEvent(new CustomEvent('zoom-in-map'))
 const zoomOut = () => window.dispatchEvent(new CustomEvent('zoom-out-map'))
 
-const deviceSelected = () => {
-  console.log('deviceSelected')
-}
+const deviceSelected = () => { }
 </script>
 
 <template>
@@ -63,12 +61,7 @@ const deviceSelected = () => {
     <RMap :leftDrawer="leftDrawer" type="cover" />
 
     <!-- 고정 버튼 모음 -->
-    <RFloatingButton
-      @reset-center="resetCenter"
-      @zoom-in="zoomIn"
-      @zoom-out="zoomOut"
-      type="cover"
-      @toggle-left="toggleLeftDrawer"
-    />
+    <RFloatingButton @reset-center="resetCenter" @zoom-in="zoomIn" @zoom-out="zoomOut" type="cover"
+      @toggle-left="toggleLeftDrawer" />
   </div>
 </template>

@@ -330,94 +330,55 @@ const getLevelDetailsByScore = (score: number) => {
       <table class="min-w-full divide-y divide-gray-200">
         <thead>
           <tr>
-            <th
-              scope="col"
+            <th scope="col"
               class="px-6 py-3 text-center text-sm font-bold text-black uppercase tracking-wider cursor-pointer"
-              @click="sortTable('roadname')"
-            >
+              @click="sortTable('roadname')">
               <div class="flex gap-2 items-center justify-center">
                 <div>{{ t('Roadname') }}</div>
-                <RColumnIcon
-                  :column="'roadname'"
-                  :sortColumn="sortColumn"
-                  :sortDirection="sortDirection"
-                />
+                <RColumnIcon :column="'roadname'" :sortColumn="sortColumn" :sortDirection="sortDirection" />
               </div>
             </th>
-            <th
-              scope="col"
+            <th scope="col"
               class="px-6 py-3 text-center text-sm font-bold text-black uppercase tracking-wider cursor-pointer"
-              @click="sortTable('nodelink')"
-            >
+              @click="sortTable('nodelink')">
               <div class="flex gap-2 items-center justify-center">
                 <div>{{ t('Roadsegment') }}</div>
-                <RColumnIcon
-                  :column="'nodelink'"
-                  :sortColumn="sortColumn"
-                  :sortDirection="sortDirection"
-                />
+                <RColumnIcon :column="'nodelink'" :sortColumn="sortColumn" :sortDirection="sortDirection" />
               </div>
             </th>
-            <th
-              scope="col"
-              class="px-6 py-3 text-center text-sm font-bold text-black tracking-wider"
-            >
+            <th scope="col" class="px-6 py-3 text-center text-sm font-bold text-black tracking-wider">
               <div class="flex gap-2 items-center justify-center">
                 <div>rPCI {{ t('button.grade') }}</div>
               </div>
             </th>
-            <th
-              scope="col"
+            <th scope="col"
               class="px-6 py-3 text-center text-sm font-bold text-black uppercase tracking-wider cursor-pointer"
-              @click="sortTable('rpci_score')"
-            >
+              @click="sortTable('rpci_score')">
               <div class="flex gap-2 items-center justify-center">
                 <div>{{ t('score') }}</div>
-                <RColumnIcon
-                  :column="'rpci_score'"
-                  :sortColumn="sortColumn"
-                  :sortDirection="sortDirection"
-                />
+                <RColumnIcon :column="'rpci_score'" :sortColumn="sortColumn" :sortDirection="sortDirection" />
               </div>
             </th>
-            <th
-              scope="col"
-              class="px-6 py-3 text-center text-sm font-bold text-black uppercase tracking-wider"
-            >
+            <th scope="col" class="px-6 py-3 text-center text-sm font-bold text-black uppercase tracking-wider">
               {{ t('Hazard_type') }}
             </th>
-            <th
-              scope="col"
+            <th scope="col"
               class="px-6 py-3 text-center text-sm font-bold text-black uppercase tracking-wider cursor-pointer"
-              @click="sortTable('captured_at')"
-            >
+              @click="sortTable('captured_at')">
               <div class="flex gap-2 items-center justify-center">
                 <div>{{ t('Capture_at') }}</div>
-                <RColumnIcon
-                  :column="'captured_at'"
-                  :sortColumn="sortColumn"
-                  :sortDirection="sortDirection"
-                />
+                <RColumnIcon :column="'captured_at'" :sortColumn="sortColumn" :sortDirection="sortDirection" />
               </div>
             </th>
-            <th
-              scope="col"
+            <th scope="col"
               class="px-6 py-3 text-center text-sm font-bold text-black uppercase tracking-wider cursor-pointer"
-              @click="sortTable('analysis_at')"
-            >
+              @click="sortTable('analysis_at')">
               <div class="flex gap-2 items-center justify-center">
                 <div>{{ t('Analysis_at') }}</div>
-                <RColumnIcon
-                  :column="'analysis_at'"
-                  :sortColumn="sortColumn"
-                  :sortDirection="sortDirection"
-                />
+                <RColumnIcon :column="'analysis_at'" :sortColumn="sortColumn" :sortDirection="sortDirection" />
               </div>
             </th>
-            <th
-              scope="col"
-              class="px-6 py-3 text-center text-sm font-bold text-black uppercase tracking-wider"
-            >
+            <th scope="col" class="px-6 py-3 text-center text-sm font-bold text-black uppercase tracking-wider">
               {{ t('button.map') }}
             </th>
           </tr>
@@ -432,21 +393,16 @@ const getLevelDetailsByScore = (score: number) => {
             </td>
             <td class="px-3 py-3 text-center whitespace-nowrap text-sm text-black">
               <div class="w-full flex items-center justify-center">
-                <p
-                  class="text-sm font-semibold px-3 py-1 rounded-full text-center w-[70%]"
-                  :style="{
-                    backgroundColor: getLevelDetailsByScore(item.rpci_score)?.color,
-                    color: getLevelDetailsByScore(item.rpci_score)?.textColor,
-                  }"
-                >
+                <p class="text-sm font-semibold px-3 py-1 rounded-full text-center w-[70%]" :style="{
+                  backgroundColor: getLevelDetailsByScore(item.rpci_score)?.color,
+                  color: getLevelDetailsByScore(item.rpci_score)?.textColor,
+                }">
                   {{ getLevelDetailsByScore(item.rpci_score)?.label }}
                 </p>
               </div>
             </td>
-            <td
-              class="px-3 py-3 text-center whitespace-nowrap text-sm font-bold"
-              :style="{ color: getLevelDetailsByScore(item.rpci_score)?.color }"
-            >
+            <td class="px-3 py-3 text-center whitespace-nowrap text-sm font-bold"
+              :style="{ color: getLevelDetailsByScore(item.rpci_score)?.color }">
               {{ item.rpci_score }}
             </td>
             <td class="px-3 py-3 text-center text-sm text-black underline cursor-pointer">
@@ -468,32 +424,23 @@ const getLevelDetailsByScore = (score: number) => {
       </table>
     </div>
     <div class="flex px-4 py-3 bg-white justify-between items-center border-gray-20 border-t-1">
-      <button
-        @click="prevPage"
-        :disabled="currentPage === 0"
-        class="text-sm px-3 py-1 border rounded text-black hover:bg-gray-100 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
-      >
+      <button @click="prevPage" :disabled="currentPage === 0"
+        class="text-sm px-3 py-1 border rounded text-black hover:bg-gray-100 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer">
         {{ t('button.prev') }}
       </button>
       <div class="flex space-x-3 items-center flex-1 justify-center">
         <template v-for="(page, index) in displayedPageNumbers" :key="`page-${index}`">
-          <button
-            v-if="typeof page === 'number'"
+          <button v-if="typeof page === 'number'"
             class="pagination-button text-sm px-3 py-1 rounded hover:bg-gray-200 disabled:opacity-40 disabled:cursor-not-allowed"
-            :class="{ 'active-page': page === currentPage + 1 }"
-            @click="goToPage(page)"
-          >
+            :class="{ 'active-page': page === currentPage + 1 }" @click="goToPage(page)">
             {{ page }}
           </button>
           <span v-else class="pagination-ellipsis"> {{ page }} </span>
         </template>
       </div>
 
-      <button
-        @click="nextPage"
-        :disabled="currentPage >= pageCount - 1"
-        class="text-sm px-3 py-1 border rounded text-black hover:bg-gray-100 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
-      >
+      <button @click="nextPage" :disabled="currentPage >= pageCount - 1"
+        class="text-sm px-3 py-1 border rounded text-black hover:bg-gray-100 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer">
         {{ t('button.next') }}
       </button>
     </div>

@@ -38,27 +38,18 @@ const selectedGrade = ref('7') // RMLevelSetting 컴포넌트와 연결된 값
             </h2>
             <div class="flex flex-col sm:flex-row items-center gap-10 mb-5">
               <div class="setting-label pl-6">
-                <label for="duplicate-removal" class="font-bold text-gray-600 block mb-1"
-                  >중복 촬영 데이터 제거</label
-                >
+                <label for="duplicate-removal" class="font-bold text-gray-600 block mb-1">중복 촬영 데이터 제거</label>
                 <p class="text-sm text-gray-600">
                   같은 날 동일한 지점을 촬영한 경우, 그 중 최신 데이터만 보관합니다.
                 </p>
               </div>
               <div class="flex shrink-0 items-center sm:pt-0 ml-5">
-                <label
-                  for="duplicate-removal"
-                  class="relative inline-flex items-center cursor-pointer"
-                >
-                  <input
-                    type="checkbox"
-                    id="duplicate-removal"
-                    class="sr-only peer"
-                    v-model="duplicateRemovalEnabled"
-                  />
+                <label for="duplicate-removal" class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" id="duplicate-removal" class="sr-only peer"
+                    v-model="duplicateRemovalEnabled" />
                   <div
-                    class="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"
-                  ></div>
+                    class="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500">
+                  </div>
                 </label>
               </div>
             </div>

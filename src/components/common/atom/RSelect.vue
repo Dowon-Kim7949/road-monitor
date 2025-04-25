@@ -329,46 +329,26 @@ onUnmounted(() => {
 
 <template>
   <div ref="selectElement" class="relative w-full">
-    <label
-      v-if="props.label"
-      :id="labelId"
-      :for="props.id"
-      class="block text-sm font-medium text-gray-700 mb-1"
-    >
+    <label v-if="props.label" :id="labelId" :for="props.id" class="block text-sm font-medium text-gray-700 mb-1">
       {{ props.label }}
     </label>
 
-    <button
-      ref="buttonElement"
-      :id="props.id"
-      type="button"
-      :disabled="props.disabled"
+    <button ref="buttonElement" :id="props.id" type="button" :disabled="props.disabled"
       class="relative w-full cursor-default rounded-md border bg-white py-2 pl-3 pr-10 text-left shadow-sm focus:outline-none focus:ring-1 sm:text-sm"
       :class="[
         props.disabled
           ? 'bg-gray-100 cursor-not-allowed text-gray-500'
           : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500',
         isOpen ? 'border-indigo-500 ring-1 ring-indigo-500' : '',
-      ]"
-      @click="toggleDropdown"
-      @keydown="handleKeyDown"
-      role="combobox"
-      aria-haspopup="listbox"
-      :aria-expanded="isOpen"
-      :aria-labelledby="labelId"
-      :aria-describedby="helpTextId"
-    >
+      ]" @click="toggleDropdown" @keydown="handleKeyDown" role="combobox" aria-haspopup="listbox"
+      :aria-expanded="isOpen" :aria-labelledby="labelId" :aria-describedby="helpTextId">
       <span class="block truncate" :class="{ 'text-gray-500': !selectedOption }">
         {{ buttonText }}
       </span>
 
       <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-        <ChevronDown
-          :size="20"
-          class="text-gray-500 transition-transform duration-200 ease-in-out"
-          :class="{ 'rotate-180': isOpen }"
-          aria-hidden="true"
-        />
+        <ChevronDown :size="20" class="text-gray-500 transition-transform duration-200 ease-in-out"
+          :class="{ 'rotate-180': isOpen }" aria-hidden="true" />
       </span>
     </button>
 
@@ -376,60 +356,30 @@ onUnmounted(() => {
       {{ props.helpText }}
     </p>
 
-    <ul
-      v-if="isOpen"
-      ref="optionsListElement"
+    <ul v-if="isOpen" ref="optionsListElement"
       class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
-      tabindex="-1"
-      role="listbox"
-      :aria-labelledby="labelId"
-    >
-      <li
-        v-for="(option, index) in props.options"
-        :key="option.value"
-        :id="`${props.id}-option-${index}`"
-        role="option"
-        :aria-selected="option.value === props.modelValue"
-        :aria-disabled="option.disabled"
-        class="relative cursor-default select-none py-2 pl-3 pr-9 text-gray-900"
-        :class="{
+      tabindex="-1" role="listbox" :aria-labelledby="labelId">
+      <li v-for="(option, index) in props.options" :key="option.value" :id="`${props.id}-option-${index}`" role="option"
+        :aria-selected="option.value === props.modelValue" :aria-disabled="option.disabled"
+        class="relative cursor-default select-none py-2 pl-3 pr-9 text-gray-900" :class="{
           'bg-indigo-100 text-indigo-900': index === focusedOptionIndex,
           'cursor-not-allowed opacity-50': option.disabled,
           'hover:bg-indigo-50': !option.disabled && index !== focusedOptionIndex,
-        }"
-        @click="clickOption(option)"
-        @mouseenter="focusedOptionIndex = index"
-        @mouseleave="focusedOptionIndex = -1"
-        :title="option.label.length > 30 ? option.label : undefined"
-      >
-        <span
-          class="block truncate"
-          :class="{ 'font-semibold': option.value === props.modelValue }"
-        >
+        }" @click="clickOption(option)" @mouseenter="focusedOptionIndex = index" @mouseleave="focusedOptionIndex = -1"
+        :title="option.label.length > 30 ? option.label : undefined">
+        <span class="block truncate" :class="{ 'font-semibold': option.value === props.modelValue }">
           {{ option.label }} ({{ option.analyze_at }})
         </span>
-        <span
-          v-if="option.value === props.modelValue"
-          class="absolute inset-y-0 right-0 flex items-center pr-4 text-indigo-600"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            class="h-5 w-5"
-          >
-            <path
-              fill-rule="evenodd"
+        <span v-if="option.value === props.modelValue"
+          class="absolute inset-y-0 right-0 flex items-center pr-4 text-indigo-600">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
+            <path fill-rule="evenodd"
               d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-              clip-rule="evenodd"
-            />
+              clip-rule="evenodd" />
           </svg>
         </span>
       </li>
-      <li
-        v-if="props.options.length === 0"
-        class="relative cursor-default select-none py-2 px-3 text-gray-500"
-      >
+      <li v-if="props.options.length === 0" class="relative cursor-default select-none py-2 px-3 text-gray-500">
         옵션이 없습니다.
       </li>
     </ul>

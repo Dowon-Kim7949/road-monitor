@@ -42,19 +42,19 @@ const selectedIcon = computed(() => {
 const sizeClasses = computed(() => {
   return isIconOnly.value
     ? {
-        xsmall: 'h-fit p-1',
-        small: 'h-fit p-2',
-        medium: 'h-fit p-2.5',
-        large: 'h-fit p-3',
-        xlarge: 'h-fit p-3.5',
-      }[props.size]
+      xsmall: 'h-fit p-1',
+      small: 'h-fit p-2',
+      medium: 'h-fit p-2.5',
+      large: 'h-fit p-3',
+      xlarge: 'h-fit p-3.5',
+    }[props.size]
     : {
-        xsmall: 'h-[24px] px-2 py-1 text-xs rounded-xs',
-        small: 'h-[32px] px-3 py-1.5 text-sm rounded-sm',
-        medium: 'h-[40px] px-4 py-2 text-base rounded-md',
-        large: 'h-[48px] px-5 py-2.5 text-lg rounded-lg',
-        xlarge: 'h-[56px] px-6 py-3 text-xl rounded-xl',
-      }[props.size]
+      xsmall: 'h-[24px] px-2 py-1 text-xs rounded-xs',
+      small: 'h-[32px] px-3 py-1.5 text-sm rounded-sm',
+      medium: 'h-[40px] px-4 py-2 text-base rounded-md',
+      large: 'h-[48px] px-5 py-2.5 text-lg rounded-lg',
+      xlarge: 'h-[56px] px-6 py-3 text-xl rounded-xl',
+    }[props.size]
 })
 
 const typeClasses = computed(
@@ -74,40 +74,24 @@ const typeClasses = computed(
 </script>
 
 <template>
-  <button
-    type="button"
-    :class="[
-      'krds-btn font-sans font-medium transition-colors duration-200 cursor-pointer',
-      'inline-flex items-center justify-center self-auto focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed',
-      typeClasses,
-      sizeClasses,
-      { 'rounded-full aspect-square': isIconOnly, 'gap-2': !isIconOnly },
-    ]"
-    :aria-label="label"
-  >
+  <button type="button" :class="[
+    'krds-btn font-sans font-medium transition-colors duration-200 cursor-pointer',
+    'inline-flex items-center justify-center self-auto focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed',
+    typeClasses,
+    sizeClasses,
+    { 'rounded-full aspect-square': isIconOnly, 'gap-2': !isIconOnly },
+  ]" :aria-label="label">
     <template v-if="iconPos === 'left'">
-      <component
-        v-if="selectedIcon"
-        :is="selectedIcon"
-        :size="iconSize"
-        :stroke-width="strokeWidth"
-        class="stroke-current"
-        :class="strokeShadow ? 'filter drop-shadow-[0_0_2px_#0f0f0f]' : ''"
-      />
+      <component v-if="selectedIcon" :is="selectedIcon" :size="iconSize" :stroke-width="strokeWidth"
+        class="stroke-current" :class="strokeShadow ? 'filter drop-shadow-[0_0_2px_#0f0f0f]' : ''" />
       <template v-if="isLoaded">
         <Spinner :size="size" />
       </template>
     </template>
     <span v-if="!isIconOnly" class="whitespace-nowrap">{{ label }}</span>
     <template v-if="iconPos === 'right'">
-      <component
-        v-if="selectedIcon"
-        :is="selectedIcon"
-        :size="iconSize"
-        :stroke-width="strokeWidth"
-        class="stroke-current"
-        :class="strokeShadow ? 'filter drop-shadow-[0_0_2px_#0f0f0f]' : ''"
-      />
+      <component v-if="selectedIcon" :is="selectedIcon" :size="iconSize" :stroke-width="strokeWidth"
+        class="stroke-current" :class="strokeShadow ? 'filter drop-shadow-[0_0_2px_#0f0f0f]' : ''" />
       <template v-if="isLoaded">
         <Spinner :size="size" />
       </template>

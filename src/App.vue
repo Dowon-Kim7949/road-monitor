@@ -2,9 +2,9 @@
 import { RouterView } from 'vue-router'
 import { onMounted, onBeforeUnmount } from 'vue'
 
-onMounted(() => {})
+onMounted(() => { })
 
-onBeforeUnmount(() => {})
+onBeforeUnmount(() => { })
 </script>
 
 <template>

@@ -64,17 +64,12 @@ watch(
 
 <template>
   <div class="inline-flex rounded-full p-0.5 bg-gray-100 space-x-0 border-1 border-gray-200">
-    <button
-      v-for="button in buttons"
-      :key="button.id"
-      @click="selectView(button.id)"
-      :class="[
-        'px-4 py-1.5 rounded-full text-sm font-semibold transition-all duration-200 ease-in-out focus:outline-none cursor-pointer last:rounded-tl-sm last:rounded-bl-sm first:rounded-tr-sm first:rounded-br-sm',
-        selectedView === button.id
-          ? 'bg-gray-800 text-white shadow-md focus:ring-gray-500' // Active state styles
-          : 'text-gray-500 hover:bg-gray-200 focus:ring-gray-400', // Inactive state styles
-      ]"
-    >
+    <button v-for="button in buttons" :key="button.id" @click="selectView(button.id)" :class="[
+      'px-4 py-1.5 rounded-full text-sm font-semibold transition-all duration-200 ease-in-out focus:outline-none cursor-pointer last:rounded-tl-sm last:rounded-bl-sm first:rounded-tr-sm first:rounded-br-sm',
+      selectedView === button.id
+        ? 'bg-gray-800 text-white shadow-md focus:ring-gray-500' // Active state styles
+        : 'text-gray-500 hover:bg-gray-200 focus:ring-gray-400', // Inactive state styles
+    ]">
       {{ button.label }}
     </button>
   </div>

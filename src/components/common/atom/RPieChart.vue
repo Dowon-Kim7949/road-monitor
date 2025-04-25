@@ -2,37 +2,15 @@
   <div class="pie-chart-container">
     <svg :viewBox="`0 0 ${viewBoxSize} ${viewBoxSize}`" class="pie-chart-svg">
       <g :transform="`rotate(-90 ${center} ${center})`">
-        <circle
-          v-for="(segment, index) in segments"
-          :key="index"
-          :cx="center"
-          :cy="center"
-          :r="radius"
-          fill="transparent"
-          :stroke="segment.color"
-          :stroke-width="strokeWidth"
-          :stroke-dasharray="segment.dashArray"
-          :stroke-dashoffset="segment.dashOffset"
-          class="pie-chart-segment"
-        />
+        <circle v-for="(segment, index) in segments" :key="index" :cx="center" :cy="center" :r="radius"
+          fill="transparent" :stroke="segment.color" :stroke-width="strokeWidth" :stroke-dasharray="segment.dashArray"
+          :stroke-dashoffset="segment.dashOffset" class="pie-chart-segment" />
       </g>
 
-      <text
-        :x="center"
-        :y="center - 10"
-        text-anchor="middle"
-        dominant-baseline="middle"
-        class="chart-label text-sm"
-      >
+      <text :x="center" :y="center - 10" text-anchor="middle" dominant-baseline="middle" class="chart-label text-sm">
         rPCI Score
       </text>
-      <text
-        :x="center"
-        :y="center + 15"
-        text-anchor="middle"
-        dominant-baseline="middle"
-        class="chart-score"
-      >
+      <text :x="center" :y="center + 15" text-anchor="middle" dominant-baseline="middle" class="chart-score">
         {{ score }}
       </text>
     </svg>

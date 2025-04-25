@@ -223,17 +223,11 @@ watch(
   <div class="fixed bottom-0 right-0 bg-white h-46 w-full shadow border-t-1 border-gray-20">
     <div class="bg-white rounded flex items-center justify-center h-full">
       <div class="flex items-center space-x-10">
-        <div
-          v-for="(grade, idx) in grades"
-          :key="idx"
-          @click="popupOpen(grade)"
+        <div v-for="(grade, idx) in grades" :key="idx" @click="popupOpen(grade)"
           class="flex flex-col items-center justify-between px-4 w-40 cursor-pointer py-4 rounded-xl hover:bg-gray-20"
-          :class="titleData.status === grade.grade ? 'bg-gray-20 shadow-lg' : ''"
-        >
-          <div
-            class="text-md font-semibold px-2 py-1 rounded-full text-center w-full"
-            :style="{ backgroundColor: grade.color, color: grade.textColor }"
-          >
+          :class="titleData.status === grade.grade ? 'bg-gray-20 shadow-lg' : ''">
+          <div class="text-md font-semibold px-2 py-1 rounded-full text-center w-full"
+            :style="{ backgroundColor: grade.color, color: grade.textColor }">
             {{ grade.label }}
           </div>
           <div class="text-md text-5xl text-gray-700 font-semibold pt-4 pl-0">
@@ -248,12 +242,8 @@ watch(
       </div>
     </div>
   </div>
-  <RPciScoreDetailPopup
-    v-model:visible="visible"
-    :title-data="titleData"
-    :table-headers="tableHeaders"
-    :table-data="tableData"
-  />
+  <RPciScoreDetailPopup v-model:visible="visible" :title-data="titleData" :table-headers="tableHeaders"
+    :table-data="tableData" />
 </template>
 
 <style scoped>
