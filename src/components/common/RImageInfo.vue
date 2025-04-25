@@ -12,8 +12,14 @@
       <RIcon :imgSrc="iconPlace" :size="20" />
       <span class="font-bold w-fit">{{ t('Coordinates') }}</span>
       <span>{{ lat?.toFixed(6) }}, {{ lon?.toFixed(6) }}</span>
-      <RButton @click="$emit('copy-coord')" size="xsmall" type="icon" icon-color="black" icon="copy"
-        class="rounded-sm hover:rounded-sm" />
+      <RButton
+        @click="$emit('copy-coord')"
+        size="xsmall"
+        type="icon"
+        icon-color="black"
+        icon="copy"
+        class="rounded-sm hover:rounded-sm"
+      />
     </div>
 
     <!-- 노드링크 -->

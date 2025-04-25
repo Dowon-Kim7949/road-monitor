@@ -5,11 +5,10 @@ import RFloatingButton from '@/components/common/RFloatingButton.vue'
 import RLeftDrawer from '@/components/common/RLeftDrawer.vue'
 import RFloatingList from '@/components/common/RFloatingList.vue'
 
-const RRightDrawer = defineAsyncComponent(() =>
-  import('@/components/common/RRightDrawer.vue')
-)
+const RRightDrawer = defineAsyncComponent(() => import('@/components/common/RRightDrawer.vue'))
 
-const imageUrl = 'https://rm-project.site/assets/test/demo_241219/CAMFront_camera2024-12-19T18_34_12_608+01_00.webp'
+const imageUrl =
+  'https://rm-project.site/assets/test/demo_241219/CAMFront_camera2024-12-19T18_34_12_608+01_00.webp'
 const leftDrawer = ref(false)
 const rightDrawer = ref(false)
 const selectedData = ref<null | {
@@ -95,21 +94,38 @@ const handleSelectMarker = (data: any) => {
     <!-- 우측 사이드바 (Suspense + Async) -->
     <Suspense>
       <template #default>
-        <RRightDrawer v-model="rightDrawer" :data="selectedData" type="road" :histories="testhistories" />
+        <RRightDrawer
+          v-model="rightDrawer"
+          :data="selectedData"
+          type="road"
+          :histories="testhistories"
+        />
       </template>
       <template #fallback>
-        <div class="fixed top-0 right-0 w-1/2 h-full bg-white flex items-center justify-center z-40">
+        <div
+          class="fixed top-0 right-0 w-1/2 h-full bg-white flex items-center justify-center z-40"
+        >
           <span class="text-gray-400 text-sm animate-pulse">데이터를 불러오는 중입니다...</span>
         </div>
       </template>
     </Suspense>
 
     <!-- 지도 영역 -->
-    <RMap :leftDrawer="leftDrawer" :rightDrawer="rightDrawer" @select-feature="handleSelectMarker"
-      @close-drawer="rightDrawer = false" type="road" />
+    <RMap
+      :leftDrawer="leftDrawer"
+      :rightDrawer="rightDrawer"
+      @select-feature="handleSelectMarker"
+      @close-drawer="rightDrawer = false"
+      type="road"
+    />
 
     <!-- 고정 버튼 모음 -->
-    <RFloatingButton @reset-center="resetCenter" @zoom-in="zoomIn" @zoom-out="zoomOut" type="road"
-      @toggle-left="toggleLeftDrawer" />
+    <RFloatingButton
+      @reset-center="resetCenter"
+      @zoom-in="zoomIn"
+      @zoom-out="zoomOut"
+      type="road"
+      @toggle-left="toggleLeftDrawer"
+    />
   </div>
 </template>

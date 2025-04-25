@@ -14,11 +14,7 @@ export const AuthApiService = {
     const params = new URLSearchParams()
     params.append('username', username)
     params.append('password', password)
-    return await apiWithoutAuthorization.axiosCaller(
-      'post',
-      '/api/v2/auth/token',
-      params
-    )
+    return await apiWithoutAuthorization.axiosCaller('post', '/api/v2/auth/token', params)
   },
   async logout() {
     return await apiWithAuthorization.axiosCaller('post', '/api/v2/logout')

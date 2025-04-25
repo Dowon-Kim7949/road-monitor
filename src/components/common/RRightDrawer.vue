@@ -16,8 +16,8 @@ const selelctItems = [
     roadname: '도로명1',
     nodelinks: [
       { linkname: '노드링크1-1', captured_at: '2025-04-14' },
-      { linkname: '노드링크1-2', captured_at: '2025-04-14' }
-    ]
+      { linkname: '노드링크1-2', captured_at: '2025-04-14' },
+    ],
   },
   {
     roadname: '도로명2',
@@ -27,7 +27,7 @@ const selelctItems = [
       { linkname: '노드링크2-3', captured_at: '2025-04-13' },
       { linkname: '노드링크2-4', captured_at: '2025-04-13' },
       { linkname: '노드링크2-5', captured_at: '2025-04-13' },
-    ]
+    ],
   },
   {
     roadname: '도로명3',
@@ -37,7 +37,7 @@ const selelctItems = [
       { linkname: '노드링크3-3', captured_at: '2025-04-13' },
       { linkname: '노드링크3-4', captured_at: '2025-04-13' },
       { linkname: '노드링크3-5', captured_at: '2025-04-13' },
-    ]
+    ],
   },
   {
     roadname: '도로명4',
@@ -47,7 +47,7 @@ const selelctItems = [
       { linkname: '노드링크4-3', captured_at: '2025-04-12' },
       { linkname: '노드링크4-4', captured_at: '2025-04-12' },
       { linkname: '노드링크4-5', captured_at: '2025-04-12' },
-    ]
+    ],
   },
   {
     roadname: '도로명5',
@@ -57,8 +57,8 @@ const selelctItems = [
       { linkname: '노드링크5-3', captured_at: '2025-04-12' },
       { linkname: '노드링크5-4', captured_at: '2025-04-12' },
       { linkname: '노드링크5-5', captured_at: '2025-04-12' },
-    ]
-  }
+    ],
+  },
 ]
 
 const modelValue = defineModel<boolean>()
@@ -88,7 +88,7 @@ const handleUpload = () => {
   if (showModal.value) showModal.value = false
   showRPciModal.value = !showRPciModal.value
 }
-const onSubmit = (data: { name: string; }) => {
+const onSubmit = (data: { name: string }) => {
   showRPciModal.value = false
   showSelectRPciModal.value = true
   if (data.name) analysisTitle.value = data.name
@@ -97,7 +97,8 @@ const onRequest = () => {
   showSelectRPciModal.value = false
 
   modalTitle.value = '요청 확인'
-  modalContent.value = 'rPCI 분석이 시작되었습니다. 진행 상황은 [Rapid-PCI] 메뉴에서 확인하실 수 있습니다.'
+  modalContent.value =
+    'rPCI 분석이 시작되었습니다. 진행 상황은 [Rapid-PCI] 메뉴에서 확인하실 수 있습니다.'
   showAlert.value = true
 }
 const selectModalClose = () => {
@@ -110,7 +111,6 @@ const onCancel = () => {
 const onOk = () => {
   showAlert.value = false
 }
-
 
 const onSelectHistory = (item: any) => {
   showModal.value = true
@@ -125,46 +125,103 @@ const onToggleHistoryFull = (expand: boolean) => {
 }
 
 // drawer 상태에 따라 body class 적용
-watch(modelValue, (val) => {
-  if (typeof window !== 'undefined') {
-    document.body.classList.toggle('drawer-open', val)
-  }
-}, { immediate: true })
+watch(
+  modelValue,
+  (val) => {
+    if (typeof window !== 'undefined') {
+      document.body.classList.toggle('drawer-open', val)
+    }
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
   <Transition name="slide-right">
-    <aside v-if="modelValue" class="fixed top-0 right-0 h-full w-[40%] bg-white shadow z-40 overflow-y-auto">
+    <aside
+      v-if="modelValue"
+      class="fixed top-0 right-0 h-full w-[40%] bg-white shadow z-40 overflow-y-auto"
+    >
       <!-- 기본 화면 -->
       <Transition name="slide-fade">
         <div class="p-6 space-y-2 h-full overflow-hidden">
-          <RImageViewer :src="props.data?.image" :type="type" :histories="histories" @fullscreen="onFullScreen"
-            @upload="handleUpload" />
-          <RPciResultSummary v-if="type === 'rpci'" :score="80" pciLabel="Satisfactory" pciColor="#00C853"
-            :potholes="2" />
-          <RImageInfo :roadName="data?.roadName" :lat="data?.lat" :lon="data?.lon" :nodeLink="data?.nodeLink"
-            :timestamp="data?.timestamp" @copy-coord="onCopyLatLon" :type="type" class="pb-2" />
+          <RImageViewer
+            :src="props.data?.image"
+            :type="type"
+            :histories="histories"
+            @fullscreen="onFullScreen"
+            @upload="handleUpload"
+          />
+          <RPciResultSummary
+            v-if="type === 'rpci'"
+            :score="80"
+            pciLabel="Satisfactory"
+            pciColor="#00C853"
+            :potholes="2"
+          />
+          <RImageInfo
+            :roadName="data?.roadName"
+            :lat="data?.lat"
+            :lon="data?.lon"
+            :nodeLink="data?.nodeLink"
+            :timestamp="data?.timestamp"
+            @copy-coord="onCopyLatLon"
+            :type="type"
+            class="pb-2"
+          />
           <hr class="border-gray-30" />
-          <h3 class="text-lg font-semibold pt-2">{{ t(type === 'rpci' ? 'RPciHistory' : 'Roadhistory') }} </h3>
+          <h3 class="text-lg font-semibold pt-2">
+            {{ t(type === 'rpci' ? 'RPciHistory' : 'Roadhistory') }}
+          </h3>
           <div v-if="type === 'rpci'" class="text-sm text-gray-600 font-semibold">
             {{ '남양교차로' }} → {{ '송림리145-4' }} ({{ '878m' }})
           </div>
-          <RImageHistory :type="type" :items="histories" @select="onSelectHistory" @expand="onToggleHistoryFull(true)"
-            :full="isFullHistoryMode" @collapse="() => onToggleHistoryFull(false)" />
+          <RImageHistory
+            :type="type"
+            :items="histories"
+            @select="onSelectHistory"
+            @expand="onToggleHistoryFull(true)"
+            :full="isFullHistoryMode"
+            @collapse="() => onToggleHistoryFull(false)"
+          />
         </div>
       </Transition>
     </aside>
   </Transition>
 
-
-  <RImageModal :visible="showModal" :type="type" :images="histories" @close="showModal = false"
-    @upload="handleUpload" />
+  <RImageModal
+    :visible="showModal"
+    :type="type"
+    :images="histories"
+    @close="showModal = false"
+    @upload="handleUpload"
+  />
   <RPciAnalysisModal :visible="showRPciModal" @close="showRPciModal = false" @submit="onSubmit" />
-  <RPciAnalysisSelectModal :analysisTitle="analysisTitle" :items="selelctItems" :visible="showSelectRPciModal"
-    @close="selectModalClose" @request="onRequest" />
-  <RModal :visible="showConfirm" type="confirm" title="분석 시작 취소" content="rPCI 분석을 진행하지 않으시겠습니까? 이 작업은 되돌릴 수 없습니다"
-    okText="확인" cancelText="취소" @onCancel="showConfirm = false" @onConfirm="onCancel" />
-  <RModal :visible="showAlert" :title="modalTitle" :content="modalContent" type="alert" okText="확인" @onOk="onOk" />
+  <RPciAnalysisSelectModal
+    :analysisTitle="analysisTitle"
+    :items="selelctItems"
+    :visible="showSelectRPciModal"
+    @close="selectModalClose"
+    @request="onRequest"
+  />
+  <RModal
+    :visible="showConfirm"
+    type="confirm"
+    title="분석 시작 취소"
+    content="rPCI 분석을 진행하지 않으시겠습니까? 이 작업은 되돌릴 수 없습니다"
+    okText="확인"
+    cancelText="취소"
+    @onCancel="showConfirm = false"
+    @onConfirm="onCancel"
+  />
+  <RModal
+    :visible="showAlert"
+    :title="modalTitle"
+    :content="modalContent"
+    type="alert"
+    okText="확인"
+    @onOk="onOk"
+  />
 </template>
 
 <style scoped>
@@ -184,7 +241,9 @@ watch(modelValue, (val) => {
 /* fade slide (일반 컴포넌트 스위치) */
 .slide-fade-enter-active,
 .slide-fade-leave-active {
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
 }
 
 .slide-fade-enter-from,
@@ -193,7 +252,6 @@ watch(modelValue, (val) => {
   transform: translateY(10px);
 }
 </style>
-
 
 <style>
 /* RFloatingButton 내 우측 버튼 위치 조정용 */

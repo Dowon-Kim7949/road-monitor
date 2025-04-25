@@ -6,7 +6,7 @@
     </div>
     <div class="form-conts calendar-conts">
       <div class="calendar-input">
-        <input type="number" class="krds-input datepicker cal" placeholder="YYYY.MM.DD" id="cal">
+        <input type="number" class="krds-input datepicker cal" placeholder="YYYY.MM.DD" id="cal" />
         <button type="button" class="krds-btn medium icon form-btn-datepicker">
           <span class="sr-only">달력 열기</span>
           <i class="svg-icon ico-calendar"></i>
@@ -15,10 +15,14 @@
       <div class="krds-calendar-area">
         <div class="calendar-wrap bottom single" aria-label="달력">
           <div class="calendar-head">
-            <button type="button" class="btn-cal-move prev"><span class="sr-only">이전 달</span></button>
+            <button type="button" class="btn-cal-move prev">
+              <span class="sr-only">이전 달</span>
+            </button>
             <div class="calendar-switch-wrap">
               <div class="calendar-drop-down">
-                <button type="button" class="btn-cal-switch year" aria-label="연도 선택">2024년</button>
+                <button type="button" class="btn-cal-switch year" aria-label="연도 선택">
+                  2024년
+                </button>
                 <div class="calendar-select calendar-year-wrap">
                   <ul class="sel year">
                     <li>
@@ -97,7 +101,9 @@
                 </div>
               </div>
               <div class="calendar-drop-down">
-                <button type="button" class="btn-cal-switch month" aria-label="월 선택">12월</button>
+                <button type="button" class="btn-cal-switch month" aria-label="월 선택">
+                  12월
+                </button>
                 <div class="calendar-select calendar-mon-wrap">
                   <ul class="sel month">
                     <li>
@@ -140,7 +146,9 @@
                 </div>
               </div>
             </div>
-            <button type="button" class="btn-cal-move next"><span class="sr-only">다음 달</span></button>
+            <button type="button" class="btn-cal-move next">
+              <span class="sr-only">다음 달</span>
+            </button>
           </div>
           <div class="calendar-body">
             <div class="calendar-table-wrap">
@@ -161,59 +169,142 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td class="old day-off"><button type="button" class="btn-set-date"><span>26</span></button></td>
-                    <td class="old"><button type="button" class="btn-set-date"><span>27</span></button></td>
-                    <td class="old"><button type="button" class="btn-set-date"><span>28</span></button></td>
-                    <td class="old"><button type="button" class="btn-set-date"><span>29</span></button></td>
-                    <td class="old"><button type="button" class="btn-set-date"><span>30</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>1</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>2</span></button></td>
-                  </tr>
-                  <tr>
-                    <td class="day-off"><button type="button" class="btn-set-date"><span>3</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>4</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>5</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>6</span></button></td>
-                    <td class="period start end"><button type="button" class="btn-set-date"><span>7</span></button></td>
-                    <td class="day-event"><button type="button" class="btn-set-date"><span>8</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>9</span></button></td>
-                  </tr>
-                  <tr>
-                    <td class="day-off"><button type="button" class="btn-set-date"><span>10</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>11</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>12</span></button></td>
-                    <td class="disabled"><button type="button" class="btn-set-date" disabled><span>13</span></button>
+                    <td class="old day-off">
+                      <button type="button" class="btn-set-date"><span>26</span></button>
                     </td>
-                    <td><button type="button" class="btn-set-date"><span>14</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>15</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>16</span></button></td>
+                    <td class="old">
+                      <button type="button" class="btn-set-date"><span>27</span></button>
+                    </td>
+                    <td class="old">
+                      <button type="button" class="btn-set-date"><span>28</span></button>
+                    </td>
+                    <td class="old">
+                      <button type="button" class="btn-set-date"><span>29</span></button>
+                    </td>
+                    <td class="old">
+                      <button type="button" class="btn-set-date"><span>30</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>1</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>2</span></button>
+                    </td>
                   </tr>
                   <tr>
-                    <td class="day-off"><button type="button" class="btn-set-date"><span>17</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>18</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>19</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>20</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>21</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>22</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>23</span></button></td>
+                    <td class="day-off">
+                      <button type="button" class="btn-set-date"><span>3</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>4</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>5</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>6</span></button>
+                    </td>
+                    <td class="period start end">
+                      <button type="button" class="btn-set-date"><span>7</span></button>
+                    </td>
+                    <td class="day-event">
+                      <button type="button" class="btn-set-date"><span>8</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>9</span></button>
+                    </td>
                   </tr>
                   <tr>
-                    <td class="day-off"><button type="button" class="btn-set-date"><span>24</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>25</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>26</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>27</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>28</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>29</span></button></td>
-                    <td class="today"><button type="button" class="btn-set-date"><span>30</span></button></td>
+                    <td class="day-off">
+                      <button type="button" class="btn-set-date"><span>10</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>11</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>12</span></button>
+                    </td>
+                    <td class="disabled">
+                      <button type="button" class="btn-set-date" disabled><span>13</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>14</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>15</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>16</span></button>
+                    </td>
                   </tr>
                   <tr>
-                    <td class="day-off"><button type="button" class="btn-set-date"><span>31</span></button></td>
-                    <td class="new"><button type="button" class="btn-set-date"><span>1</span></button></td>
-                    <td class="new"><button type="button" class="btn-set-date"><span>2</span></button></td>
-                    <td class="new"><button type="button" class="btn-set-date"><span>3</span></button></td>
-                    <td class="new"><button type="button" class="btn-set-date"><span>4</span></button></td>
-                    <td class="new"><button type="button" class="btn-set-date"><span>5</span></button></td>
-                    <td class="new"><button type="button" class="btn-set-date"><span>6</span></button></td>
+                    <td class="day-off">
+                      <button type="button" class="btn-set-date"><span>17</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>18</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>19</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>20</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>21</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>22</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>23</span></button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="day-off">
+                      <button type="button" class="btn-set-date"><span>24</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>25</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>26</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>27</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>28</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>29</span></button>
+                    </td>
+                    <td class="today">
+                      <button type="button" class="btn-set-date"><span>30</span></button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="day-off">
+                      <button type="button" class="btn-set-date"><span>31</span></button>
+                    </td>
+                    <td class="new">
+                      <button type="button" class="btn-set-date"><span>1</span></button>
+                    </td>
+                    <td class="new">
+                      <button type="button" class="btn-set-date"><span>2</span></button>
+                    </td>
+                    <td class="new">
+                      <button type="button" class="btn-set-date"><span>3</span></button>
+                    </td>
+                    <td class="new">
+                      <button type="button" class="btn-set-date"><span>4</span></button>
+                    </td>
+                    <td class="new">
+                      <button type="button" class="btn-set-date"><span>5</span></button>
+                    </td>
+                    <td class="new">
+                      <button type="button" class="btn-set-date"><span>6</span></button>
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -233,18 +324,26 @@
   <!-- //calendar -->
   <!-- calendar -->
   <div class="form-group">
-    <div class="form-tit">
-      날짜선택
-    </div>
+    <div class="form-tit">날짜선택</div>
     <div class="form-conts calendar-conts">
       <div class="calendar-input">
         <ul class="input-group range set">
           <li>
-            <input type="number" class="krds-input datepicker" placeholder="시작날짜" title="시작날짜 입력">
+            <input
+              type="number"
+              class="krds-input datepicker"
+              placeholder="시작날짜"
+              title="시작날짜 입력"
+            />
           </li>
           <li class="mark">-</li>
           <li>
-            <input type="number" class="krds-input datepicker" placeholder="종료날짜" title="종료날짜 입력">
+            <input
+              type="number"
+              class="krds-input datepicker"
+              placeholder="종료날짜"
+              title="종료날짜 입력"
+            />
           </li>
         </ul>
         <button type="button" class="krds-btn medium icon form-btn-datepicker">
@@ -255,10 +354,14 @@
       <div class="krds-calendar-area">
         <div class="calendar-wrap bottom" aria-label="달력">
           <div class="calendar-head">
-            <button type="button" class="btn-cal-move prev"><span class="sr-only">이전 달</span></button>
+            <button type="button" class="btn-cal-move prev">
+              <span class="sr-only">이전 달</span>
+            </button>
             <div class="calendar-switch-wrap">
               <div class="calendar-drop-down">
-                <button type="button" class="btn-cal-switch year" aria-label="연도 선택">2024년</button>
+                <button type="button" class="btn-cal-switch year" aria-label="연도 선택">
+                  2024년
+                </button>
                 <div class="calendar-select calendar-year-wrap">
                   <ul class="sel year">
                     <li>
@@ -337,7 +440,9 @@
                 </div>
               </div>
               <div class="calendar-drop-down">
-                <button type="button" class="btn-cal-switch month" aria-label="월 선택">12월</button>
+                <button type="button" class="btn-cal-switch month" aria-label="월 선택">
+                  12월
+                </button>
                 <div class="calendar-select calendar-mon-wrap">
                   <ul class="sel month">
                     <li>
@@ -380,7 +485,9 @@
                 </div>
               </div>
             </div>
-            <button type="button" class="btn-cal-move next"><span class="sr-only">다음 달</span></button>
+            <button type="button" class="btn-cal-move next">
+              <span class="sr-only">다음 달</span>
+            </button>
           </div>
           <div class="calendar-body">
             <div class="calendar-table-wrap">
@@ -401,58 +508,142 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td class="old day-off"><button type="button" class="btn-set-date"><span>26</span></button></td>
-                    <td class="old"><button type="button" class="btn-set-date"><span>27</span></button></td>
-                    <td class="old"><button type="button" class="btn-set-date"><span>28</span></button></td>
-                    <td class="old"><button type="button" class="btn-set-date"><span>29</span></button></td>
-                    <td class="old"><button type="button" class="btn-set-date"><span>30</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>1</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>2</span></button></td>
+                    <td class="old day-off">
+                      <button type="button" class="btn-set-date"><span>26</span></button>
+                    </td>
+                    <td class="old">
+                      <button type="button" class="btn-set-date"><span>27</span></button>
+                    </td>
+                    <td class="old">
+                      <button type="button" class="btn-set-date"><span>28</span></button>
+                    </td>
+                    <td class="old">
+                      <button type="button" class="btn-set-date"><span>29</span></button>
+                    </td>
+                    <td class="old">
+                      <button type="button" class="btn-set-date"><span>30</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>1</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>2</span></button>
+                    </td>
                   </tr>
                   <tr>
-                    <td class="day-off"><button type="button" class="btn-set-date"><span>3</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>4</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>5</span></button></td>
-                    <td class="day-event"><button type="button" class="btn-set-date"><span>6</span></button></td>
-                    <td class="period start"><button type="button" class="btn-set-date"><span>7</span></button></td>
-                    <td class="period"><button type="button" class="btn-set-date"><span>8</span></button></td>
-                    <td class="period"><button type="button" class="btn-set-date"><span>9</span></button></td>
+                    <td class="day-off">
+                      <button type="button" class="btn-set-date"><span>3</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>4</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>5</span></button>
+                    </td>
+                    <td class="day-event">
+                      <button type="button" class="btn-set-date"><span>6</span></button>
+                    </td>
+                    <td class="period start">
+                      <button type="button" class="btn-set-date"><span>7</span></button>
+                    </td>
+                    <td class="period">
+                      <button type="button" class="btn-set-date"><span>8</span></button>
+                    </td>
+                    <td class="period">
+                      <button type="button" class="btn-set-date"><span>9</span></button>
+                    </td>
                   </tr>
                   <tr>
-                    <td class="period day-off"><button type="button" class="btn-set-date"><span>10</span></button></td>
-                    <td class="period"><button type="button" class="btn-set-date"><span>11</span></button></td>
-                    <td class="period"><button type="button" class="btn-set-date"><span>12</span></button></td>
-                    <td class="period"><button type="button" class="btn-set-date"><span>13</span></button></td>
-                    <td class="period"><button type="button" class="btn-set-date"><span>14</span></button></td>
-                    <td class="period"><button type="button" class="btn-set-date"><span>15</span></button></td>
-                    <td class="period end"><button type="button" class="btn-set-date"><span>16</span></button></td>
+                    <td class="period day-off">
+                      <button type="button" class="btn-set-date"><span>10</span></button>
+                    </td>
+                    <td class="period">
+                      <button type="button" class="btn-set-date"><span>11</span></button>
+                    </td>
+                    <td class="period">
+                      <button type="button" class="btn-set-date"><span>12</span></button>
+                    </td>
+                    <td class="period">
+                      <button type="button" class="btn-set-date"><span>13</span></button>
+                    </td>
+                    <td class="period">
+                      <button type="button" class="btn-set-date"><span>14</span></button>
+                    </td>
+                    <td class="period">
+                      <button type="button" class="btn-set-date"><span>15</span></button>
+                    </td>
+                    <td class="period end">
+                      <button type="button" class="btn-set-date"><span>16</span></button>
+                    </td>
                   </tr>
                   <tr>
-                    <td class="day-off"><button type="button" class="btn-set-date"><span>17</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>18</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>19</span></button></td>
-                    <td class="today"><button type="button" class="btn-set-date"><span>20</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>21</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>22</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>23</span></button></td>
+                    <td class="day-off">
+                      <button type="button" class="btn-set-date"><span>17</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>18</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>19</span></button>
+                    </td>
+                    <td class="today">
+                      <button type="button" class="btn-set-date"><span>20</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>21</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>22</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>23</span></button>
+                    </td>
                   </tr>
                   <tr>
-                    <td class="day-off"><button type="button" class="btn-set-date"><span>24</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>25</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>26</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>27</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>28</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>29</span></button></td>
-                    <td><button type="button" class="btn-set-date"><span>30</span></button></td>
+                    <td class="day-off">
+                      <button type="button" class="btn-set-date"><span>24</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>25</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>26</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>27</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>28</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>29</span></button>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-set-date"><span>30</span></button>
+                    </td>
                   </tr>
                   <tr>
-                    <td class="day-off"><button type="button" class="btn-set-date"><span>31</span></button></td>
-                    <td class="new"><button type="button" class="btn-set-date"><span>1</span></button></td>
-                    <td class="new"><button type="button" class="btn-set-date"><span>2</span></button></td>
-                    <td class="new"><button type="button" class="btn-set-date"><span>3</span></button></td>
-                    <td class="new"><button type="button" class="btn-set-date"><span>4</span></button></td>
-                    <td class="new"><button type="button" class="btn-set-date"><span>5</span></button></td>
-                    <td class="new"><button type="button" class="btn-set-date"><span>6</span></button></td>
+                    <td class="day-off">
+                      <button type="button" class="btn-set-date"><span>31</span></button>
+                    </td>
+                    <td class="new">
+                      <button type="button" class="btn-set-date"><span>1</span></button>
+                    </td>
+                    <td class="new">
+                      <button type="button" class="btn-set-date"><span>2</span></button>
+                    </td>
+                    <td class="new">
+                      <button type="button" class="btn-set-date"><span>3</span></button>
+                    </td>
+                    <td class="new">
+                      <button type="button" class="btn-set-date"><span>4</span></button>
+                    </td>
+                    <td class="new">
+                      <button type="button" class="btn-set-date"><span>5</span></button>
+                    </td>
+                    <td class="new">
+                      <button type="button" class="btn-set-date"><span>6</span></button>
+                    </td>
                   </tr>
                 </tbody>
               </table>

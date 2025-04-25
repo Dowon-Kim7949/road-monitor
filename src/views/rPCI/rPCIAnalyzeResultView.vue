@@ -35,7 +35,12 @@ const selectOptions = ref([
           <span class="text-xl font-bold">Rapid-PCI</span>
           <span class="text-xl">{{ t('menu.rpcianalysis') }}</span>
           <div class="min-w-88">
-            <RSelect v-model="selectModel" :options="selectOptions" placeholder="회차 선택" id="round-select" />
+            <RSelect
+              v-model="selectModel"
+              :options="selectOptions"
+              placeholder="회차 선택"
+              id="round-select"
+            />
           </div>
         </div>
         <div>

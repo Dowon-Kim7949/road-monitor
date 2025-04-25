@@ -1,5 +1,3 @@
 <template>
-  <div>
-    RPhotoView
-  </div>
+  <div>RPhotoView</div>
 </template>

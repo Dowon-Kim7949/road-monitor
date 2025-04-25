@@ -1,14 +1,21 @@
 <template>
   <div class="relative w-full" data-dropdown="user">
-    <button @click="toggle" ref="buttonRef" class="flex items-center space-x-2 p-2 rounded hover:bg-gray-200 w-full">
+    <button
+      @click="toggle"
+      ref="buttonRef"
+      class="flex items-center space-x-2 p-2 rounded hover:bg-gray-200 w-full"
+    >
       <RIcon name="User" />
       <span>{{ username }}</span>
     </button>
 
-    <div v-if="isOpen()" :class="[
-      'absolute w-full border rounded shadow-md z-10 bg-white',
-      direction === 'up' ? 'bottom-full mb-1' : 'top-full mt-1'
-    ]">
+    <div
+      v-if="isOpen()"
+      :class="[
+        'absolute w-full border rounded shadow-md z-10 bg-white',
+        direction === 'up' ? 'bottom-full mb-1' : 'top-full mt-1',
+      ]"
+    >
       <button @click="logout" class="block px-4 py-2 text-left hover:bg-gray-10 w-full rounded">
         {{ t('logout') }}
       </button>

@@ -10,7 +10,7 @@ const emit = defineEmits<{
 const buttons = [
   { mode: 'alert', icon: 'triangle-alert' },
   { mode: 'block', icon: 'octagon-minus' },
-  { mode: 'wave', icon: 'waves' }
+  { mode: 'wave', icon: 'waves' },
 ]
 
 const selectMode = (mode: string) => {
@@ -20,11 +20,19 @@ const selectMode = (mode: string) => {
 
 <template>
   <div class="floating-top-right fixed top-4 z-[4] space-y-2 flex flex-col items-end">
-    <RButton v-for="btn in buttons" :key="btn.mode" type="select" size="small" class="shadow rounded-sm"
-      :icon="btn.icon" :class="{
+    <RButton
+      v-for="btn in buttons"
+      :key="btn.mode"
+      type="select"
+      size="small"
+      class="shadow rounded-sm"
+      :icon="btn.icon"
+      :class="{
         'text-white bg-gray-80': btn.mode === props.activeMode,
-        'text-black bg-white': btn.mode !== activeMode
-      }" @click="selectMode(btn.mode)" />
+        'text-black bg-white': btn.mode !== activeMode,
+      }"
+      @click="selectMode(btn.mode)"
+    />
   </div>
 </template>
 

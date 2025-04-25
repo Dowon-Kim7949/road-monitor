@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue';
+import { defineProps } from 'vue'
 import RIcon from '@/components/common/atom/RIcon.vue'
 
 defineProps({
@@ -20,12 +20,12 @@ defineProps({
   sortColumn: {
     type: String,
     default: '',
-    required: false
+    required: false,
   },
   sortDirection: {
     type: String,
     validator: (value: string) => ['asc', 'desc'].includes(value),
     default: 'asc',
   },
-});
+})
 </script>

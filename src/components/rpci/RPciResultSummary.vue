@@ -3,7 +3,10 @@
     <!-- 하단 결과 정보 -->
     <div class="flex items-center space-x-4">
       <!-- PCI 등급 -->
-      <div class="text-xs font-semibold px-2 py-1 rounded-full text-white" :style="{ backgroundColor: pciColor }">
+      <div
+        class="text-xs font-semibold px-2 py-1 rounded-full text-white"
+        :style="{ backgroundColor: pciColor }"
+      >
         {{ pciLabel }}
       </div>
 
@@ -20,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
+import { useI18n } from 'vue-i18n'
 import RIcon from '../common/atom/RIcon.vue'
 
 defineProps<{

@@ -40,7 +40,7 @@ const selectedPointCoords = ref<any>(null)
 const isLoading = ref(false)
 
 // --- Helper Functions ---
-const compareCoordinates = (coords1: any, coords2: any): boolean => {
+function compareCoordinates(coords1: any, coords2: any): boolean {
   if (
     !coords1 ||
     !coords2 ||
@@ -54,7 +54,7 @@ const compareCoordinates = (coords1: any, coords2: any): boolean => {
   return coords1[0] === coords2[0] && coords1[1] === coords2[1]
 }
 
-const hexToRgba = (hex: string, alpha: number): string => {
+function hexToRgba(hex: string, alpha: number): string {
   if (!hex || typeof hex !== 'string') hex = '#808080'
   if (typeof alpha !== 'number' || alpha < 0 || alpha > 1) alpha = 1.0
   let hexValue = hex.startsWith('#') ? hex.slice(1) : hex
@@ -252,11 +252,13 @@ const center = fromLonLat([127.128, 37.378])
 const loadLayers = async () => {
   if (!map.value) return
   isLoading.value = true
+  console.time('loadAllLayers')
   // 임시 색상 저장용 Map (rpci, report 모드에서 사용)
   const wayIdToColorMap = new Map<string, string>()
 
   try {
     // --- 선 데이터 로드 (항상 수행) ---
+    console.time('loadLineData')
     const lineResponse = await fetch('/road_data.json')
     if (!lineResponse.ok) throw new Error(`Line data HTTP error! status: ${lineResponse.status}`)
     const lineData = await lineResponse.json()
@@ -264,9 +266,11 @@ const loadLayers = async () => {
       dataProjection: 'EPSG:4326',
       featureProjection: map.value.getView().getProjection(),
     })
+    console.timeEnd('loadLineData')
 
     // --- 'rpci', 'report' 모드일 경우 임시 색상 할당 ---
     if (props.type === 'rpci' || props.type === 'report') {
+      console.log(`Assigning random RPCI colors for mode: ${props.type}`)
       lineFeatures.forEach((feature: any) => {
         const rand = Math.random()
         let assignedColor = rpciColors['default']
@@ -283,10 +287,12 @@ const loadLayers = async () => {
           wayIdToColorMap.set(wayId.toString(), assignedColor)
         }
       })
+      console.log('Assigned temporary colors to lines.')
     }
     // --- 임시 색상 할당 끝 ---
 
     // --- 선 레이어 생성 및 추가 ---
+    console.time('createLineLayer')
     const lineSource = new VectorSource({ features: lineFeatures })
     lineSource.getFeatures().forEach((feature: any) => {
       const properties = feature.getProperties()
@@ -296,10 +302,12 @@ const loadLayers = async () => {
     })
     roadLineLayer.value = new VectorLayer({ source: lineSource, style: layerStyleFunction })
     map.value.addLayer(roadLineLayer.value)
+    console.timeEnd('createLineLayer')
     // --- 선 레이어 생성 및 추가 끝 ---
 
     // --- 점 데이터 로드 ('road', 'rpci' 모드) ---
     if (props.type === 'road' || props.type === 'rpci') {
+      console.time('loadPointData')
       const pointResponse = await fetch('/road_points_5m.json')
       if (!pointResponse.ok)
         throw new Error(`Point data HTTP error! status: ${pointResponse.status}`)
@@ -308,9 +316,11 @@ const loadLayers = async () => {
         dataProjection: 'EPSG:4326',
         featureProjection: map.value.getView().getProjection(),
       })
+      console.timeEnd('loadPointData')
 
       // 'rpci' 모드일 경우 점에 부모 선 색상 상속
       if (props.type === 'rpci') {
+        console.time('assignPointColors')
         pointFeatures.forEach((feature: any) => {
           const props = feature.getProperties()
           const parentId = props['parent_way_id']?.toString()
@@ -320,8 +330,10 @@ const loadLayers = async () => {
             feature.set('assigned_rpci_color', rpciColors['default'])
           }
         })
+        console.timeEnd('assignPointColors')
       }
 
+      console.time('createPointLayer')
       const pointSource = new VectorSource({ features: pointFeatures })
       roadPointLayer.value = new VectorLayer({
         source: pointSource,
@@ -329,14 +341,19 @@ const loadLayers = async () => {
         renderBuffer: 0,
       })
       map.value.addLayer(roadPointLayer.value)
+      console.timeEnd('createPointLayer')
+      console.log('Point layer loaded.')
     } else {
       roadPointLayer.value = null // 다른 모드에서는 null 유지
     }
     // --- 점 데이터 로드 끝 ---
+
+    console.log('All required layers loaded.')
   } catch (error) {
-    alert(`Error loading layers: ${error}`)
+    console.error('Error loading layers:', error)
   } finally {
     isLoading.value = false
+    console.timeEnd('loadAllLayers')
   }
 }
 // <<< loadLayers 끝 >>>
@@ -358,6 +375,7 @@ const customInteractions = defaultInteractions().extend([
 ])
 
 onMounted(async () => {
+  console.log(props.type)
   if (!mapContainer.value) return
   map.value = new OLMap({
     target: mapContainer.value,
@@ -516,10 +534,13 @@ onBeforeUnmount(() => {
   <div class="relative w-full h-full">
     <div ref="mapContainer" class="absolute top-0 left-0 h-full" :style="mapStyle"></div>
     <Transition name="fade">
-      <div v-if="isLoading"
-        class="absolute inset-0 bg-white bg-opacity-60 flex items-center justify-center z-50 pointer-events-none">
+      <div
+        v-if="isLoading"
+        class="absolute inset-0 bg-white bg-opacity-60 flex items-center justify-center z-50 pointer-events-none"
+      >
         <div
-          class="text-black text-xl bg-white bg-opacity-90 px-6 py-4 rounded-lg flex flex-row items-center space-x-3">
+          class="text-black text-xl bg-white bg-opacity-90 px-6 py-4 rounded-lg flex flex-row items-center space-x-3"
+        >
           <Cog :size="48" class="spin text-green-600" />
           <span class="loading-text">Loading RoadMonitor</span>
         </div>

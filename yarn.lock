@@ -3115,6 +3115,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash@npm:^4":
+  version: 4.17.16
+  resolution: "@types/lodash@npm:4.17.16"
+  checksum: 10c0/cf017901b8ab1d7aabc86d5189d9288f4f99f19a75caf020c0e2c77b8d4cead4db0d0b842d009b029339f92399f49f34377dd7c2721053388f251778b4c23534
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:*, @types/node@npm:^22.13.9":
   version: 22.13.10
   resolution: "@types/node@npm:22.13.10"
@@ -6575,6 +6582,7 @@ __metadata:
     "@turf/turf": "npm:^7.2.0"
     "@types/crypto-js": "npm:^4"
     "@types/jsdom": "npm:^21.1.7"
+    "@types/lodash": "npm:^4"
     "@types/node": "npm:^22.13.9"
     "@types/ol": "npm:^7.0.0"
     "@vitejs/plugin-vue": "npm:^5.2.1"
@@ -6590,6 +6598,7 @@ __metadata:
     eslint-plugin-vue: "npm:~10.0.0"
     jiti: "npm:^2.4.2"
     jsdom: "npm:^26.0.0"
+    lodash: "npm:^4.17.21"
     lucide-vue-next: "npm:^0.485.0"
     npm-run-all2: "npm:^7.0.2"
     ol: "npm:^10.4.0"

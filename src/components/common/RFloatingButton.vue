@@ -24,7 +24,7 @@ defineEmits<{
 
 const datePickerStyle = computed(() => {
   return {
-    left: props.type === 'cover' ? '26% !important' : ''
+    left: props.type === 'cover' ? '26% !important' : '',
   }
 })
 
@@ -68,11 +68,16 @@ const onSavePDF = () => {
   </button> -->
 
   <button
-    class="fixed top-4 left-4 z-[4] flex items-center py-2 px-4 border-1 border-gray-200  bg-white bg-opacity-90  rounded-lg shadow-md hover:bg-opacity-100 hover:shadow-lg active:shadow-sm active:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-150 ease-in-out cursor-pointer group"
-    @click="$emit('toggle-left')" aria-label="메인 메뉴 열기/닫기">
+    class="fixed top-4 left-4 z-[4] flex items-center py-2 px-4 border-1 border-gray-200 bg-white bg-opacity-90 rounded-lg shadow-md hover:bg-opacity-100 hover:shadow-lg active:shadow-sm active:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-150 ease-in-out cursor-pointer group"
+    @click="$emit('toggle-left')"
+    aria-label="메인 메뉴 열기/닫기"
+  >
     <img src="../../assets/image/CI.webp" alt="RoadMonitor 로고" class="h-10 flex-shrink-0" />
     <div class="text-left pl-2">
-      <div class="text-red-60 font-bold text-lg leading-tight group-hover:text-red-70 transition-colors">RoadMonitor
+      <div
+        class="text-red-60 font-bold text-lg leading-tight group-hover:text-red-70 transition-colors"
+      >
+        RoadMonitor
       </div>
       <div class="text-gray-70 font-bold text-xs leading-tight">ver1.0.0</div>
     </div>
@@ -80,32 +85,79 @@ const onSavePDF = () => {
 
   <div class="fixed top-6 left-60 z-[4] bg-white text-sm rounded" :style="datePickerStyle">
     <RDatePicker v-if="props.type === 'road' || props.type === 'cover'" />
-    <div v-else-if="props.type === 'rpci' || props.type === 'report'" class="min-w-90 bg-transparent">
-      <RSelect v-model="selectModel" :options="selectOptions" placeholder="회차 선택" id="round-select" />
+    <div
+      v-else-if="props.type === 'rpci' || props.type === 'report'"
+      class="min-w-90 bg-transparent"
+    >
+      <RSelect
+        v-model="selectModel"
+        :options="selectOptions"
+        placeholder="회차 선택"
+        id="round-select"
+      />
     </div>
     <div v-if="props.type === 'report'" class="fixed top-7 left-155 z-[4]">
-      <RButton type="secondary" size="small" class="text-sm" icon="download" label="PDF" @click="showConfirm = true" />
+      <RButton
+        type="secondary"
+        size="small"
+        class="text-sm"
+        icon="download"
+        label="PDF"
+        @click="showConfirm = true"
+      />
     </div>
   </div>
 
   <!-- 좌측 하단 초기화 버튼 -->
-  <RButton type=" icon" size="small" class="fixed bottom-4 left-4 bg-white shadow rounded-sm"
-    :class="type === 'report' ? 'bottom-50' : ''" @click="$emit('reset-center')" icon="locate-fixed"
-    :style="datePickerStyle" />
+  <RButton
+    type=" icon"
+    size="small"
+    class="fixed bottom-4 left-4 bg-white shadow rounded-sm"
+    :class="type === 'report' ? 'bottom-50' : ''"
+    @click="$emit('reset-center')"
+    icon="locate-fixed"
+    :style="datePickerStyle"
+  />
 
   <!-- 우측 상단 모드 선택 버튼 -->
   <RModeSelector v-if="type === 'road'" :activeMode="activeMode" @change-mode="handleChangeMode" />
-  <RPciLegend v-else-if="type === 'rpci' || type === 'report'" :is-open="type === 'report' ? true : null" />
+  <RPciLegend
+    v-else-if="type === 'rpci' || type === 'report'"
+    :is-open="type === 'report' ? true : null"
+  />
   <RPciCoverage v-if="type === 'report'" />
 
   <!-- 우측 하단 버튼들 -->
-  <div class="floating-bottom-right fixed bottom-4 z-[4] space-x-2" :class="type === 'report' ? 'bottom-50' : ''">
-    <RButton type="icon" size="small" class="bg-white shadow rounded-sm" @click="$emit('zoom-in')" icon="plus" />
-    <RButton type="icon" size="small" class="bg-white shadow rounded-sm" @click="$emit('zoom-out')" icon="minus" />
+  <div
+    class="floating-bottom-right fixed bottom-4 z-[4] space-x-2"
+    :class="type === 'report' ? 'bottom-50' : ''"
+  >
+    <RButton
+      type="icon"
+      size="small"
+      class="bg-white shadow rounded-sm"
+      @click="$emit('zoom-in')"
+      icon="plus"
+    />
+    <RButton
+      type="icon"
+      size="small"
+      class="bg-white shadow rounded-sm"
+      @click="$emit('zoom-out')"
+      icon="minus"
+    />
   </div>
 
-  <RModal :visible="showConfirm" type="confirm" title="PDF 파일 저장" content="현재 조회 중인 회차의 리포트를 PDF파일로 저장하시겠습니까?"
-    okText="확인" cancelText="취소" @onCancel="showConfirm = false" @onConfirm="onSavePDF" />
+  <RModal
+    :visible="showConfirm"
+    type="confirm"
+    title="PDF 파일 저장"
+    content="현재 조회 중인 회차의 리포트를 PDF파일로 저장하시겠습니까?"
+    okText="확인"
+    cancelText="취소"
+    @onCancel="showConfirm = false"
+    @onConfirm="onSavePDF"
+  />
 </template>
 
 <style scoped>

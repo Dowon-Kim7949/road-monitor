@@ -32,6 +32,7 @@ const RAW_RUNTIME_STATE =
           ["@turf/turf", "npm:7.2.0"],\
           ["@types/crypto-js", "npm:4.2.2"],\
           ["@types/jsdom", "npm:21.1.7"],\
+          ["@types/lodash", "npm:4.17.16"],\
           ["@types/node", "npm:22.13.10"],\
           ["@types/ol", "npm:7.0.0"],\
           ["@vitejs/plugin-vue", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:5.2.3"],\
@@ -47,6 +48,7 @@ const RAW_RUNTIME_STATE =
           ["eslint-plugin-vue", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:10.0.0"],\
           ["jiti", "npm:2.4.2"],\
           ["jsdom", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:26.0.0"],\
+          ["lodash", "npm:4.17.21"],\
           ["lucide-vue-next", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:0.485.0"],\
           ["npm-run-all2", "npm:7.0.2"],\
           ["ol", "npm:10.4.0"],\
@@ -3727,6 +3729,15 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/@types-json-schema-npm-7.0.15-fd16381786-10c0.zip/node_modules/@types/json-schema/",\
         "packageDependencies": [\
           ["@types/json-schema", "npm:7.0.15"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["@types/lodash", [\
+      ["npm:4.17.16", {\
+        "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/@types-lodash-npm-4.17.16-edc964ca5b-10c0.zip/node_modules/@types/lodash/",\
+        "packageDependencies": [\
+          ["@types/lodash", "npm:4.17.16"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -7829,6 +7840,7 @@ const RAW_RUNTIME_STATE =
           ["@turf/turf", "npm:7.2.0"],\
           ["@types/crypto-js", "npm:4.2.2"],\
           ["@types/jsdom", "npm:21.1.7"],\
+          ["@types/lodash", "npm:4.17.16"],\
           ["@types/node", "npm:22.13.10"],\
           ["@types/ol", "npm:7.0.0"],\
           ["@vitejs/plugin-vue", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:5.2.3"],\
@@ -7844,6 +7856,7 @@ const RAW_RUNTIME_STATE =
           ["eslint-plugin-vue", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:10.0.0"],\
           ["jiti", "npm:2.4.2"],\
           ["jsdom", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:26.0.0"],\
+          ["lodash", "npm:4.17.21"],\
           ["lucide-vue-next", "virtual:2424740fc7fc03214f518adae093ac361a676c9513abaf6b7346f951b38b54e6ae9a42483153b57162443a1e30616f529214c4c5c80900ddc97d72a1fe9ddce1#npm:0.485.0"],\
           ["npm-run-all2", "npm:7.0.2"],\
           ["ol", "npm:10.4.0"],\

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useI18n } from 'vue-i18n';
-import RButton from './atom/RButton.vue';
+import { useI18n } from 'vue-i18n'
+import RButton from './atom/RButton.vue'
 
 const { t } = useI18n()
 const props = defineProps<{
@@ -16,7 +16,7 @@ defineEmits<{
 
 const listStyle = computed(() => {
   return {
-    left: props.type === 'cover' ? '26% !important' : ''
+    left: props.type === 'cover' ? '26% !important' : '',
   }
 })
 
@@ -24,9 +24,7 @@ const itemsPerPage = 10
 const currentPage = ref(1)
 const modelValue = ref(true)
 
-const totalPages = computed(() =>
-  Math.ceil(props.items.length / itemsPerPage)
-)
+const totalPages = computed(() => Math.ceil(props.items.length / itemsPerPage))
 
 const paginatedItems = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage
@@ -42,28 +40,35 @@ const nextPage = () => {
 }
 </script>
 
-
 <template>
   <!-- 펼쳐진 상태 -->
   <Transition name="slide-left">
-    <div v-show="modelValue"
+    <div
+      v-show="modelValue"
       class="fixed w-[300px] top-22 left-4 bg-white shadow-lg rounded-sm border-gray-40 border-1 p-4 text-sm z-[1] h-[76vh] flex flex-col"
-      :style="listStyle">
-
+      :style="listStyle"
+    >
       <!-- 접기 버튼 -->
       <div
-        class="absolute top-5 right-[-29px] z-[4] p-0 border-gray-40 border-b-1 border-t-1 border-r-1 rounded-br-sm rounded-tr-sm">
-        <RButton type="tertiary"
+        class="absolute top-5 right-[-29px] z-[4] p-0 border-gray-40 border-b-1 border-t-1 border-r-1 rounded-br-sm rounded-tr-sm"
+      >
+        <RButton
+          type="tertiary"
           class="bg-white py-2 px-1 border-0 rounded-bl-none rounded-tl-none rounded-br-sm rounded-tr-sm hover:bg-white"
-          :icon="'chevron-left'" size="small" @click="modelValue = false" />
+          :icon="'chevron-left'"
+          size="small"
+          @click="modelValue = false"
+        />
       </div>
 
       <!-- 헤더 -->
       <div class="flex items-center font-semibold border-gray-40 border-b-1 pb-2 px-3">
         <div class="flex-1 flex items-center pl-2">
           노드링크
-          <span v-if="!modelValue"
-            class="ml-2 text-white bg-red-600 rounded-full text-xs w-5 h-5 flex items-center justify-center">
+          <span
+            v-if="!modelValue"
+            class="ml-2 text-white bg-red-600 rounded-full text-xs w-5 h-5 flex items-center justify-center"
+          >
             {{ props.items.length }}
           </span>
         </div>
@@ -72,7 +77,11 @@ const nextPage = () => {
 
       <!-- 리스트 -->
       <div class="flex-1 overflow-y-auto thin-scrollbar space-y-3 py-2">
-        <div v-for="(item, idx) in paginatedItems" :key="idx" class="flex cursor-pointer hover:bg-gray-20 p-1 rounded">
+        <div
+          v-for="(item, idx) in paginatedItems"
+          :key="idx"
+          class="flex cursor-pointer hover:bg-gray-20 p-1 rounded"
+        >
           <div class="flex-1 pl-2">
             <div>{{ item.start }}</div>
             <div>→ {{ item.end }}</div>
@@ -85,13 +94,17 @@ const nextPage = () => {
       <div class="pt-2 border-t border-gray-200 flex justify-between items-center">
         <button
           class="text-xs px-3 py-1 border rounded hover:bg-gray-100 hover:text-white disabled:opacity-40 cursor-pointer"
-          :disabled="currentPage === 1" @click="prevPage">
+          :disabled="currentPage === 1"
+          @click="prevPage"
+        >
           {{ t('button.prev') }}
         </button>
         <div class="text-xs text-gray-500">{{ currentPage }} / {{ totalPages }}</div>
         <button
           class="text-xs px-3 py-1 border rounded hover:bg-gray-100 hover:text-white disabled:opacity-40 cursor-pointer"
-          :disabled="currentPage === totalPages" @click="nextPage">
+          :disabled="currentPage === totalPages"
+          @click="nextPage"
+        >
           {{ t('button.next') }}
         </button>
       </div>
@@ -100,16 +113,26 @@ const nextPage = () => {
 
   <!-- 접힌 상태 버튼 -->
   <Transition name="fade">
-    <div v-show="!modelValue" :style="listStyle" @click="modelValue = true"
-      class="fixed w-fit top-22 left-4 py-1 bg-white shadow-lg rounded-sm border-gray-40 border-1 text-sm z-[4] flex items-center cursor-pointer">
+    <div
+      v-show="!modelValue"
+      :style="listStyle"
+      @click="modelValue = true"
+      class="fixed w-fit top-22 left-4 py-1 bg-white shadow-lg rounded-sm border-gray-40 border-1 text-sm z-[4] flex items-center cursor-pointer"
+    >
       <div class="flex-1 flex items-center text-md font-bold pl-4">
         {{ t('Roadsegment') }}
-        <span class="ml-2 text-white bg-red-600 rounded-full text-xs w-5 h-5 flex items-center justify-center">
+        <span
+          class="ml-2 text-white bg-red-600 rounded-full text-xs w-5 h-5 flex items-center justify-center"
+        >
           {{ props.items.length }}
         </span>
       </div>
-      <RButton type="tertiary" class="bg-white py-2 px-1 border-0 font-extrabold hover:bg-white" icon="chevron-right"
-        size="small" />
+      <RButton
+        type="tertiary"
+        class="bg-white py-2 px-1 border-0 font-extrabold hover:bg-white"
+        icon="chevron-right"
+        size="small"
+      />
     </div>
   </Transition>
 </template>

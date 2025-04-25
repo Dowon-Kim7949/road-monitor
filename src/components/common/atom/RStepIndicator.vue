@@ -36,8 +36,8 @@
   </ol>
   <!-- //스텝 -->
 
-  <br>
-  <br>
+  <br />
+  <br />
 
   <!-- 페이지 타이틀과 스텝 혼합 -->
   <div class="page-title-wrap between">

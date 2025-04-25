@@ -38,12 +38,22 @@ const handleSelectMarker = (data: typeof selectedData.value) => {
     <RLeftDrawer v-model="leftDrawer" />
 
     <!-- 지도 영역 -->
-    <RMap :leftDrawer="leftDrawer" :rightDrawer="rightDrawer" @select-feature="handleSelectMarker"
-      @close-drawer="rightDrawer = false" type="report" />
+    <RMap
+      :leftDrawer="leftDrawer"
+      :rightDrawer="rightDrawer"
+      @select-feature="handleSelectMarker"
+      @close-drawer="rightDrawer = false"
+      type="report"
+    />
 
     <!-- 고정 버튼 모음 -->
-    <RFloatingButton @reset-center="resetCenter" @zoom-in="zoomIn" @zoom-out="zoomOut" type="report"
-      @toggle-left="toggleLeftDrawer" />
+    <RFloatingButton
+      @reset-center="resetCenter"
+      @zoom-in="zoomIn"
+      @zoom-out="zoomOut"
+      type="report"
+      @toggle-left="toggleLeftDrawer"
+    />
 
     <RPciScoreBoard :pci-score="67" />
   </div>
