@@ -47,5 +47,6 @@
   "rpciResult": "rPCI Analysis Summary",
   "deviceList": "Device List",
   "all": "All Devices",
-  "modelname": "Model"
+  "modelname": "Model",
+  "select_episode": "Select an episode"
 }

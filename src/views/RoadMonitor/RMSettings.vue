@@ -9,7 +9,7 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 const duplicateRemovalEnabled = ref(true) // 토글 스위치 상태
 const leftDrawer = ref(true) // 왼쪽 드로어 상태 (RLeftDrawer에서 사용될 수 있음)
-const selectedGrade = ref('7') // RMLevelSetting 컴포넌트와 연결된 값
+const selectedGrade = ref(7) // RMLevelSetting 컴포넌트와 연결된 값
 
 // --- 사용되지 않는 변수 제거 ---
 // pciGradeSystem, indicatorStyle 등은 현재 템플릿에서 직접 사용되지 않으므로 제거했습니다.
@@ -17,14 +17,14 @@ const selectedGrade = ref('7') // RMLevelSetting 컴포넌트와 연결된 값
 </script>
 
 <template>
-  <div class="relative w-full h-screen overflow-hidden">
+  <div class="relative w-full h-screen overflow-auto">
     <!-- 좌측 사이드바 -->
     <RLeftDrawer v-model="leftDrawer" mode="fix" />
     <div class="w-[calc(100vw - 240px)] h-full ml-60 p-20">
       <div class="flex flex-row items-center justify-between">
         <div class="flex flex-row gap-5 items-center h-10">
           <span class="text-xl font-bold">Settings</span>
-          <span class="text-xl">{{ '환경 설정' }}</span>
+          <span class="text-xl">{{ t('menu.envSetting') }}</span>
         </div>
         <div>
           <RButton type="secondary" icon="download" label="Excel" size="small" />
@@ -73,7 +73,7 @@ const selectedGrade = ref('7') // RMLevelSetting 컴포넌트와 연결된 값
         </div>
       </div>
       <div class="flex w-full justify-end">
-        <RButton class="absolute bottom-20 right-" :label="t('button.save')" />
+        <RButton class="" :label="t('button.save')" />
       </div>
     </div>
   </div>

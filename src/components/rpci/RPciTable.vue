@@ -347,8 +347,8 @@ const getLevelDetailsByScore = (score: number) => {
               </div>
             </th>
             <th scope="col" class="px-6 py-3 text-center text-sm font-bold text-black tracking-wider">
-              <div class="flex gap-2 items-center justify-center">
-                <div>rPCI {{ t('button.grade') }}</div>
+              <div class="flex gap-2 items-center justify-center min-w-40">
+                <div class="">rPCI {{ t('button.grade') }}</div>
               </div>
             </th>
             <th scope="col"
@@ -393,7 +393,7 @@ const getLevelDetailsByScore = (score: number) => {
             </td>
             <td class="px-3 py-3 text-center whitespace-nowrap text-sm text-black">
               <div class="w-full flex items-center justify-center">
-                <p class="text-sm font-semibold px-3 py-1 rounded-full text-center w-[70%]" :style="{
+                <p class="text-sm font-semibold px-3 py-1 rounded-full text-center w-35" :style="{
                   backgroundColor: getLevelDetailsByScore(item.rpci_score)?.color,
                   color: getLevelDetailsByScore(item.rpci_score)?.textColor,
                 }">

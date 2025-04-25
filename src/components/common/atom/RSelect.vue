@@ -2,6 +2,9 @@
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 // 1. lucide-vue-next 아이콘 임포트
 import { ChevronDown } from 'lucide-vue-next'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 // --- Props ---
 
@@ -26,7 +29,7 @@ const props = withDefaults(defineProps<Props>(), {
   modelValue: null,
   options: () => [],
   label: '',
-  placeholder: '선택해주세요.',
+  placeholder: '',
   id: () => `select-${Math.random().toString(36).substring(2, 11)}`,
   helpText: '',
   disabled: false,
@@ -48,7 +51,7 @@ const optionsListElement = ref<HTMLUListElement | null>(null)
 // --- Computed ---
 
 const buttonText = computed(() => {
-  return selectedOption.value?.label ?? props.placeholder
+  return selectedOption.value?.label ?? t(props.placeholder)
 })
 
 const labelId = computed(() => `${props.id}-label`)

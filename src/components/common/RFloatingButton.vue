@@ -82,7 +82,7 @@ const onSavePDF = () => {
   <div class="fixed top-6 left-60 z-[4] bg-white text-sm rounded" :style="datePickerStyle">
     <RDatePicker v-if="props.type === 'road' || props.type === 'cover'" />
     <div v-else-if="props.type === 'rpci' || props.type === 'report'" class="min-w-90 bg-transparent">
-      <RSelect v-model="selectModel" :options="selectOptions" placeholder="회차 선택" id="round-select" />
+      <RSelect v-model="selectModel" :options="selectOptions" :placeholder="'select_episode'" id="round-select" />
     </div>
     <div v-if="props.type === 'report'" class="fixed top-7 left-155 z-[4]">
       <RButton type="secondary" size="small" class="text-sm" icon="download" label="PDF" @click="showConfirm = true" />

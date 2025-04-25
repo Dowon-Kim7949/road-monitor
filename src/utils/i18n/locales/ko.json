@@ -36,8 +36,8 @@
   "Roadsegment": "노드링크",
   "Roadname": "도로명",
   "Coordinates": "좌표",
-  "Capture_at": "촬영일시",
-  "Analysis_at": "분석일시",
+  "Capture_at": "촬영일자",
+  "Analysis_at": "분석일자",
   "Roadhistory": "도로 히스토리",
   "RPciHistory": "rPCI 히스토리",
   "Hazard_type": "파손유형",
@@ -48,5 +48,6 @@
   "rpciResult": "rPCI 분석 결과",
   "deviceList": "단말기 목록",
   "all": "전체",
-  "modelname": "모델명"
+  "modelname": "모델명",
+  "select_episode": "회차 선택"
 }

@@ -57,13 +57,13 @@ const nextPage = () => {
       <!-- 헤더 -->
       <div class="flex items-center font-semibold border-gray-40 border-b-1 pb-2 px-3">
         <div class="flex-1 flex items-center pl-2">
-          노드링크
+          {{ t('Roadsegment') }}
           <span v-if="!modelValue"
             class="ml-2 text-white bg-red-600 rounded-full text-xs w-5 h-5 flex items-center justify-center">
             {{ props.items.length }}
           </span>
         </div>
-        <div class="pr-2">촬영일자</div>
+        <div class="pr-2">{{ t('Capture_at') }}</div>
       </div>
 
       <!-- 리스트 -->
