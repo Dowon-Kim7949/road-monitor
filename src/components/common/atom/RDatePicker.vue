@@ -168,11 +168,19 @@ watch(isOpen, (newIsOpen) => {
 </script>
 
 <template>
-  <div class="relative inline-block">
-    <div class="relative flex items-center" @click="toggleCalendar">
-      <input ref="inputRef" type="text"
-        class="px-3 py-2 border border-gray-300 rounded shadow cursor-pointer w-full text-center focus:outline-none text-gray-100/80 font-bold"
-        :value="displayValue" readonly />
+  <div class="relative border border-gray-300 rounded shadow">
+    <div class="flex gap-2">
+      <div class="flex items-center pl-3">
+        <RIcon name="Calendar" :size="20" class="text-gray-600" />
+      </div>
+      <div class="flex items-center" @click="toggleCalendar">
+        <input ref="inputRef" type="text" :value="displayValue"
+          class="py-2 text-center cursor-pointer focus:outline-none text-gray-100/80 font-bold" readonly />
+        <span ref="measureSpanRef" class="absolute invisible whitespace-nowrap text-center font-bold"
+          style="top: -9999px; left: -9999px; padding-left: 0; padding-right: 0; border: none;">
+          {{ displayValue }}
+        </span>
+      </div>
     </div>
     <div v-if="isOpen" ref="calendarRef" class="absolute z-10 rounded shadow-md bg-white overflow-hidden"
       :class="calendarPosition === 'top' ? 'bottom-full mb-1' : 'top-full mt-1'" style="width: 300px">

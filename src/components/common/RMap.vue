@@ -22,6 +22,8 @@ import type { FeatureLike } from 'ol/Feature'
 const MAP_DURATION = 300
 const ZOOM_THRESHOLD = 19
 const ZOOM_DEFAULT = 17
+const ZOOM_MINLEVEL = 13
+const ZOOM_MAXLEVEL = 21
 
 const emit = defineEmits<{
   (e: 'select-feature', properties: any): void
@@ -380,7 +382,7 @@ onMounted(async () => {
   map.value = new OLMap({
     target: mapContainer.value,
     layers: [vworldTileLayer],
-    view: new View({ center, zoom: ZOOM_DEFAULT, minZoom: 15, maxZoom: 21 }),
+    view: new View({ center, zoom: ZOOM_DEFAULT, minZoom: ZOOM_MINLEVEL, maxZoom: ZOOM_MAXLEVEL }),
     interactions: customInteractions,
   })
   await loadLayers()
@@ -493,6 +495,8 @@ onMounted(async () => {
   map.value?.getView().on('change:resolution', () => {
     roadLineLayer.value?.getSource()?.changed()
     roadPointLayer.value?.getSource()?.changed()
+
+    console.log(map.value?.getView().getZoom())
   })
 
   window.addEventListener('reset-map-center', handleResetCenter)
@@ -519,13 +523,10 @@ onBeforeUnmount(() => {
   <div class="relative w-full h-full">
     <div ref="mapContainer" class="absolute top-0 left-0 h-full" :style="mapStyle"></div>
     <Transition name="fade">
-      <div
-        v-if="isLoading"
-        class="absolute inset-0 bg-white bg-opacity-60 flex items-center justify-center z-50 pointer-events-none"
-      >
+      <div v-if="isLoading"
+        class="absolute inset-0 bg-white bg-opacity-60 flex items-center justify-center z-50 pointer-events-none">
         <div
-          class="text-black text-xl bg-white bg-opacity-90 px-6 py-4 rounded-lg flex flex-row items-center space-x-3"
-        >
+          class="text-black text-xl bg-white bg-opacity-90 px-6 py-4 rounded-lg flex flex-row items-center space-x-3">
           <Cog :size="48" class="spin text-green-600" />
           <span class="loading-text">Loading RoadMonitor</span>
         </div>
