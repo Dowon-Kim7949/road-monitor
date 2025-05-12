@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue' // Added watch
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
 import OLMap from 'ol/Map'
 import View from 'ol/View'
 import TileLayer from 'ol/layer/Tile'
@@ -22,11 +22,10 @@ import type { FeatureLike } from 'ol/Feature'
 import type { Coordinate } from 'ol/coordinate'
 import { OSM } from 'ol/source'
 
-// --- Constants and Emits (remain the same) ---
 const MAP_DURATION = 300
 const ZOOM_THRESHOLD = 19
 const ZOOM_DEFAULT = 17
-const ZOOM_MINLEVEL = 13
+const ZOOM_MINLEVEL = 15
 const ZOOM_MAXLEVEL = 21
 
 const emit = defineEmits<{
@@ -37,10 +36,9 @@ const emit = defineEmits<{
 const props = defineProps<{
   leftDrawer: boolean
   rightDrawer?: boolean
-  type?: 'road' | 'cover' | 'rpci' | 'report' | null // Added 'iri' type
+  type?: 'road' | 'cover' | 'rpci' | 'report' | null
 }>()
 
-// --- Refs (iriVectorLayer is already defined below) ---
 const mapContainer = ref<HTMLElement | null>(null)
 const map = ref<OLMap | null>(null)
 const roadLineLayer = ref<VectorLayer<VectorSource<LineString | any>> | null>(null)
@@ -48,13 +46,11 @@ const roadPointLayer = ref<VectorLayer<VectorSource<Point | any>> | null>(null)
 const selectedWayId = ref<string | null>(null)
 const selectedPointCoords = ref<any>(null)
 const isLoading = ref(false)
-const iriHeatmapLayer = ref<HeatmapLayer | null>(null) // Keep this ref for IRI layer
-const iriCenter = ref(fromLonLat([127.128, 37.378])) // Default IRI center
-const iriMode = ref(false)
+const iriHeatmapLayer = ref<HeatmapLayer | null>(null)
+const iriCenter = ref(fromLonLat([-0.22365497581524368, 51.49220408472129]))
 
-// --- Styling and Helper Functions (remain the same) ---
-const BORDER_COLOR = 'rgba(0, 0, 0, 0.8)' // 흰색 테두리 (반투명)
-const BORDER_EXTRA_WIDTH = 4 // 테두리 두께 (양쪽 2px씩)
+const BORDER_COLOR = 'rgba(0, 0, 0, 0.8)'
+const BORDER_EXTRA_WIDTH = 4
 
 const compareCoordinates = (coords1: any, coords2: any): boolean => {
   if (
@@ -89,21 +85,21 @@ const hexToRgba = (hex: string, alpha: number): string => {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`
 }
 const iriColorMapping = [
-  { threshold: 5, color: 'rgba(0, 255, 0, 0.7)' },   // Adjusted IRI thresholds based on provided JSON data (example)
+  { threshold: 5, color: 'rgba(0, 255, 0, 0.7)' },
   { threshold: 10, color: 'rgba(255, 255, 0, 0.7)' },
   { threshold: 20, color: 'rgba(255, 165, 0, 0.7)' },
   { threshold: Infinity, color: 'rgba(255, 0, 0, 0.7)' }
 ];
 const iriHeatmapGradient = [
-  '#0000ff', // 0 (파랑)
-  '#00ffff', // 1.67 (시안)
-  '#00ff00', // 3.33 (초록)
-  '#ffff00', // 5.00 (노랑)
-  '#ffaa00', // 6.67 (주황)
-  '#ff4500', // 8.33 (오렌지레드)
-  '#ff0000'  // 10 (빨강)
+  '#0000ff',
+  '#00ffff',
+  '#00ff00',
+  '#ffff00',
+  '#ffaa00',
+  '#ff4500',
+  '#ff0000'
 ];
-const defaultIriColor = 'rgba(128, 128, 128, 0.7)'; // Grey for default or missing IRI
+const defaultIriColor = 'rgba(128, 128, 128, 0.7)';
 
 const rpciColors: { [key: string]: string } = {
   green: '#00CC25',
@@ -121,7 +117,6 @@ const rpciColorDistribution = [
   { color: rpciColors.darkGreen, threshold: 1.0 },
 ]
 
-// --- Default Styles (remain the same) ---
 const roadSelectedLineStyle = new Style({
   stroke: new Stroke({ color: 'rgba(80, 80, 80, 1)', width: 10 }),
 })
@@ -147,13 +142,12 @@ const roadSelectedLineBorderStyle = new Style({
   zIndex: 0,
 })
 
-// --- IRI Layer Style Function (from previous step) ---
 const iriLayerStyleFunction = (feature: FeatureLike) => {
   const properties = feature.getProperties();
   const iriValue = properties['iri'];
-  const featureId = feature.getId(); // Use feature ID for selection check
+  const featureId = feature.getId();
   let color = defaultIriColor;
-  let strokeWidth = 6; // Default width
+  let strokeWidth = 6;
   let zIndex = 0;
 
   if (typeof iriValue === 'number') {
@@ -165,13 +159,9 @@ const iriLayerStyleFunction = (feature: FeatureLike) => {
     }
   }
 
-  // Check if this specific IRI feature is selected
-  // Use feature.getId() because LineString features in iri_data.json have 'id'
   if (selectedWayId.value != null && selectedWayId.value === featureId?.toString()) {
-    strokeWidth = 10; // Make selected line thicker
-    zIndex = 1;      // Bring selected line to front
-    // Optional: Apply a different color or border for selection if needed
-    // For now, just making it thicker
+    strokeWidth = 10;
+    zIndex = 1;
   }
 
   return new Style({
@@ -179,11 +169,10 @@ const iriLayerStyleFunction = (feature: FeatureLike) => {
       color: color,
       width: strokeWidth
     }),
-    zIndex: zIndex // Apply zIndex
+    zIndex: zIndex
   });
 };
 
-// --- Main Layer Style Function (slightly modified for IRI) ---
 const layerStyleFunction = (feature: FeatureLike): Style | Style[] | undefined => {
   const currentZoom = map.value?.getView().getZoom()
   if (!currentZoom) return undefined
@@ -191,7 +180,6 @@ const layerStyleFunction = (feature: FeatureLike): Style | Style[] | undefined =
   if (!geometry) return undefined
   const featureType = geometry.getType()
   const properties = feature.getProperties()
-  // For points, get parent_way_id. For lines, use the feature's own ID.
   const featureWayId =
     featureType === 'LineString' ? feature.getId()?.toString() : properties['parent_way_id']?.toString()
 
@@ -199,15 +187,9 @@ const layerStyleFunction = (feature: FeatureLike): Style | Style[] | undefined =
     selectedWayId.value != null && selectedWayId.value === featureWayId
   let isSelectedPoint = false
   if (featureType === 'Point' && selectedPointCoords.value) {
-    const currentCoords = (geometry as Point).getCoordinates() // 타입 단언
+    const currentCoords = (geometry as Point).getCoordinates()
     isSelectedPoint = compareCoordinates(currentCoords, selectedPointCoords.value)
   }
-
-  // --- Handle IRI type separately if needed, or integrate into default ---
-  // Note: The makeIriLayer function now uses its own dedicated style function (iriLayerStyleFunction).
-  // This main layerStyleFunction will primarily style the roadLineLayer and roadPointLayer.
-  // If you want IRI layer clicks to influence road layer styles, logic needs to be added here.
-  // For now, assuming IRI styling is handled by iriLayerStyleFunction.
 
   switch (props.type) {
     case 'cover':
@@ -282,7 +264,7 @@ const layerStyleFunction = (feature: FeatureLike): Style | Style[] | undefined =
         return undefined
       }
     case 'road':
-    default: // Also handles 'iri' for the road layers if needed, but iriLayer has own style
+    default:
       if (currentZoom < ZOOM_THRESHOLD) {
         if (featureType === 'LineString') {
           if (isSelectedLine) {
@@ -311,34 +293,27 @@ const layerStyleFunction = (feature: FeatureLike): Style | Style[] | undefined =
   }
 }
 
-
-// --- Map Style and Center (remain the same) ---
 const mapStyle = computed(() => {
   return {
     right: props.rightDrawer ? '25%' : '0px',
-    left: props.type === 'cover' ? '25%' : '0px', // Consider adding 'iri' here if left drawer should open
+    left: props.type === 'cover' ? '25%' : '0px',
     transition: 'all 0.3s ease',
   }
 })
-const center = fromLonLat([127.128, 37.378]) // Default map center
+const center = fromLonLat([-0.22365497581524368, 51.49220408472129])
 
-// --- loadLayers Function (remain the same) ---
 const loadLayers = async () => {
   if (!map.value) return
   isLoading.value = true
   const wayIdToColorMap = new Map<string, string>()
 
-  // Remove existing layers first
   if (roadLineLayer.value) map.value.removeLayer(roadLineLayer.value as any)
   if (roadPointLayer.value) map.value.removeLayer(roadPointLayer.value as any)
-  if (iriHeatmapLayer.value) map.value.removeLayer(iriHeatmapLayer.value as any); // Also remove IRI layer if switching type
   roadLineLayer.value = null
   roadPointLayer.value = null
-  iriHeatmapLayer.value = null; // Reset IRI layer ref
 
   try {
-    // --- Load Road Line Data ---
-    const lineResponse = await fetch('/road_data.json') // Adjust path if needed
+    const lineResponse = await fetch('/filtered.geojson')
     if (!lineResponse.ok) throw new Error(`Line data HTTP error! status: ${lineResponse.status}`)
     const lineData = await lineResponse.json()
     const lineFeatures = new GeoJSON().readFeatures(lineData, {
@@ -352,7 +327,6 @@ const loadLayers = async () => {
       if (wayId) {
         feature.setId(wayId)
       }
-      // Assign colors based on type 'rpci' or 'report'
       if (props.type === 'rpci' || props.type === 'report') {
         const rand = Math.random()
         let assignedColor = rpciColors['default']
@@ -372,12 +346,11 @@ const loadLayers = async () => {
     })
 
     const lineSource = new VectorSource<any>({ features: lineFeatures })
-    roadLineLayer.value = new VectorLayer({ source: lineSource, style: layerStyleFunction }) // Use main style function
+    roadLineLayer.value = new VectorLayer({ source: lineSource, style: layerStyleFunction })
     map.value.addLayer(roadLineLayer.value as any)
 
-    // --- Load Road Point Data (conditionally) ---
     if (props.type === 'road' || props.type === 'rpci') {
-      const pointResponse = await fetch('/road_points_5m.json') // Adjust path if needed
+      const pointResponse = await fetch('/road_points_5m.json')
       if (!pointResponse.ok)
         throw new Error(`Point data HTTP error! status: ${pointResponse.status}`)
       const pointData = await pointResponse.json()
@@ -396,7 +369,7 @@ const loadLayers = async () => {
             feature.set('assigned_rpci_color', rpciColors['default'])
           }
         })
-      } else { // 'road' mode
+      } else {
         pointFeatures.forEach((feature: any) => {
           feature.set('assigned_rpci_color', rpciColors['default'])
         })
@@ -405,7 +378,7 @@ const loadLayers = async () => {
       const pointSource = new VectorSource<any>({ features: pointFeatures })
       roadPointLayer.value = new VectorLayer({
         source: pointSource,
-        style: layerStyleFunction, // Use main style function
+        style: layerStyleFunction,
         renderBuffer: 20,
       })
       map.value.addLayer(roadPointLayer.value as any)
@@ -413,27 +386,20 @@ const loadLayers = async () => {
       roadPointLayer.value = null
     }
   } catch (error) {
-    console.error(`Error loading layers: ${error}`)
     alert(`Error loading layers: ${error}`)
   } finally {
     isLoading.value = false
   }
 }
 
-
-// --- makeIriLayer Function (from previous step, ensure it uses map.value) ---
 const makeIriLayer = async (mapInstance: OLMap | null, geojsonPath = '/iri_data.json') => {
-  // Added mapInstance type check
   if (!mapInstance || !(mapInstance instanceof OLMap)) {
-    console.error("Invalid or null Map instance provided to makeIriLayer:", mapInstance);
     alert('유효한 지도 객체가 전달되지 않았습니다.');
     return;
   }
 
-  console.log("Attempting to add IRI layer...");
   isLoading.value = true;
 
-  // Remove previous IRI layer if it exists
   if (iriHeatmapLayer.value) {
     mapInstance.removeLayer(iriHeatmapLayer.value as any);
     iriHeatmapLayer.value = null
@@ -452,10 +418,9 @@ const makeIriLayer = async (mapInstance: OLMap | null, geojsonPath = '/iri_data.
     }
     const iriGeoJsonData = await response.json();
 
-    // --- GeoJSON LineString -> Point Features for Heatmap ---
     const heatmapPoints: Feature<Point>[] = [];
     let minLon = Infinity, maxLon = -Infinity, minLat = Infinity, maxLat = -Infinity;
-    const features = new GeoJSON().readFeatures(iriGeoJsonData); // 원본 피처 읽기
+    const features = new GeoJSON().readFeatures(iriGeoJsonData);
 
     features.forEach((feature: FeatureLike) => {
       const geometry = feature.getGeometry();
@@ -463,104 +428,75 @@ const makeIriLayer = async (mapInstance: OLMap | null, geojsonPath = '/iri_data.
       let iriValue = properties['iri'];
 
       if (geometry && geometry.getType() === 'LineString' && typeof iriValue === 'number') {
-        // IRI 값 클램핑 (0 ~ 10)
         const clampedIri = Math.max(0, Math.min(10, iriValue));
-
-        // LineString의 모든 좌표를 Point 피처로 변환
         const coordinates = (geometry as LineString).getCoordinates();
         coordinates.forEach((coord: Coordinate) => {
-          // 지도 좌표계로 변환
           const mapCoord = fromLonLat(coord, mapInstance.getView().getProjection());
-
-          // 중심 계산용 좌표 업데이트
           minLon = Math.min(minLon, coord[0]);
           maxLon = Math.max(maxLon, coord[0]);
           minLat = Math.min(minLat, coord[1]);
           maxLat = Math.max(maxLat, coord[1]);
-
-          // Point 피처 생성 및 weight 설정
           const pointFeature = new Feature({
             geometry: new Point(mapCoord),
-            // 'weight' 속성에 클램핑된 IRI 값 저장 (Heatmap 레이어에서 사용)
             weight: clampedIri
-            // 필요시 다른 속성도 추가 가능: original_iri: iriValue
           });
           heatmapPoints.push(pointFeature);
         });
       }
     });
-    // --- Point Feature 변환 완료 ---
 
-    // --- 지도 센터 계산 ---
     if (minLon !== Infinity) {
       const centerLon = (minLon);
       const centerLat = (minLat);
       iriCenter.value = fromLonLat([centerLon, centerLat]);
-      console.log("IRI Center calculated:", [centerLon, centerLat]);
     } else {
-      console.warn("Could not calculate center from IRI data, using default.");
-      iriCenter.value = fromLonLat([127.128, 37.378]);
+      iriCenter.value = fromLonLat([-0.22365497581524368, 51.49220408472129]);
     }
-    // --- 센터 계산 완료 ---
 
 
     if (heatmapPoints.length === 0) {
-      console.warn("No valid points generated for IRI heatmap.");
       isLoading.value = false;
-      return; // 피처 없으면 종료
+      return;
     }
 
-    // Create Vector Source with the points
     const iriHeatmapSource = new VectorSource({
       features: heatmapPoints
     });
 
-    // Create Heatmap Layer
     iriHeatmapLayer.value = new HeatmapLayer({
       source: iriHeatmapSource,
-      blur: 10,   // 흐림 효과 정도 (조정 필요)
-      radius: 5,  // 각 포인트의 영향 반경 (조정 필요)
-      // weight 함수: 피처의 'weight' 속성 반환 (0~10 값)
-      // gradient 는 0~1 범위 값에 매핑되므로 weight 값을 10으로 나눠 정규화
+      blur: 10,
+      radius: 5,
       weight: (feature: FeatureLike) => {
         const weight = feature.get('weight');
-        return (typeof weight === 'number') ? weight / 10 : 0; // 0-1 범위로 정규화
+        return (typeof weight === 'number') ? weight / 10 : 0;
       },
-      gradient: iriHeatmapGradient, // 정의된 7단계 그래디언트 사용
-      zIndex: 5 // Optional: Adjust layer stacking order
+      gradient: iriHeatmapGradient,
+      zIndex: 5
     });
 
-    isLoading.value = false; // 로딩 완료 시점 변경
+    isLoading.value = false;
 
-    // Add the heatmap layer to the map
     mapInstance.addLayer(iriHeatmapLayer.value as any);
-    console.log("IRI Heatmap layer added successfully.");
 
-    // Move map to the center of the IRI data
     mapInstance.getView().animate({ center: iriCenter.value, zoom: 15, duration: MAP_DURATION });
 
 
   } catch (error) {
-    console.error(`Error creating IRI heatmap layer: ${error}`);
-    alert(`IRI 히트맵 레이어 로딩 오류: ${error}`);
-    if (iriHeatmapLayer.value) { // Cleanup potential partial layer
+    alert(`IRI 히트맵 레이어 로딩 오류: ${error}`)
+    if (iriHeatmapLayer.value) {
       iriHeatmapLayer.value = null;
     }
   } finally {
     isLoading.value = false
   }
-}
+};
 
-
-// --- Map Event Handlers ---
 const handleResetCenter = () => {
   map.value?.getView().animate({ center: center, zoom: ZOOM_DEFAULT, duration: MAP_DURATION })
 }
 
 const vworldTileLayer = new TileLayer({
-  // source: new XYZ({
-  //   url: 'https://api.vworld.kr/req/wmts/1.0.0/1FD1DD92-D087-3EE3-9739-7459C1D23F72/Base/{z}/{y}/{x}.png',
-  // }),
   source: new OSM()
 })
 
@@ -570,20 +506,33 @@ const customInteractions = defaultInteractions().extend([
   }),
 ])
 
-const iriTooltipOverlay = ref<any>(null); // **** IRI 툴팁 오버레이 ref ****
-const iriTooltipContent = ref<HTMLElement | null>(null); // **** IRI 툴팁 내용 요소 ref ****
+const iriTooltipOverlay = ref<any>(null);
+const iriTooltipContent = ref<HTMLElement | null>(null);
 
-// --- OpenLayers Map Initialization and Event Listeners ---
+const showIriLayerHandler = async () => {
+  if (map.value) {
+    await makeIriLayer(map.value as any);
+  }
+};
+
+const hideIriLayerHandler = () => {
+  if (map.value && iriHeatmapLayer.value) {
+    map.value.removeLayer(iriHeatmapLayer.value as any);
+    iriHeatmapLayer.value = null;
+  }
+  if (iriTooltipOverlay.value) {
+    iriTooltipOverlay.value.setPosition(undefined);
+  }
+}
+
 onMounted(async () => {
   if (!mapContainer.value) return
   const tooltipElement = document.getElementById('iri-tooltip');
   iriTooltipContent.value = document.getElementById('iri-tooltip-content');
 
   if (!tooltipElement || !iriTooltipContent.value) {
-    console.error("Tooltip element not found!");
     return;
   }
-  // Create IRI Tooltip Overlay (but it won't be used by heatmap clicks)
   iriTooltipOverlay.value = new Overlay({
     element: tooltipElement,
     offset: [0, -15],
@@ -596,31 +545,31 @@ onMounted(async () => {
     layers: [vworldTileLayer],
     view: new View({ center, zoom: ZOOM_DEFAULT, minZoom: ZOOM_MINLEVEL, maxZoom: ZOOM_MAXLEVEL }),
     interactions: customInteractions,
-    overlays: [iriTooltipOverlay.value] // 오버레이는 추가하지만 히트맵에서 사용 X
+    overlays: [iriTooltipOverlay.value]
   });
 
-  // Load initial layers (road/rpci/etc.) based on props.type
   if (props.type) {
     await loadLayers();
   }
 
-  // --- Single Click Handler (Updated for IRI) ---
   map.value?.on('singleclick', (e: MapBrowserEvent<UIEvent>) => {
     if (props.type === 'cover' || props.type === 'report') {
-      if (iriTooltipOverlay.value) { // 기존 툴팁 숨기기
+      if (iriTooltipOverlay.value) {
         iriTooltipOverlay.value.setPosition(undefined);
       }
-      if (selectedWayId.value) { // 기존 선택 해제 (스타일 초기화)
+      if (selectedWayId.value) {
         selectedWayId.value = null;
-        iriHeatmapLayer.value?.getSource()?.changed();
+        if (iriHeatmapLayer.value?.getSource()) iriHeatmapLayer.value.getSource()?.changed();
+        if (roadLineLayer.value?.getSource()) roadLineLayer.value.getSource()?.changed();
+        if (roadPointLayer.value?.getSource()) roadPointLayer.value.getSource()?.changed();
       }
-      return
+      emit('close-drawer');
+      return;
     }
 
-    let clickedFeatureInstance: any = null; // Use FeatureLike type
-    let clickedLayer: VectorLayer<any> | null = null;    // Type the layer
+    let clickedFeatureInstance: any = null;
+    let clickedLayer: VectorLayer<any> | null = null;
 
-    // Define layers that are clickable based on the current mode (props.type)
     const clickableLayers: VectorLayer<any>[] = [];
     if (roadLineLayer.value) clickableLayers.push(roadLineLayer.value as any);
     if ((props.type === 'road' || props.type === 'rpci') && roadPointLayer.value) {
@@ -629,14 +578,13 @@ onMounted(async () => {
 
     map.value?.forEachFeatureAtPixel(
       e.pixel,
-      (feature, layer) => { // Correct types inferred or use FeatureLike, Layer
+      (feature, layer) => {
         clickedFeatureInstance = feature;
-        clickedLayer = layer as VectorLayer<any>; // Cast layer
-        return true; // Stop after first hit
+        clickedLayer = layer as VectorLayer<any>;
+        return true;
       },
       {
-        layerFilter: (layer) => clickableLayers.includes(layer as VectorLayer<any>), // Cast layer
-        // hitTolerance: 4
+        layerFilter: (layer) => clickableLayers.includes(layer as VectorLayer<any>),
       }
     )
 
@@ -645,124 +593,96 @@ onMounted(async () => {
     let isPointClick = false;
     let isLineClick = false;
     let lineFirstCoord: number[] | null = null;
-    let isIriClick = false; // Flag for IRI click
 
     if (clickedFeatureInstance) {
       const geometry = clickedFeatureInstance.getGeometry();
       const type = geometry?.getType();
       const properties = clickedFeatureInstance.getProperties();
 
-      if (type === 'LineString') { // Handle road/rpci lines
-        clickedWayId = clickedFeatureInstance.getId()?.toString() ?? null; // Use feature ID
+      if (type === 'LineString') {
+        clickedWayId = clickedFeatureInstance.getId()?.toString() ?? null;
         isLineClick = true;
         lineFirstCoord = (geometry as LineString).getFirstCoordinate();
-      } else if (type === 'Point') { // Handle road/rpci points
+      } else if (type === 'Point') {
         clickedWayId = properties['parent_way_id']?.toString() ?? null;
-        clickedPointCoords = (geometry as Point).getCoordinates(); // Use Point type assertion
+        clickedPointCoords = (geometry as Point).getCoordinates();
         isPointClick = true;
       }
     }
 
-    // --- Update Selection State ---
     let selectionChanged = false;
     if (selectedWayId.value !== clickedWayId || !compareCoordinates(selectedPointCoords.value, clickedPointCoords)) {
       selectedWayId.value = clickedWayId;
-      selectedPointCoords.value = clickedPointCoords; // Will be null if a line was clicked
+      selectedPointCoords.value = clickedPointCoords;
       selectionChanged = true;
     }
 
-    // --- Refresh Layer Styles if Selection Changed ---
     if (selectionChanged) {
-      roadLineLayer.value?.getSource()?.changed();
-      roadPointLayer.value?.getSource()?.changed();
+      if (roadLineLayer.value?.getSource()) roadLineLayer.value.getSource()?.changed();
+      if (roadPointLayer.value?.getSource()) roadPointLayer.value.getSource()?.changed();
     }
 
-    // --- Handle Actions Based on Click ---
     if (clickedFeatureInstance) {
       const properties = clickedFeatureInstance.getProperties();
       if (properties.geometry) {
-        delete properties.geometry; // Clean properties before emitting
+        delete properties.geometry;
       }
 
-      if (isIriClick) {
-        // Emit properties for IRI feature
-        console.log("Emitting IRI feature properties:", properties);
-        // emit('select-feature', properties);
-        // // Optional: Animate map view for IRI click (e.g., zoom to line center or start)
-        if (map.value && lineFirstCoord) {
-          map.value.getView().animate({ zoom: ZOOM_THRESHOLD, center: lineFirstCoord, duration: MAP_DURATION });
-        }
-      } else if (isPointClick && (props.type === 'road' || props.type === 'rpci')) {
-        // Emit properties for road/rpci point
+      if (isPointClick && (props.type === 'road' || props.type === 'rpci')) {
         emit('select-feature', properties);
-        // Animate to point
         if (map.value && clickedPointCoords) {
           map.value.getView().animate({ center: clickedPointCoords, duration: MAP_DURATION });
         }
       } else if (isLineClick && (props.type === 'road' || props.type === 'rpci')) {
-        // Animate to line start/center for road/rpci line
         if (map.value && lineFirstCoord) {
           map.value.getView().animate({ zoom: ZOOM_THRESHOLD, center: lineFirstCoord, duration: MAP_DURATION });
         }
-        // Potentially emit line properties if needed for road/rpci line clicks
-        // emit('select-feature', properties);
       }
-    } else { // Clicked outside any feature
+    } else {
       if (selectedWayId.value !== null || selectedPointCoords.value !== null) {
         selectedWayId.value = null;
         selectedPointCoords.value = null;
-        roadLineLayer.value?.getSource()?.changed();
-        roadPointLayer.value?.getSource()?.changed();
-        selectionChanged = true; // Indicate deselection happened
+        if (roadLineLayer.value?.getSource()) roadLineLayer.value.getSource()?.changed();
+        if (roadPointLayer.value?.getSource()) roadPointLayer.value.getSource()?.changed();
+        selectionChanged = true;
       }
-      // Close drawer only if something was deselected or if the specific mode requires it
       if (selectionChanged || props.type === 'road' || props.type === 'rpci') {
         emit('close-drawer');
       }
     }
   });
 
-
-  // --- Pointer Move Handler (Updated for IRI) ---
   map.value?.on('pointermove', (e: MapBrowserEvent<UIEvent>) => {
     if (e.dragging) return;
     const pixel = map.value?.getEventPixel(e.originalEvent);
     if (!pixel || !map.value) return;
 
-    // IRI Hover Handling Update Start
-    const hoverableLayers: VectorLayer<any>[] = []; // Explicitly type
+    const hoverableLayers: VectorLayer<any>[] = [];
 
     if (roadLineLayer.value) hoverableLayers.push(roadLineLayer.value as any);
-    // Only add point layer if relevant for the mode and exists
     if ((props.type === 'road' || props.type === 'rpci') && roadPointLayer.value) {
       hoverableLayers.push(roadPointLayer.value as any);
     }
-    // IRI Hover Handling Update End
-
 
     const hit = map.value.forEachFeatureAtPixel(pixel, (f, l) => true, {
       layerFilter: (l) => hoverableLayers.includes(l as VectorLayer<any>),
-      // hitTolerance: 2,
     });
 
     const targetElement = map.value.getTargetElement() as HTMLElement | undefined;
     if (targetElement) {
-      // Allow pointer cursor for IRI type as well
       if (props.type === 'cover' || props.type === 'report') {
         targetElement.style.cursor = '';
-      } else { // road, rpci, iri
+      } else {
         targetElement.style.cursor = hit ? 'pointer' : '';
       }
     }
   });
 
-  // --- Resolution Change Handler (remains the same) ---
   map.value?.getView().on('change:resolution', () => {
-    roadLineLayer.value?.getSource()?.changed()
-    roadPointLayer.value?.getSource()?.changed()// Also refresh IRI layer on zoom
+    if (roadLineLayer.value?.getSource()) roadLineLayer.value.getSource()?.changed()
+    if (roadPointLayer.value?.getSource()) roadPointLayer.value.getSource()?.changed()
   })
 
-  // --- Window Event Listeners Setup (remains the same, but check the IRI listener call) ---
   window.addEventListener('reset-map-center', handleResetCenter)
   window.addEventListener('zoom-in-map', () => {
     const currentZoom = map.value?.getView().getZoom()
@@ -773,34 +693,27 @@ onMounted(async () => {
     if (currentZoom) map.value?.getView().animate({ zoom: currentZoom - 1, duration: MAP_DURATION })
   })
 
-  // Ensure map.value is passed correctly here
-  window.addEventListener('show-iri-layer', async () => {
-    await makeIriLayer(map.value as any); // Pass the reactive map ref's value
-  });
-
-  window.addEventListener('hide-iri-layer', () => {
-    if (iriHeatmapLayer.value) {
-      map.value?.removeLayer(iriHeatmapLayer.value as any);
-      iriHeatmapLayer.value = null;
-    }
-  });
+  window.addEventListener('show-iri-layer', showIriLayerHandler);
+  window.addEventListener('hide-iri-layer', hideIriLayerHandler);
 })
 
-// --- onBeforeUnmount (remove iri listener properly) ---
 onBeforeUnmount(() => {
   if (map.value) {
     map.value.setTarget(undefined)
-    // map.value = null // Avoid setting ref to null directly if it might be needed elsewhere briefly
   }
-  // Remove specific listeners added in onMounted
   window.removeEventListener('reset-map-center', handleResetCenter);
-  // Define the IRI handler separately to remove it correctly
-  const iriHandler = async () => { await makeIriLayer(map.value as any); }; // Simplified, may need exact reference
-  window.removeEventListener('show-iri-layer', iriHandler);
-  window.removeEventListener('hide-iri-layer', iriHandler);
-  // Consider removing zoom listeners too if added dynamically
-  window.removeEventListener('zoom-in-map', () => { })
-  window.removeEventListener('zoom-out-map', () => { });
+  window.removeEventListener('show-iri-layer', showIriLayerHandler);
+  window.removeEventListener('hide-iri-layer', hideIriLayerHandler);
+  const zoomInHandler = () => {
+    const currentZoom = map.value?.getView().getZoom();
+    if (currentZoom) map.value?.getView().animate({ zoom: currentZoom + 1, duration: MAP_DURATION });
+  };
+  const zoomOutHandler = () => {
+    const currentZoom = map.value?.getView().getZoom();
+    if (currentZoom) map.value?.getView().animate({ zoom: currentZoom - 1, duration: MAP_DURATION });
+  };
+  window.removeEventListener('zoom-in-map', zoomInHandler);
+  window.removeEventListener('zoom-out-map', zoomOutHandler);
 })
 </script>
 
@@ -825,7 +738,6 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-/* Styles remain the same */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s ease-in;
@@ -859,33 +771,24 @@ onBeforeUnmount(() => {
 .ol-tooltip {
   position: absolute;
   background: rgba(50, 50, 50, 0.8);
-  /* 어두운 반투명 배경 */
   color: white;
-  /* 흰색 텍스트 */
   border-radius: 4px;
   padding: 5px 10px;
   font-size: 12px;
   white-space: pre-wrap;
-  /* 줄바꿈 및 공백 유지 */
   pointer-events: none;
-  /* 툴팁 위로 마우스 이벤트가 통과하도록 */
   transform: translate(-50%, -110%);
-  /* 위치 조정 (위쪽 중앙) */
   transition: opacity 0.2s;
   opacity: 0;
-  /* 기본적으로 숨김 */
   z-index: 10;
-  /* 다른 요소 위에 오도록 */
   border: 1px solid white;
 }
 
 .ol-tooltip:empty {
-  /* 내용 없을 때 숨김 */
   opacity: 0;
 }
 
 .ol-tooltip-visible {
-  /* 내용 있을 때 표시 */
   opacity: 1;
 }
 </style>
