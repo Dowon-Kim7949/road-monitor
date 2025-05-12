@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import RButton from '@/components/common/atom/RButton.vue'
-const props = defineProps<{
-  activeMode: string
-}>()
+const props = defineProps({
+  activeMode: {
+    type: String,
+    default: 'alert',
+  }
+})
 const emit = defineEmits<{
   (e: 'change-mode', mode: string): void
 }>()

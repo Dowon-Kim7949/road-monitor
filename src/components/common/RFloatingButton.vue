@@ -32,6 +32,11 @@ const activeMode = ref('alert')
 const showConfirm = ref(false)
 const handleChangeMode = (mode: string) => {
   activeMode.value = mode
+  if (mode === 'wave') {
+    window.dispatchEvent(new CustomEvent('show-iri-layer'))
+  } else {
+    window.dispatchEvent(new CustomEvent('hide-iri-layer'))
+  }
 }
 
 const selectOptions = ref([
