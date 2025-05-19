@@ -107,7 +107,7 @@ const isCompleted = ref(false)
 
     <!-- 지도 영역 -->
     <RMap :leftDrawer="leftDrawer" :rightDrawer="rightDrawer" @select-feature="handleSelectMarker"
-      @close-drawer="rightDrawer = false" type="road" @completed-load="isCompleted = true" />
+      @close-drawer="rightDrawer = false" type="surrounding" @completed-load="isCompleted = true" />
 
     <!-- 고정 버튼 모음 -->
     <RFloatingButton @reset-center="resetCenter" @zoom-in="zoomIn" @zoom-out="zoomOut" type="surrounding"

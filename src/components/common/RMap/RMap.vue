@@ -36,7 +36,7 @@ const emit = defineEmits<{
 const props = defineProps<{
   leftDrawer: boolean
   rightDrawer?: boolean
-  type?: 'road' | 'cover' | 'rpci' | 'report' | null
+  type?: 'road' | 'cover' | 'rpci' | 'report' | 'surrounding' | null
 }>()
 
 const mapContainer = ref<HTMLElement | null>(null)
@@ -181,6 +181,7 @@ const layerStyleFunction = (feature: FeatureLike): Style | Style[] | undefined =
         return undefined
       }
     case 'road':
+    case 'surrounding':
     default:
       if (currentZoom < ZOOM_THRESHOLD) {
         if (featureType === 'LineString') {
@@ -266,7 +267,7 @@ const loadLayers = async () => {
     roadLineLayer.value = new VectorLayer({ source: lineSource, style: layerStyleFunction })
     map.value.addLayer(roadLineLayer.value as any)
 
-    if (props.type === 'road' || props.type === 'rpci') {
+    if (props.type === 'road' || props.type === 'rpci' || props.type === 'surrounding') {
       const pointResponse = await fetch('/road_points_5m.json')
       if (!pointResponse.ok)
         throw new Error(`Point data HTTP error! status: ${pointResponse.status}`)
@@ -467,7 +468,7 @@ onMounted(async () => {
 
     const clickableLayers: VectorLayer<any>[] = [];
     if (roadLineLayer.value) clickableLayers.push(roadLineLayer.value as any);
-    if ((props.type === 'road' || props.type === 'rpci') && roadPointLayer.value) {
+    if ((props.type === 'road' || props.type === 'rpci' || props.type === 'surrounding') && roadPointLayer.value) {
       clickableLayers.push(roadPointLayer.value as any);
     }
 
@@ -522,12 +523,12 @@ onMounted(async () => {
         delete properties.geometry;
       }
 
-      if (isPointClick && (props.type === 'road' || props.type === 'rpci')) {
+      if (isPointClick && (props.type === 'road' || props.type === 'rpci' || props.type === 'surrounding')) {
         emit('select-feature', properties);
         if (map.value && clickedPointCoords) {
           map.value.getView().animate({ center: clickedPointCoords, duration: MAP_DURATION });
         }
-      } else if (isLineClick && (props.type === 'road' || props.type === 'rpci')) {
+      } else if (isLineClick && (props.type === 'road' || props.type === 'rpci' || props.type === 'surrounding')) {
         if (map.value && lineFirstCoord) {
           map.value.getView().animate({ zoom: ZOOM_THRESHOLD, center: lineFirstCoord, duration: MAP_DURATION });
         }
@@ -540,7 +541,7 @@ onMounted(async () => {
         if (roadPointLayer.value?.getSource()) roadPointLayer.value.getSource()?.changed();
         selectionChanged = true;
       }
-      if (selectionChanged || props.type === 'road' || props.type === 'rpci') {
+      if (selectionChanged || props.type === 'road' || props.type === 'rpci' || props.type === 'surrounding') {
         emit('close-drawer');
       }
     }
@@ -554,7 +555,7 @@ onMounted(async () => {
     const hoverableLayers: VectorLayer<any>[] = [];
 
     if (roadLineLayer.value) hoverableLayers.push(roadLineLayer.value as any);
-    if ((props.type === 'road' || props.type === 'rpci') && roadPointLayer.value) {
+    if ((props.type === 'road' || props.type === 'rpci' || props.type === 'surrounding') && roadPointLayer.value) {
       hoverableLayers.push(roadPointLayer.value as any);
     }
 
