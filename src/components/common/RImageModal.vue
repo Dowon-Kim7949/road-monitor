@@ -6,7 +6,7 @@ import RIcon from './atom/RIcon.vue'
 const props = defineProps<{
   visible: boolean
   images: { src: string; date: string; title?: string }[]
-  type: 'road' | 'rpci'
+  type: 'road' | 'rpci' | 'surrounding'
 }>()
 
 defineEmits<{

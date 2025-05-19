@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, defineAsyncComponent } from 'vue'
-import RMap from '@/components/common/RMap.vue'
+import RMap from '@/components/common/RMap/RMap.vue'
 import RFloatingButton from '@/components/common/RFloatingButton.vue'
 import RLeftDrawer from '@/components/common/RLeftDrawer.vue'
 import RFloatingList from '@/components/common/RFloatingList.vue'
@@ -84,13 +84,14 @@ const handleSelectMarker = (data: any) => {
   rightDrawer.value = true
   if (leftDrawer.value) leftDrawer.value = false
 }
+const isCompleted = ref(false)
 </script>
 
 <template>
   <div class="relative w-full h-screen overflow-hidden">
     <!-- 좌측 사이드바 -->
     <RLeftDrawer v-model="leftDrawer" />
-    <RFloatingList :items="testList" />
+    <RFloatingList :items="testList" v-if="isCompleted" />
     <!-- 우측 사이드바 (Suspense + Async) -->
     <Suspense>
       <template #default>
@@ -105,7 +106,7 @@ const handleSelectMarker = (data: any) => {
 
     <!-- 지도 영역 -->
     <RMap :leftDrawer="leftDrawer" :rightDrawer="rightDrawer" @select-feature="handleSelectMarker"
-      @close-drawer="rightDrawer = false" type="road" />
+      @close-drawer="rightDrawer = false" type="road" @completed-load="isCompleted = true" />
 
     <!-- 고정 버튼 모음 -->
     <RFloatingButton @reset-center="resetCenter" @zoom-in="zoomIn" @zoom-out="zoomOut" type="road"

@@ -64,7 +64,7 @@ const selelctItems = [
 const modelValue = defineModel<boolean>()
 
 const props = defineProps<{
-  type: 'road' | 'rpci'
+  type: 'road' | 'rpci' | 'surrounding'
   data: testData | null
   histories: history[]
 }>()

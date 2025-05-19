@@ -29,9 +29,11 @@ const props = defineProps({
     validator: (val: string) => ['left', 'right'].includes(val),
   },
   isLoaded: { type: Boolean, default: false },
+  imageSrc: String,              // ← 추가: 이미지 소스 URL
 })
 
-const isIconOnly = computed(() => !props.label && props.icon)
+const isIconOnly = computed(() => !props.label && props.icon && !props.imageSrc)
+const hasImage = computed(() => !!props.imageSrc)
 
 const selectedIcon = computed(() => {
   if (!props.icon) return null
@@ -40,6 +42,17 @@ const selectedIcon = computed(() => {
 })
 
 const sizeClasses = computed(() => {
+  // 이미지 버튼일 때는 정사각 비율로
+  if (hasImage.value) {
+    return {
+      xsmall: 'h-6 w-6 p-1',
+      small: 'h-8 w-8 p-1.5',
+      medium: 'h-10 w-10 p-2',
+      large: 'h-12 w-12 p-2.5',
+      xlarge: 'h-14 w-14 p-3',
+    }[props.size]
+  }
+  // 기존 버튼 크기
   return isIconOnly.value
     ? {
       xsmall: 'h-fit p-1',
@@ -79,22 +92,28 @@ const typeClasses = computed(
     'inline-flex items-center justify-center self-auto focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed',
     typeClasses,
     sizeClasses,
-    { 'rounded-full aspect-square': isIconOnly, 'gap-2': !isIconOnly },
+    {
+      'rounded-full aspect-square': isIconOnly || hasImage,
+      'gap-2': !isIconOnly && !hasImage
+    },
   ]" :aria-label="label">
+    <!-- 왼쪽 이미지/아이콘 -->
     <template v-if="iconPos === 'left'">
-      <component v-if="selectedIcon" :is="selectedIcon" :size="iconSize" :stroke-width="strokeWidth"
+      <img v-if="hasImage" :src="imageSrc" :alt="label || 'button image'" class="object-contain" />
+      <component v-else-if="selectedIcon" :is="selectedIcon" :size="iconSize" :stroke-width="strokeWidth"
         class="stroke-current" :class="strokeShadow ? 'filter drop-shadow-[0_0_2px_#0f0f0f]' : ''" />
-      <template v-if="isLoaded">
-        <Spinner :size="size" />
-      </template>
+      <Spinner v-if="isLoaded && !hasImage" :size="size" />
     </template>
-    <span v-if="!isIconOnly" class="whitespace-nowrap">{{ label }}</span>
+
+    <!-- 텍스트 -->
+    <span v-if="!isIconOnly && !hasImage" class="whitespace-nowrap">{{ label }}</span>
+
+    <!-- 오른쪽 이미지/아이콘 -->
     <template v-if="iconPos === 'right'">
-      <component v-if="selectedIcon" :is="selectedIcon" :size="iconSize" :stroke-width="strokeWidth"
+      <img v-if="hasImage" :src="imageSrc" :alt="label || 'button image'" class="object-contain" />
+      <component v-else-if="selectedIcon" :is="selectedIcon" :size="iconSize" :stroke-width="strokeWidth"
         class="stroke-current" :class="strokeShadow ? 'filter drop-shadow-[0_0_2px_#0f0f0f]' : ''" />
-      <template v-if="isLoaded">
-        <Spinner :size="size" />
-      </template>
+      <Spinner v-if="isLoaded && !hasImage" :size="size" />
     </template>
   </button>
 </template>

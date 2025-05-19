@@ -11,7 +11,7 @@ const settingsStore = useSettingsStore()
 const { t } = useI18n()
 
 const props = defineProps<{
-  type: 'road' | 'rpci'
+  type: 'road' | 'rpci' | 'surrounding'
   items: history[]
   full?: boolean
 }>()
@@ -47,7 +47,8 @@ const getLevelDetailsByScore = (score: number) => {
       <div v-for="(item, index) in displayedItems" :key="index" @click="$emit('select', item)"
         class="flex items-center space-x-4 cursor-pointer hover:bg-gray-30 px-2 py-2 rounded">
         <!-- 썸네일 -->
-        <img v-if="type === 'road'" :src="item.src || 'https://via.placeholder.com/120x72?text=No+Image'" alt="history"
+        <img v-if="type === 'road' || type === 'surrounding'"
+          :src="item.src || 'https://via.placeholder.com/120x72?text=No+Image'" alt="history"
           class="w-28 h-16 object-cover rounded" />
 
         <!-- 텍스트 -->

@@ -1,36 +1,36 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
+import { Cog } from 'lucide-vue-next'
+
 import OLMap from 'ol/Map'
 import View from 'ol/View'
 import TileLayer from 'ol/layer/Tile'
 import VectorLayer from 'ol/layer/Vector'
-import HeatmapLayer from 'ol/layer/Heatmap';
-import XYZ from 'ol/source/XYZ'
+import HeatmapLayer from 'ol/layer/Heatmap'
 import VectorSource from 'ol/source/Vector'
-import { fromLonLat } from 'ol/proj'
 import GeoJSON from 'ol/format/GeoJSON'
+import { fromLonLat } from 'ol/proj'
 import Style from 'ol/style/Style'
 import Stroke from 'ol/style/Stroke'
 import Circle from 'ol/style/Circle'
 import Fill from 'ol/style/Fill'
 import { Feature, MapBrowserEvent, Overlay } from 'ol'
 import { defaults as defaultInteractions, MouseWheelZoom } from 'ol/interaction'
-import { Cog } from 'lucide-vue-next'
 import type LineString from 'ol/geom/LineString'
 import Point from 'ol/geom/Point'
 import type { FeatureLike } from 'ol/Feature'
 import type { Coordinate } from 'ol/coordinate'
-import { OSM } from 'ol/source'
-
-const MAP_DURATION = 300
-const ZOOM_THRESHOLD = 19
-const ZOOM_DEFAULT = 17
-const ZOOM_MINLEVEL = 15
-const ZOOM_MAXLEVEL = 21
+import OSM from 'ol/source/OSM'
+import {
+  MAP_DURATION, ZOOM_THRESHOLD, ZOOM_DEFAULT, ZOOM_MINLEVEL, ZOOM_MAXLEVEL, BORDER_COLOR, BORDER_EXTRA_WIDTH, RPCI_COLORS, IRI_HEATMAP_GRADIENT, RPCI_COLOR_DISTRIBUTION,
+  ROAD_SELECTEDLINESTYLE, ROAD_DEFAULTLINESTYLE, ROAD_SELECTEDPOINTSTYLE, ROAD_RELATEDPOINTSTYLE, ROAD_DEFAULTPOINTSTYLE, ROAD_SELECTEDLINEBORDERSTYLE,
+  compareCoordinates, hexToRgba
+} from '@/components/common/RMap/init_map'
 
 const emit = defineEmits<{
   (e: 'select-feature', properties: any): void
   (e: 'close-drawer'): void
+  (e: 'completed-load'): boolean
 }>()
 
 const props = defineProps<{
@@ -47,139 +47,56 @@ const selectedWayId = ref<string | null>(null)
 const selectedPointCoords = ref<any>(null)
 const isLoading = ref(false)
 const iriHeatmapLayer = ref<HeatmapLayer | null>(null)
-const iriCenter = ref(fromLonLat([-0.22365497581524368, 51.49220408472129]))
+const center = fromLonLat([-0.22365497581524368, 51.49220408472129])
+const iriCenter = ref(center)
+const currentZoom = ref(ZOOM_DEFAULT)
+const bridgeLayer = ref<VectorLayer<VectorSource<any>> | null>(null)
 
-const BORDER_COLOR = 'rgba(0, 0, 0, 0.8)'
-const BORDER_EXTRA_WIDTH = 4
+const bridgeStyle = new Style({
+  stroke: new Stroke({ color: 'rgba(0,0,255,1)', width: 4 }),
+  fill: new Fill({ color: 'rgba(0,0,255, 0.5)' })
+})
 
-const compareCoordinates = (coords1: any, coords2: any): boolean => {
-  if (
-    !coords1 ||
-    !coords2 ||
-    !Array.isArray(coords1) ||
-    !Array.isArray(coords2) ||
-    coords1.length < 2 ||
-    coords2.length < 2
-  ) {
-    return false
+const loadBridgeLayer = async () => {
+  if (!map.value) return
+  try {
+    const resp = await fetch('/bridge.geojson')
+    if (!resp.ok) throw new Error(`Bridge HTTP ${resp.status}`)
+    const data = await resp.json()
+    const features = new GeoJSON().readFeatures(data, {
+      dataProjection: 'EPSG:4326',
+      featureProjection: map.value.getView().getProjection()
+    })
+    const layer = new VectorLayer({
+      source: new VectorSource({ features }),
+      style: bridgeStyle,
+      zIndex: 20
+    })
+    bridgeLayer.value = layer
+    map.value.addLayer(layer)
+  } catch (e) {
+    console.error('loadBridgeLayer error:', e)
   }
-  return coords1[0] === coords2[0] && coords1[1] === coords2[1]
 }
 
-const hexToRgba = (hex: string, alpha: number): string => {
-  if (!hex || typeof hex !== 'string') hex = '#808080'
-  if (typeof alpha !== 'number' || alpha < 0 || alpha > 1) alpha = 1.0
-  let hexValue = hex.startsWith('#') ? hex.slice(1) : hex
-  let r: number, g: number, b: number
-  if (hexValue.length === 3) {
-    r = parseInt(hexValue[0] + hexValue[0], 16)
-    g = parseInt(hexValue[1] + hexValue[1], 16)
-    b = parseInt(hexValue[2] + hexValue[2], 16)
-  } else if (hexValue.length === 6) {
-    r = parseInt(hexValue.substring(0, 2), 16)
-    g = parseInt(hexValue.substring(2, 4), 16)
-    b = parseInt(hexValue.substring(4, 6), 16)
-  } else {
-    return `rgba(128, 128, 128, ${alpha})`
-  }
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`
-}
-const iriColorMapping = [
-  { threshold: 5, color: 'rgba(0, 255, 0, 0.7)' },
-  { threshold: 10, color: 'rgba(255, 255, 0, 0.7)' },
-  { threshold: 20, color: 'rgba(255, 165, 0, 0.7)' },
-  { threshold: Infinity, color: 'rgba(255, 0, 0, 0.7)' }
-];
-const iriHeatmapGradient = [
-  '#0000ff',
-  '#00ffff',
-  '#00ff00',
-  '#ffff00',
-  '#ffaa00',
-  '#ff4500',
-  '#ff0000'
-];
-const defaultIriColor = 'rgba(128, 128, 128, 0.7)';
+const layerStyleFunction = (feature: FeatureLike): Style | Style[] | undefined => {
+  const currentZoom = map.value?.getView().getZoom() ?? 0
+  if (!currentZoom) return undefined
 
-const rpciColors: { [key: string]: string } = {
-  green: '#00CC25',
-  yellow: '#FEFD33',
-  orange: '#FF2B06',
-  darkRed: '#AB1803',
-  darkGreen: '#007e12',
-  default: '#808080',
-}
-const rpciColorDistribution = [
-  { color: rpciColors.green, threshold: 0.6 },
-  { color: rpciColors.yellow, threshold: 0.9 },
-  { color: rpciColors.orange, threshold: 0.95 },
-  { color: rpciColors.darkRed, threshold: 0.98 },
-  { color: rpciColors.darkGreen, threshold: 1.0 },
-]
+  const properties = feature.getProperties()
 
-const roadSelectedLineStyle = new Style({
-  stroke: new Stroke({ color: 'rgba(80, 80, 80, 1)', width: 10 }),
-})
-const roadDefaultLineStyle = new Style({
-  stroke: new Stroke({ color: 'rgba(80, 80, 80, 0.5)', width: 5 }),
-})
-const roadSelectedPointStyle = new Style({
-  image: new Circle({ radius: 10, fill: new Fill({ color: 'rgba(255, 0, 0, 1.0)' }) }),
-  zIndex: 2,
-})
-const roadRelatedPointStyle = new Style({
-  image: new Circle({ radius: 6, fill: new Fill({ color: 'rgba(100, 100, 100, 1.0)' }) }),
-  zIndex: 1,
-})
-const roadDefaultPointStyle = new Style({
-  image: new Circle({ radius: 6, fill: new Fill({ color: 'rgba(80, 80, 80, 0.5)' }) }),
-})
-const roadSelectedLineBorderStyle = new Style({
-  stroke: new Stroke({
-    color: BORDER_COLOR,
-    width: 10 + BORDER_EXTRA_WIDTH,
-  }),
-  zIndex: 0,
-})
+  const geometry: any = feature.getGeometry()
+  if (!geometry) return undefined
 
-const iriLayerStyleFunction = (feature: FeatureLike) => {
-  const properties = feature.getProperties();
-  const iriValue = properties['iri'];
-  const featureId = feature.getId();
-  let color = defaultIriColor;
-  let strokeWidth = 6;
-  let zIndex = 0;
-
-  if (typeof iriValue === 'number') {
-    for (const mapping of iriColorMapping) {
-      if (iriValue <= mapping.threshold) {
-        color = mapping.color;
-        break;
-      }
+  if (currentZoom <= 15.5 && geometry?.getType() === 'LineString') {
+    const highway = properties['highway']
+    // highway 속성이 이 세 가지가 아니면 렌더링하지 않음
+    if (!['primary', 'secondary', 'trunk', 'primary_link', 'secondary_link', 'trunk_link'].includes(highway)) {
+      return undefined
     }
   }
 
-  if (selectedWayId.value != null && selectedWayId.value === featureId?.toString()) {
-    strokeWidth = 10;
-    zIndex = 1;
-  }
-
-  return new Style({
-    stroke: new Stroke({
-      color: color,
-      width: strokeWidth
-    }),
-    zIndex: zIndex
-  });
-};
-
-const layerStyleFunction = (feature: FeatureLike): Style | Style[] | undefined => {
-  const currentZoom = map.value?.getView().getZoom()
-  if (!currentZoom) return undefined
-  const geometry: any = feature.getGeometry()
-  if (!geometry) return undefined
   const featureType = geometry.getType()
-  const properties = feature.getProperties()
   const featureWayId =
     featureType === 'LineString' ? feature.getId()?.toString() : properties['parent_way_id']?.toString()
 
@@ -194,20 +111,20 @@ const layerStyleFunction = (feature: FeatureLike): Style | Style[] | undefined =
   switch (props.type) {
     case 'cover':
       if (featureType === 'LineString') {
-        return roadDefaultLineStyle
+        return ROAD_DEFAULTLINESTYLE
       } else {
         return undefined
       }
     case 'report':
       if (featureType === 'LineString') {
-        const assignedColorHex = properties['assigned_rpci_color'] || rpciColors['default']
+        const assignedColorHex = properties['assigned_rpci_color'] || RPCI_COLORS['default']
         const colorRgba = hexToRgba(assignedColorHex, 0.7)
         return new Style({ stroke: new Stroke({ color: colorRgba, width: 5 }) })
       } else {
         return undefined
       }
     case 'rpci':
-      const assignedColorHex = properties['assigned_rpci_color'] || rpciColors['default']
+      const assignedColorHex = properties['assigned_rpci_color'] || RPCI_COLORS['default']
       const selectedOpacity = 1.0
       const defaultOpacity = 0.7
       const pointDefaultOpacity = 0.6
@@ -268,23 +185,23 @@ const layerStyleFunction = (feature: FeatureLike): Style | Style[] | undefined =
       if (currentZoom < ZOOM_THRESHOLD) {
         if (featureType === 'LineString') {
           if (isSelectedLine) {
-            return [roadSelectedLineBorderStyle, roadSelectedLineStyle]
+            return [ROAD_SELECTEDLINEBORDERSTYLE, ROAD_SELECTEDLINESTYLE]
           } else {
-            return roadDefaultLineStyle
+            return ROAD_DEFAULTLINESTYLE
           }
         } else if (featureType === 'Point' && isSelectedPoint) {
-          return roadSelectedPointStyle
+          return ROAD_SELECTEDPOINTSTYLE
         } else {
           return undefined
         }
       } else {
         if (featureType === 'Point') {
           if (isSelectedPoint) {
-            return roadSelectedPointStyle
+            return ROAD_SELECTEDPOINTSTYLE
           } else if (isSelectedLine) {
-            return roadRelatedPointStyle
+            return ROAD_RELATEDPOINTSTYLE
           } else {
-            return roadDefaultPointStyle
+            return ROAD_DEFAULTPOINTSTYLE
           }
         } else {
           return undefined
@@ -300,7 +217,7 @@ const mapStyle = computed(() => {
     transition: 'all 0.3s ease',
   }
 })
-const center = fromLonLat([-0.22365497581524368, 51.49220408472129])
+
 
 const loadLayers = async () => {
   if (!map.value) return
@@ -329,10 +246,10 @@ const loadLayers = async () => {
       }
       if (props.type === 'rpci' || props.type === 'report') {
         const rand = Math.random()
-        let assignedColor = rpciColors['default']
-        for (let i = 0; i < rpciColorDistribution.length; i++) {
-          if (rand <= rpciColorDistribution[i].threshold) {
-            assignedColor = rpciColorDistribution[i].color
+        let assignedColor = RPCI_COLORS['default']
+        for (let i = 0; i < RPCI_COLOR_DISTRIBUTION.length; i++) {
+          if (rand <= RPCI_COLOR_DISTRIBUTION[i].threshold) {
+            assignedColor = RPCI_COLOR_DISTRIBUTION[i].color
             break
           }
         }
@@ -341,7 +258,7 @@ const loadLayers = async () => {
           wayIdToColorMap.set(wayId, assignedColor)
         }
       } else {
-        feature.set('assigned_rpci_color', rpciColors['default'])
+        feature.set('assigned_rpci_color', RPCI_COLORS['default'])
       }
     })
 
@@ -366,12 +283,12 @@ const loadLayers = async () => {
           if (parentId && wayIdToColorMap.has(parentId)) {
             feature.set('assigned_rpci_color', wayIdToColorMap.get(parentId))
           } else {
-            feature.set('assigned_rpci_color', rpciColors['default'])
+            feature.set('assigned_rpci_color', RPCI_COLORS['default'])
           }
         })
       } else {
         pointFeatures.forEach((feature: any) => {
-          feature.set('assigned_rpci_color', rpciColors['default'])
+          feature.set('assigned_rpci_color', RPCI_COLORS['default'])
         })
       }
 
@@ -403,11 +320,6 @@ const makeIriLayer = async (mapInstance: OLMap | null, geojsonPath = '/iri_data.
   if (iriHeatmapLayer.value) {
     mapInstance.removeLayer(iriHeatmapLayer.value as any);
     iriHeatmapLayer.value = null
-  }
-  if (iriTooltipOverlay.value && iriTooltipContent.value) {
-    iriTooltipOverlay.value.setPosition(undefined);
-    iriTooltipContent.value.innerHTML = '';
-    document.getElementById('iri-tooltip')?.classList.remove('ol-tooltip-visible');
   }
   selectedWayId.value = null
 
@@ -445,14 +357,7 @@ const makeIriLayer = async (mapInstance: OLMap | null, geojsonPath = '/iri_data.
       }
     });
 
-    if (minLon !== Infinity) {
-      const centerLon = (minLon);
-      const centerLat = (minLat);
-      iriCenter.value = fromLonLat([centerLon, centerLat]);
-    } else {
-      iriCenter.value = fromLonLat([-0.22365497581524368, 51.49220408472129]);
-    }
-
+    iriCenter.value = fromLonLat([-0.22365497581524368, 51.49220408472129])
 
     if (heatmapPoints.length === 0) {
       isLoading.value = false;
@@ -465,13 +370,13 @@ const makeIriLayer = async (mapInstance: OLMap | null, geojsonPath = '/iri_data.
 
     iriHeatmapLayer.value = new HeatmapLayer({
       source: iriHeatmapSource,
-      blur: 10,
+      blur: 15,
       radius: 5,
       weight: (feature: FeatureLike) => {
         const weight = feature.get('weight');
         return (typeof weight === 'number') ? weight / 10 : 0;
       },
-      gradient: iriHeatmapGradient,
+      gradient: IRI_HEATMAP_GRADIENT,
       zIndex: 5
     });
 
@@ -506,9 +411,6 @@ const customInteractions = defaultInteractions().extend([
   }),
 ])
 
-const iriTooltipOverlay = ref<any>(null);
-const iriTooltipContent = ref<HTMLElement | null>(null);
-
 const showIriLayerHandler = async () => {
   if (map.value) {
     await makeIriLayer(map.value as any);
@@ -520,43 +422,37 @@ const hideIriLayerHandler = () => {
     map.value.removeLayer(iriHeatmapLayer.value as any);
     iriHeatmapLayer.value = null;
   }
-  if (iriTooltipOverlay.value) {
-    iriTooltipOverlay.value.setPosition(undefined);
+}
+
+const showBridgeLayerHandler = async () => {
+  if (map.value) {
+    await loadBridgeLayer()
+  }
+}
+
+const hideBridgeLayerHandler = () => {
+  if (map.value && bridgeLayer.value) {
+    map.value.removeLayer(bridgeLayer.value as any)
+    bridgeLayer.value = null
   }
 }
 
 onMounted(async () => {
   if (!mapContainer.value) return
-  const tooltipElement = document.getElementById('iri-tooltip');
-  iriTooltipContent.value = document.getElementById('iri-tooltip-content');
-
-  if (!tooltipElement || !iriTooltipContent.value) {
-    return;
-  }
-  iriTooltipOverlay.value = new Overlay({
-    element: tooltipElement,
-    offset: [0, -15],
-    positioning: 'bottom-center',
-    stopEvent: false,
-  })
 
   map.value = new OLMap({
     target: mapContainer.value,
     layers: [vworldTileLayer],
-    view: new View({ center, zoom: ZOOM_DEFAULT, minZoom: ZOOM_MINLEVEL, maxZoom: ZOOM_MAXLEVEL }),
+    view: new View({ center, zoom: ZOOM_DEFAULT, minZoom: ZOOM_MINLEVEL, maxZoom: ZOOM_MAXLEVEL, constrainResolution: true }),
     interactions: customInteractions,
-    overlays: [iriTooltipOverlay.value]
   });
 
   if (props.type) {
-    await loadLayers();
+    await loadLayers()
   }
 
   map.value?.on('singleclick', (e: MapBrowserEvent<UIEvent>) => {
     if (props.type === 'cover' || props.type === 'report') {
-      if (iriTooltipOverlay.value) {
-        iriTooltipOverlay.value.setPosition(undefined);
-      }
       if (selectedWayId.value) {
         selectedWayId.value = null;
         if (iriHeatmapLayer.value?.getSource()) iriHeatmapLayer.value.getSource()?.changed();
@@ -568,7 +464,6 @@ onMounted(async () => {
     }
 
     let clickedFeatureInstance: any = null;
-    let clickedLayer: VectorLayer<any> | null = null;
 
     const clickableLayers: VectorLayer<any>[] = [];
     if (roadLineLayer.value) clickableLayers.push(roadLineLayer.value as any);
@@ -578,9 +473,8 @@ onMounted(async () => {
 
     map.value?.forEachFeatureAtPixel(
       e.pixel,
-      (feature, layer) => {
+      (feature) => {
         clickedFeatureInstance = feature;
-        clickedLayer = layer as VectorLayer<any>;
         return true;
       },
       {
@@ -678,7 +572,11 @@ onMounted(async () => {
     }
   });
 
-  map.value?.getView().on('change:resolution', () => {
+  map.value!.getView().on('change:resolution', () => {
+    currentZoom.value = map.value!.getView().getZoom()!
+  })
+
+  map.value!.on('moveend', () => {
     if (roadLineLayer.value?.getSource()) roadLineLayer.value.getSource()?.changed()
     if (roadPointLayer.value?.getSource()) roadPointLayer.value.getSource()?.changed()
   })
@@ -695,15 +593,19 @@ onMounted(async () => {
 
   window.addEventListener('show-iri-layer', showIriLayerHandler);
   window.addEventListener('hide-iri-layer', hideIriLayerHandler);
+  window.addEventListener('show-bridge-layer', showBridgeLayerHandler)
+  window.addEventListener('hide-bridge-layer', hideBridgeLayerHandler)
 })
 
 onBeforeUnmount(() => {
   if (map.value) {
     map.value.setTarget(undefined)
   }
-  window.removeEventListener('reset-map-center', handleResetCenter);
-  window.removeEventListener('show-iri-layer', showIriLayerHandler);
-  window.removeEventListener('hide-iri-layer', hideIriLayerHandler);
+  window.removeEventListener('reset-map-center', handleResetCenter)
+  window.removeEventListener('show-iri-layer', showIriLayerHandler)
+  window.removeEventListener('hide-iri-layer', hideIriLayerHandler)
+  window.removeEventListener('show-bridge-layer', showBridgeLayerHandler)
+  window.removeEventListener('hide-bridge-layer', hideBridgeLayerHandler)
   const zoomInHandler = () => {
     const currentZoom = map.value?.getView().getZoom();
     if (currentZoom) map.value?.getView().animate({ zoom: currentZoom + 1, duration: MAP_DURATION });
@@ -714,6 +616,12 @@ onBeforeUnmount(() => {
   };
   window.removeEventListener('zoom-in-map', zoomInHandler);
   window.removeEventListener('zoom-out-map', zoomOutHandler);
+})
+
+watch(() => isLoading.value, (value) => {
+  if (!value) {
+    emit('completed-load')
+  }
 })
 </script>
 

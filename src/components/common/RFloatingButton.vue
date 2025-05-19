@@ -11,7 +11,7 @@ import RModal from './RModal.vue'
 
 const { t } = useI18n()
 const props = defineProps<{
-  type: 'road' | 'rpci' | 'cover' | 'report'
+  type: 'road' | 'rpci' | 'cover' | 'report' | 'surrounding'
 }>()
 
 defineEmits<{
@@ -34,8 +34,13 @@ const handleChangeMode = (mode: string) => {
   activeMode.value = mode
   if (mode === 'wave') {
     window.dispatchEvent(new CustomEvent('show-iri-layer'))
+    window.dispatchEvent(new CustomEvent('hide-bridge-layer'))
+  } else if (mode === 'bridge') {
+    window.dispatchEvent(new CustomEvent('show-bridge-layer'))
+    window.dispatchEvent(new CustomEvent('hide-iri-layer'))
   } else {
     window.dispatchEvent(new CustomEvent('hide-iri-layer'))
+    window.dispatchEvent(new CustomEvent('hide-bridge-layer'))
   }
 }
 

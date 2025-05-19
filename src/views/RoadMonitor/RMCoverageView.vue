@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import RMap from '@/components/common/RMap.vue'
+import RMap from '@/components/common/RMap/RMap.vue'
 import RFloatingButton from '@/components/common/RFloatingButton.vue'
 import RLeftDrawer from '@/components/common/RLeftDrawer.vue'
 import RFloatingList from '@/components/common/RFloatingList.vue'
@@ -49,6 +49,7 @@ const zoomIn = () => window.dispatchEvent(new CustomEvent('zoom-in-map'))
 const zoomOut = () => window.dispatchEvent(new CustomEvent('zoom-out-map'))
 
 const deviceSelected = () => { }
+const isCompleted = ref(false)
 </script>
 
 <template>
@@ -56,9 +57,9 @@ const deviceSelected = () => { }
     <!-- 좌측 사이드바 -->
     <RLeftDrawer v-model="leftDrawer" />
     <RDeviceMenu @device-selected="deviceSelected" @toggle-left="leftDrawer = true" />
-    <RFloatingList :items="testList" type="cover" />
+    <RFloatingList :items="testList" type="cover" v-if="isCompleted" />
     <!-- 지도 영역 -->
-    <RMap :leftDrawer="leftDrawer" type="cover" />
+    <RMap :leftDrawer="leftDrawer" type="cover" @completed-load="isCompleted = true" />
 
     <!-- 고정 버튼 모음 -->
     <RFloatingButton @reset-center="resetCenter" @zoom-in="zoomIn" @zoom-out="zoomOut" type="cover"

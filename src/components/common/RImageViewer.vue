@@ -7,7 +7,7 @@ import type { ViewMode } from './RViewToggleButton.vue'
 
 defineProps<{
   src?: string
-  type: 'road' | 'rpci'
+  type: 'road' | 'rpci' | 'surrounding'
   histories: history[]
 }>()
 

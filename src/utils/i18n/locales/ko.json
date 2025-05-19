@@ -2,6 +2,7 @@
   "menu": {
     "roadMonitor": "Road Monitor",
     "monitoring": "도로 모니터링",
+    "surroundings": "주변 모니터링",
     "coverage": "운행 커버리지",
     "rapidPci": "Rapid-PCI",
     "rpcianalysis": "rPCI 분석 결과",

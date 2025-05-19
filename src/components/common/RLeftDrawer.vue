@@ -17,6 +17,7 @@ const menuGroups = [
     label: 'menu.roadMonitor',
     items: [
       { label: 'menu.monitoring', path: '/monitoring' },
+      { label: 'menu.surroundings', path: '/surroundings' },
       { label: 'menu.coverage', path: '/coverage' },
     ],
   },

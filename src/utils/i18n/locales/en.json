@@ -2,6 +2,7 @@
   "menu": {
     "roadMonitor": "Road Monitor",
     "monitoring": "Monitoring",
+    "surroundings": "surroundings Monitoring",
     "coverage": "Coverage",
     "rapidPci": "Rapid-PCI",
     "rpcianalysis": "rPCI Score",
