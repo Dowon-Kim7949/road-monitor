@@ -73,6 +73,18 @@ export const ROAD_SELECTEDLINEBORDERSTYLE = new Style({
   zIndex: 0,
 })
 
+const vworldTileLayer = new TileLayer({ source: new OSM() })
+const bridgeStyle = new Style({
+  stroke: new Stroke({ color: 'rgba(0,0,255,1)', width: 4 }),
+  fill: new Fill({ color: 'rgba(0,0,255, 0.5)' }),
+})
+
+/**
+ *
+ * @param coords1
+ * @param coords2
+ * @returns
+ */
 export const compareCoordinates = (coords1: any, coords2: any): boolean => {
   if (
     !coords1 ||
@@ -87,6 +99,12 @@ export const compareCoordinates = (coords1: any, coords2: any): boolean => {
   return coords1[0] === coords2[0] && coords1[1] === coords2[1]
 }
 
+/**
+ *
+ * @param hex
+ * @param alpha
+ * @returns
+ */
 export const hexToRgba = (hex: string, alpha: number): string => {
   if (!hex || typeof hex !== 'string') hex = '#808080'
   if (typeof alpha !== 'number' || alpha < 0 || alpha > 1) alpha = 1.0
@@ -105,3 +123,509 @@ export const hexToRgba = (hex: string, alpha: number): string => {
   }
   return `rgba(${r}, ${g}, ${b}, ${alpha})`
 }
+
+/**
+ *
+ * @param container
+ * @param center
+ * @param onZoomChange
+ * @returns
+ */
+export const initMap = (
+  container: HTMLElement,
+  center: any,
+  onZoomChange: (zoom: number) => void,
+): OLMap => {
+  const map = new OLMap({
+    target: container,
+    layers: [vworldTileLayer],
+    view: new View({
+      center,
+      zoom: ZOOM_DEFAULT,
+      minZoom: ZOOM_MINLEVEL,
+      maxZoom: ZOOM_MAXLEVEL,
+      constrainResolution: true,
+    }),
+    interactions: defaultInteractions().extend([new MouseWheelZoom({ duration: 300 })]),
+  })
+
+  map.getView().on('change:resolution', () => {
+    onZoomChange(map.getView().getZoom()!)
+  })
+  return map
+}
+
+/**
+ *
+ * @param feature
+ * @param map
+ * @param propsType
+ * @param selectedWayId
+ * @param selectedPointCoords
+ * @returns
+ */
+export const layerStyleFunction = (
+  feature: FeatureLike,
+  map: OLMap,
+  propsType: string,
+  selectedWayId: string | null,
+  selectedPointCoords: [number, number] | null,
+): Style | Style[] | undefined => {
+  const currentZoom = map.getView().getZoom() ?? 0
+  if (currentZoom === 0) return undefined
+
+  const props = feature.getProperties()
+  const geom = feature.getGeometry?.()
+  if (!geom) return undefined
+
+  // zoom 레벨에 따른 필터링
+  if (currentZoom <= 15.5 && geom.getType() === 'LineString') {
+    const highway = props.highway as string
+    if (
+      !['primary', 'secondary', 'trunk', 'primary_link', 'secondary_link', 'trunk_link'].includes(
+        highway,
+      )
+    ) {
+      return undefined
+    }
+  }
+
+  // 선택 여부 계산
+  const featureType = geom.getType()
+  const featureWayId =
+    featureType === 'LineString'
+      ? feature.getId()?.toString()
+      : (props.parent_way_id as string | undefined)
+  const isSelectedLine = selectedWayId != null && selectedWayId === featureWayId
+
+  let isSelectedPoint = false
+  if (featureType === 'Point' && selectedPointCoords) {
+    const coords = (geom as any).getCoordinates() as [number, number]
+    isSelectedPoint = compareCoordinates(coords, selectedPointCoords)
+  }
+
+  // 스타일 분기
+  switch (propsType) {
+    case 'cover':
+      return featureType === 'LineString' ? ROAD_DEFAULTLINESTYLE : undefined
+
+    case 'report':
+      if (featureType !== 'LineString') return undefined
+      const reportColor = hexToRgba(
+        (props.assigned_rpci_color as string) || RPCI_COLORS.default,
+        0.7,
+      )
+      return new Style({
+        stroke: new Stroke({ color: reportColor, width: 5 }),
+      })
+
+    case 'rpci':
+      const assignedHex = (props.assigned_rpci_color as string) || RPCI_COLORS.default
+      const selOp = 1.0,
+        defOp = 0.7,
+        ptDefOp = 0.6
+
+      if (featureType === 'LineString') {
+        const sw = isSelectedLine ? 10 : 6
+        const op = isSelectedLine ? selOp : defOp
+        const mainColor = hexToRgba(assignedHex, op)
+        const mainStyle = new Style({
+          stroke: new Stroke({ color: mainColor, width: sw }),
+          zIndex: isSelectedLine ? 1 : 0,
+        })
+
+        if (isSelectedLine && currentZoom < ZOOM_THRESHOLD) {
+          const border = new Style({
+            stroke: new Stroke({
+              color: BORDER_COLOR,
+              width: sw + BORDER_EXTRA_WIDTH,
+            }),
+            zIndex: 0,
+          })
+          return [border, mainStyle]
+        }
+        return currentZoom < ZOOM_THRESHOLD ? mainStyle : undefined
+      }
+
+      if (featureType === 'Point') {
+        if (currentZoom < ZOOM_THRESHOLD && !isSelectedPoint && !isSelectedLine) {
+          return undefined
+        }
+        const radius = isSelectedPoint ? 10 : 6
+        const isRel = !isSelectedPoint && isSelectedLine
+        const col =
+          isSelectedPoint || isRel ? hexToRgba(assignedHex, selOp) : hexToRgba(assignedHex, ptDefOp)
+        return new Style({
+          image: new Circle({
+            radius,
+            fill: new Fill({ color: isSelectedPoint ? 'rgba(255,0,0,1)' : col }),
+          }),
+          zIndex: isSelectedPoint ? 2 : isRel ? 1 : 0,
+        })
+      }
+      return undefined
+
+    case 'road':
+    case 'surrounding':
+    default:
+      if (currentZoom < ZOOM_THRESHOLD) {
+        if (featureType === 'LineString') {
+          return isSelectedLine
+            ? [ROAD_SELECTEDLINEBORDERSTYLE, ROAD_SELECTEDLINESTYLE]
+            : ROAD_DEFAULTLINESTYLE
+        }
+        if (featureType === 'Point' && isSelectedPoint) {
+          return ROAD_SELECTEDPOINTSTYLE
+        }
+        return undefined
+      } else {
+        if (featureType === 'Point') {
+          if (isSelectedPoint) return ROAD_SELECTEDPOINTSTYLE
+          if (isSelectedLine) return ROAD_RELATEDPOINTSTYLE
+          return ROAD_DEFAULTPOINTSTYLE
+        }
+        return undefined
+      }
+  }
+}
+
+/**
+ *
+ * @param map
+ * @returns
+ */
+export const loadBridgeLayer = async (map: OLMap): Promise<VectorLayer<VectorSource>> => {
+  const resp = await fetch('/bridge.geojson')
+  if (!resp.ok) throw new Error(`Bridge HTTP ${resp.status}`)
+  const data = await resp.json()
+  const features = new GeoJSON().readFeatures(data, {
+    dataProjection: 'EPSG:4326',
+    featureProjection: map.getView().getProjection(),
+  })
+  const layer = new VectorLayer({
+    source: new VectorSource({ features }),
+    style: bridgeStyle,
+  })
+  map.addLayer(layer)
+  return layer
+}
+
+/**
+ *
+ * @param map
+ * @param propsType
+ * @param styleFn
+ * @param isLoading
+ * @param roadLineLayer
+ * @param roadPointLayer
+ */
+export const loadLayers = async (
+  map: OLMap,
+  propsType: 'road' | 'cover' | 'rpci' | 'report' | 'surrounding',
+  styleFn: (feature: any) => any,
+  isLoading: { value: boolean },
+  roadLineLayer: { value: VectorLayer | null },
+  roadPointLayer: { value: VectorLayer | null },
+): Promise<void> => {
+  isLoading.value = true
+  const wayColorMap = new Map<string, string>()
+
+  // Remove old layers
+  if (roadLineLayer.value) map.removeLayer(roadLineLayer.value)
+  if (roadPointLayer.value) map.removeLayer(roadPointLayer.value)
+  roadLineLayer.value = null
+  roadPointLayer.value = null
+
+  try {
+    // Fetch and style line features
+    const { features: lines } = await fetch('/filtered.geojson')
+      .then((r) => r.json())
+      .then((data) => ({
+        features: new GeoJSON().readFeatures(data, {
+          dataProjection: 'EPSG:4326',
+          featureProjection: map.getView().getProjection(),
+        }),
+      }))
+
+    lines.forEach((f) => {
+      const pid = f.getProperties().pid?.toString()
+      if (pid) f.setId(pid)
+
+      let color = RPCI_COLORS.default
+      if (propsType === 'rpci' || propsType === 'report') {
+        const rand = Math.random()
+        for (const d of RPCI_COLOR_DISTRIBUTION) {
+          if (rand <= d.threshold) {
+            color = d.color
+            break
+          }
+        }
+        if (pid) wayColorMap.set(pid, color)
+      }
+      f.set('assigned_rpci_color', color)
+    })
+
+    // Add line layer
+    roadLineLayer.value = new VectorLayer({
+      source: new VectorSource({ features: lines }),
+      style: styleFn,
+    })
+    map.addLayer(roadLineLayer.value)
+
+    // Fetch and style point features if needed
+    if (['road', 'rpci', 'surrounding'].includes(propsType)) {
+      const { features: points } = await fetch('/road_points_5m.json')
+        .then((r) => r.json())
+        .then((data) => ({
+          features: new GeoJSON().readFeatures(data, {
+            dataProjection: 'EPSG:4326',
+            featureProjection: map.getView().getProjection(),
+          }),
+        }))
+
+      points.forEach((f) => {
+        const parent = f.getProperties().parent_way_id?.toString() || ''
+        const color =
+          propsType === 'rpci' && wayColorMap.has(parent)
+            ? wayColorMap.get(parent)
+            : RPCI_COLORS.default
+        f.set('assigned_rpci_color', color)
+      })
+
+      roadPointLayer.value = new VectorLayer({
+        source: new VectorSource({ features: points }),
+        style: styleFn,
+        renderBuffer: 20,
+      })
+      map.addLayer(roadPointLayer.value)
+    }
+  } catch (e: any) {
+    alert(`Error loading layers: ${e.message}`)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+/**
+ *
+ * @param mapInstance
+ * @param isLoading
+ * @param iriHeatmapLayer
+ * @param selectedWayId
+ * @param iriCenter
+ * @param geojsonPath
+ * @returns
+ */
+export const makeIriLayer = async (
+  mapInstance: OLMap | null,
+  isLoading: { value: boolean },
+  iriHeatmapLayer: { value: HeatmapLayer | null },
+  selectedWayId: { value: string | null },
+  iriCenter: any,
+  geojsonPath = '/iri_data.json',
+): Promise<void> => {
+  if (!mapInstance) {
+    alert('유효한 지도 객체가 전달되지 않았습니다.')
+    return
+  }
+  isLoading.value = true
+  if (iriHeatmapLayer.value) {
+    mapInstance.removeLayer(iriHeatmapLayer.value)
+    iriHeatmapLayer.value = null
+  }
+  selectedWayId.value = null
+
+  try {
+    const data = await fetch(geojsonPath).then((r) => r.json())
+    const features = new GeoJSON().readFeatures(data)
+    const heatPoints: Feature<Point>[] = []
+    let minLon = Infinity,
+      maxLon = -Infinity,
+      minLat = Infinity,
+      maxLat = -Infinity
+
+    features.forEach((f: FeatureLike) => {
+      const geom = f.getGeometry()
+      const iri = f.getProperties().iri
+      if (geom?.getType() === 'LineString' && typeof iri === 'number') {
+        const weight = Math.max(0, Math.min(10, iri))
+        const coords = (geom as LineString).getCoordinates()
+        coords.forEach((c: Coordinate) => {
+          const proj = fromLonLat(c, mapInstance.getView().getProjection())
+          minLon = Math.min(minLon, c[0])
+          maxLon = Math.max(maxLon, c[0])
+          minLat = Math.min(minLat, c[1])
+          maxLat = Math.max(maxLat, c[1])
+          heatPoints.push(new Feature({ geometry: new Point(proj), weight }))
+        })
+      }
+    })
+
+    if (!heatPoints.length) {
+      isLoading.value = false
+      return
+    }
+
+    iriCenter.value = [(minLon + maxLon) / 2, (minLat + maxLat) / 2]
+
+    const source = new VectorSource({ features: heatPoints })
+    iriHeatmapLayer.value = new HeatmapLayer({
+      source,
+      blur: 15,
+      radius: 5,
+      weight: (f) => (f.get('weight') as number) / 10,
+      gradient: IRI_HEATMAP_GRADIENT,
+      zIndex: 5,
+    })
+    mapInstance.addLayer(iriHeatmapLayer.value)
+    mapInstance
+      .getView()
+      .animate({ center: fromLonLat(iriCenter.value), zoom: 15, duration: MAP_DURATION })
+  } catch (e: any) {
+    alert(`IRI 히트맵 레이어 로딩 오류: ${e.message}`)
+    iriHeatmapLayer.value = null
+  } finally {
+    isLoading.value = false
+  }
+}
+
+/**
+ *
+ * @param options: object
+ * @param map: OLMap
+ * @param type: 'road' | 'rpci' | 'report' | 'cover' | 'surrounding'
+ * @param roadLineLayer: { value: VectorLayer | null }
+ * @param roadPointLayer: { value: VectorLayer | null }
+ * @param iriHeatmapLayer?: { value: any | null }
+ * @param selectedWayId: { value: string | null }
+ * @param selectedPointCoords: { value: [number, number] | null }
+ * @param emit: (...args: any[]) => void
+ *
+ */
+export const bindMapInteractions = (options: {
+  map: OLMap
+  type: 'road' | 'rpci' | 'report' | 'cover' | 'surrounding'
+  roadLineLayer: { value: VectorLayer | null }
+  roadPointLayer: { value: VectorLayer | null }
+  iriHeatmapLayer?: { value: any | null }
+  selectedWayId: { value: string | null }
+  selectedPointCoords: { value: [number, number] | null }
+  emit: (...args: any[]) => void
+}) => {
+  const { map, type, roadLineLayer, roadPointLayer, selectedWayId, selectedPointCoords, emit } =
+    options
+
+  // 클릭 이벤트
+  map.on('singleclick', (e: MapBrowserEvent<UIEvent>) => {
+    // cover/report 타입은 무조건 닫기
+    if (type === 'cover' || type === 'report') {
+      emit('close-drawer')
+      return
+    }
+
+    // 클릭 가능한 레이어 모으기
+    const clickable: VectorLayer<any>[] = []
+    if (roadLineLayer.value) clickable.push(roadLineLayer.value)
+    if ((type === 'road' || type === 'rpci' || type === 'surrounding') && roadPointLayer.value)
+      clickable.push(roadPointLayer.value)
+
+    let clicked: any | null = null
+    map.forEachFeatureAtPixel(
+      e.pixel,
+      (f) => {
+        clicked = f
+        return true
+      },
+      { layerFilter: (layer) => clickable.includes(layer as any) },
+    )
+
+    if (clicked) {
+      // 3) feature 타입별 id/coords 추출
+      let clickedWayId: string | null = null
+      let clickedCoords: [number, number] | null = null
+      let isPoint = false,
+        isLine = false
+      let lineFirst: [number, number] | null = null
+
+      if (clicked) {
+        const geom = clicked.getGeometry?.()
+        const props = clicked.getProperties()
+        if (geom?.getType() === 'LineString') {
+          clickedWayId = clicked.getId()?.toString() ?? null
+          isLine = true
+          lineFirst = (geom as LineString).getFirstCoordinate() as [number, number]
+        } else if (geom?.getType() === 'Point') {
+          clickedWayId = props.parent_way_id?.toString() ?? null
+          clickedCoords = (geom as Point).getCoordinates() as [number, number]
+          isPoint = true
+        }
+      }
+
+      // 4) selection 상태 변경
+      const changed =
+        selectedWayId.value !== clickedWayId ||
+        !compareCoordinates(selectedPointCoords.value, clickedCoords)
+      if (changed) {
+        selectedWayId.value = clickedWayId
+        selectedPointCoords.value = clickedCoords
+        roadLineLayer.value?.getSource()?.changed()
+        roadPointLayer.value?.getSource()?.changed()
+      }
+
+      // 5) drawer 열기/애니메이션
+      if (clicked && (isPoint || isLine)) {
+        const props = clicked.getProperties()
+        delete props.geometry
+        if (isPoint && (type === 'road' || type === 'rpci' || type === 'surrounding')) {
+          emit('select-feature', props)
+          map.getView().animate({ center: clickedCoords!, duration: MAP_DURATION })
+        } else if (isLine && (type === 'road' || type === 'rpci' || type === 'surrounding')) {
+          map
+            .getView()
+            .animate({ zoom: ZOOM_THRESHOLD, center: lineFirst!, duration: MAP_DURATION })
+        }
+      }
+      return
+    }
+
+    // 백그라운드(피처 아님) 클릭 시,
+    // 1) 선택 초기화
+    selectedWayId.value = null
+    selectedPointCoords.value = null
+    roadLineLayer.value?.getSource()?.changed()
+    roadPointLayer.value?.getSource()?.changed()
+
+    // 2) 항상 닫기 이벤트
+    emit('close-drawer')
+  })
+
+  // 포인터 무브 이벤트 (hover cursor 변경)
+  map.on('pointermove', (e: MapBrowserEvent<UIEvent>) => {
+    if (e.dragging) return
+    const pixel = map.getEventPixel(e.originalEvent)
+    if (!pixel) return
+    const hoverable: VectorLayer<any>[] = []
+    if (roadLineLayer.value) hoverable.push(roadLineLayer.value)
+    if ((type === 'road' || type === 'rpci' || type === 'surrounding') && roadPointLayer.value)
+      hoverable.push(roadPointLayer.value)
+
+    const hit = map.forEachFeatureAtPixel(pixel, () => true, {
+      layerFilter: (l) => hoverable.includes(l as VectorLayer<any>),
+    })
+    const el = map.getTargetElement() as HTMLElement
+    el.style.cursor = type === 'cover' || type === 'report' ? '' : hit ? 'pointer' : ''
+  })
+
+  // moveend 시 리렌더
+  map.on('moveend', () => {
+    roadLineLayer.value?.getSource()?.changed()
+    roadPointLayer.value?.getSource()?.changed()
+  })
+}
+
+/**
+ *
+ * @param map
+ * @returns
+ */
+export const destroyMap = (map: OLMap) => map.setTarget(undefined)
