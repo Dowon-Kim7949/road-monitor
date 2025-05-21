@@ -196,7 +196,7 @@ export const layerStyleFunction = (
     featureType === 'LineString'
       ? feature.getId()?.toString()
       : (props.parent_way_id as string | undefined)
-  const isSelectedLine = selectedWayId != null && selectedWayId === featureWayId
+  const isSelectedLine = selectedWayId != null && selectedWayId === featureWayId?.toString()
 
   let isSelectedPoint = false
   if (featureType === 'Point' && selectedPointCoords) {
@@ -281,7 +281,7 @@ export const layerStyleFunction = (
       } else {
         if (featureType === 'Point') {
           if (isSelectedPoint) return ROAD_SELECTEDPOINTSTYLE
-          if (isSelectedLine) return ROAD_RELATEDPOINTSTYLE
+          else if (isSelectedLine) return ROAD_RELATEDPOINTSTYLE
           return ROAD_DEFAULTPOINTSTYLE
         }
         return undefined
@@ -552,10 +552,12 @@ export const bindMapInteractions = (options: {
         const props = clicked.getProperties()
         if (geom?.getType() === 'LineString') {
           clickedWayId = clicked.getId()?.toString() ?? null
+          console.log(clickedWayId, props.pid?.toString())
           isLine = true
           lineFirst = (geom as LineString).getFirstCoordinate() as [number, number]
         } else if (geom?.getType() === 'Point') {
           clickedWayId = props.parent_way_id?.toString() ?? null
+          console.log(clickedWayId, props.parent_way_id?.toString())
           clickedCoords = (geom as Point).getCoordinates() as [number, number]
           isPoint = true
         }
