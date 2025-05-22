@@ -38,9 +38,10 @@ const selectedGrade = ref(7) // RMLevelSetting 컴포넌트와 연결된 값
             </h2>
             <div class="flex flex-col sm:flex-row items-center gap-10 mb-5">
               <div class="setting-label pl-6">
-                <label for="duplicate-removal" class="font-bold text-gray-600 block mb-1">중복 촬영 데이터 제거</label>
+                <label for="duplicate-removal" class="font-bold text-gray-600 block mb-1">{{
+                  t('removeDuplicateCaptures')}}</label>
                 <p class="text-sm text-gray-600">
-                  같은 날 동일한 지점을 촬영한 경우, 그 중 최신 데이터만 보관합니다.
+                  {{ t('duplicateCapturesDescription') }}
                 </p>
               </div>
               <div class="flex shrink-0 items-center sm:pt-0 ml-5">
@@ -60,10 +61,10 @@ const selectedGrade = ref(7) // RMLevelSetting 컴포넌트와 연결된 값
               Rapid-PCI
             </h2>
             <div class="setting-label mb-2 pl-6">
-              <label class="font-bold text-gray-600 block mb-1">rPCI 등급 설정</label>
+              <label class="font-bold text-gray-600 block mb-1">{{ t('configureRpciGrades') }}</label>
               <p class="text-sm text-gray-600">
-                rPCI 분석 에 사용할 등급/점수을 아래에서 원하는 대로 설정할 수 있습니다. <br />
-                변경된 등급 체계는 이후 분석부터 적용됩니다.
+                {{ t('rpciGradesDescription') }} <br />
+                {{ t('updatedGradingSystemNotice') }}
               </p>
             </div>
             <div class="pt-5">

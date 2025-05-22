@@ -9,7 +9,8 @@
     "rpcimap": "rPCI Map",
     "rpcireport": "rPCI Report",
     "settings": "Settings",
-    "envSetting": "Preferences"
+    "envSetting": "Preferences",
+    "damageTypeCounts": "Damage Type Counts"
   },
   "lang": {
     "ko": "Korean",
@@ -31,10 +32,15 @@
     "map": "Map View",
     "detail": "Details",
     "reportSave": "Save Report",
-    "save": "Save"
+    "save": "Save",
+    "coverage": "Coverage"
   },
   "Roadsegment": "Road Segment",
   "Roadname": "Road name",
+  "Coverage": "Coverage",
+  "Grade": "Grade",
+  "Nodelink": "Road Segment",
+  "DamageType": "Damage Type",
   "Coordinates": "Coordinates",
   "Capture_at": "Captured at",
   "Analysis_at": "Analysis at",
@@ -49,5 +55,11 @@
   "deviceList": "Device List",
   "all": "All Devices",
   "modelname": "Model",
-  "select_episode": "Select an episode"
+  "select_episode": "Select an episode",
+  "removeDuplicateCaptures": "Remove Duplicate Captures",
+  "duplicateCapturesDescription": "If the same location was captured more than once on the same day, only the most recent data is retained.",
+  "configureRpciGrades": "Configure rPCI Grades",
+  "rpciGradesDescription": "You can set the grades/scores to be used for rPCI analysis below as desired.",
+  "updatedGradingSystemNotice": "The updated grading system will apply to all analyses going forward.",
+  "tierGradingSystem": "-tier grading system"
 }

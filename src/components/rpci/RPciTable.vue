@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useSettingsStore } from '@/stores/settings'
 import RColumnIcon from '../common/atom/RColumnIcon.vue'
 import RIcon from '@/components/common/atom/RIcon.vue'
+import { stopPropagation } from 'ol/events/Event'
 
 const { t } = useI18n()
 const settingsStore = useSettingsStore()
@@ -17,6 +18,49 @@ interface RoadCoverageData {
   hazard_type: string
   captured_at: string
   analysis_at: string
+  counts: Record<string, number>
+}
+
+// 팝업 열려있는 행 id
+const openId = ref<number | null>(null)
+
+// 파손 유형 리스트 및 레이블
+const damageTypes = ['Pothole', 'Alligator', 'LongTrans', 'Patch', 'Debris']
+const typeLabels: Record<string, string> = {
+  Pothole: 'Pothole',
+  Alligator: 'Alligator Crack',
+  LongTrans: 'Long/Trans Crack',
+  Patch: 'Patch',
+  Debris: 'Debris',
+}
+
+const cellRefs = ref<Record<number, HTMLElement>>({})
+const placement = ref<'below' | 'above'>('below')
+const cellRect = ref<DOMRect | null>(null)
+
+const toggleDetail = (id: number, e: MouseEvent) => {
+  e.stopPropagation()
+  openId.value = openId.value === id ? null : id
+
+  nextTick(() => {
+    const el = (e.currentTarget as HTMLElement)
+    const rect = el.getBoundingClientRect()
+    cellRect.value = rect
+
+    // 화면 아래 공간 체크
+    const spaceBelow = window.innerHeight - rect.bottom
+    const popupHeight = 150  // 대략; 실제 렌더 후 보정도 가능
+    placement.value = spaceBelow > popupHeight + 8 ? 'below' : 'above'
+  })
+}
+
+// 팝업 외부 클릭 감지
+const onClickOutside = (e: MouseEvent) => {
+  openId.value = null
+}
+
+const cellRefsObject = (el: any, id: any) => {
+  if (el) cellRefs.value[id] = el
 }
 
 // 초기 데이터 (API 호출 등으로 받아올 수 있습니다.)
@@ -29,6 +73,13 @@ const data = ref<RoadCoverageData[]>([
     analysis_at: '2024-11-30',
     hazard_type: '균열',
     nodelink: '남양고가교 → 송현1교',
+    counts: {
+      Pothole: 5,
+      Alligator: 2,
+      LongTrans: 3,
+      Patch: 1,
+      Debris: 0,
+    },
   },
   {
     id: 2,
@@ -38,6 +89,13 @@ const data = ref<RoadCoverageData[]>([
     analysis_at: '2024-12-01',
     hazard_type: '포트홀',
     nodelink: '송현1교 → 남양고가교',
+    counts: {
+      Pothole: 5,
+      Alligator: 2,
+      LongTrans: 3,
+      Patch: 1,
+      Debris: 0,
+    },
   },
   {
     id: 3,
@@ -47,6 +105,13 @@ const data = ref<RoadCoverageData[]>([
     analysis_at: '2024-11-25',
     hazard_type: '소성변형',
     nodelink: '운중교 → 판교IC',
+    counts: {
+      Pothole: 5,
+      Alligator: 2,
+      LongTrans: 3,
+      Patch: 1,
+      Debris: 0,
+    },
   },
   {
     id: 4,
@@ -56,6 +121,13 @@ const data = ref<RoadCoverageData[]>([
     analysis_at: '2024-11-30',
     hazard_type: '균열',
     nodelink: '남양고가교 → 송현1교',
+    counts: {
+      Pothole: 5,
+      Alligator: 2,
+      LongTrans: 3,
+      Patch: 1,
+      Debris: 0,
+    },
   },
   {
     id: 5,
@@ -65,6 +137,13 @@ const data = ref<RoadCoverageData[]>([
     analysis_at: '2024-12-01',
     hazard_type: '포트홀',
     nodelink: '송현1교 → 남양고가교',
+    counts: {
+      Pothole: 5,
+      Alligator: 2,
+      LongTrans: 3,
+      Patch: 1,
+      Debris: 0,
+    },
   },
   {
     id: 6,
@@ -74,6 +153,13 @@ const data = ref<RoadCoverageData[]>([
     analysis_at: '2024-11-25',
     hazard_type: '소성변형',
     nodelink: '운중교 → 판교IC',
+    counts: {
+      Pothole: 5,
+      Alligator: 2,
+      LongTrans: 3,
+      Patch: 1,
+      Debris: 0,
+    },
   },
   {
     id: 7,
@@ -83,6 +169,13 @@ const data = ref<RoadCoverageData[]>([
     analysis_at: '2024-11-30',
     hazard_type: '균열',
     nodelink: '남양고가교 → 송현1교',
+    counts: {
+      Pothole: 5,
+      Alligator: 2,
+      LongTrans: 3,
+      Patch: 1,
+      Debris: 0,
+    },
   },
   {
     id: 8,
@@ -92,6 +185,13 @@ const data = ref<RoadCoverageData[]>([
     analysis_at: '2024-12-01',
     hazard_type: '포트홀',
     nodelink: '송현1교 → 남양고가교',
+    counts: {
+      Pothole: 5,
+      Alligator: 2,
+      LongTrans: 3,
+      Patch: 1,
+      Debris: 0,
+    },
   },
   {
     id: 9,
@@ -101,6 +201,13 @@ const data = ref<RoadCoverageData[]>([
     analysis_at: '2024-11-25',
     hazard_type: '소성변형',
     nodelink: '운중교 → 판교IC',
+    counts: {
+      Pothole: 5,
+      Alligator: 2,
+      LongTrans: 3,
+      Patch: 1,
+      Debris: 0,
+    },
   },
   {
     id: 10,
@@ -110,6 +217,13 @@ const data = ref<RoadCoverageData[]>([
     analysis_at: '2024-11-30',
     hazard_type: '균열',
     nodelink: '남양고가교 → 송현1교',
+    counts: {
+      Pothole: 5,
+      Alligator: 2,
+      LongTrans: 3,
+      Patch: 1,
+      Debris: 0,
+    },
   },
   {
     id: 11,
@@ -119,6 +233,13 @@ const data = ref<RoadCoverageData[]>([
     analysis_at: '2024-12-01',
     hazard_type: '포트홀',
     nodelink: '송현1교 → 남양고가교',
+    counts: {
+      Pothole: 5,
+      Alligator: 2,
+      LongTrans: 3,
+      Patch: 1,
+      Debris: 0,
+    },
   },
   {
     id: 12,
@@ -128,6 +249,13 @@ const data = ref<RoadCoverageData[]>([
     analysis_at: '2024-11-25',
     hazard_type: '소성변형',
     nodelink: '운중교 → 판교IC',
+    counts: {
+      Pothole: 5,
+      Alligator: 2,
+      LongTrans: 3,
+      Patch: 1,
+      Debris: 0,
+    },
   },
   {
     id: 13,
@@ -137,6 +265,13 @@ const data = ref<RoadCoverageData[]>([
     analysis_at: '2024-11-30',
     hazard_type: '균열',
     nodelink: '남양고가교 → 송현1교',
+    counts: {
+      Pothole: 5,
+      Alligator: 2,
+      LongTrans: 3,
+      Patch: 1,
+      Debris: 0,
+    },
   },
   {
     id: 14,
@@ -146,6 +281,13 @@ const data = ref<RoadCoverageData[]>([
     analysis_at: '2024-12-01',
     hazard_type: '포트홀',
     nodelink: '송현1교 → 남양고가교',
+    counts: {
+      Pothole: 5,
+      Alligator: 2,
+      LongTrans: 3,
+      Patch: 1,
+      Debris: 0,
+    },
   },
   {
     id: 15,
@@ -155,6 +297,13 @@ const data = ref<RoadCoverageData[]>([
     analysis_at: '2024-11-25',
     hazard_type: '소성변형',
     nodelink: '운중교 → 판교IC',
+    counts: {
+      Pothole: 5,
+      Alligator: 2,
+      LongTrans: 3,
+      Patch: 1,
+      Debris: 0,
+    },
   },
   {
     id: 16,
@@ -164,6 +313,13 @@ const data = ref<RoadCoverageData[]>([
     analysis_at: '2024-11-30',
     hazard_type: '균열',
     nodelink: '남양고가교 → 송현1교',
+    counts: {
+      Pothole: 5,
+      Alligator: 2,
+      LongTrans: 3,
+      Patch: 1,
+      Debris: 0,
+    },
   },
   {
     id: 17,
@@ -173,6 +329,13 @@ const data = ref<RoadCoverageData[]>([
     analysis_at: '2024-12-01',
     hazard_type: '포트홀',
     nodelink: '송현1교 → 남양고가교',
+    counts: {
+      Pothole: 5,
+      Alligator: 2,
+      LongTrans: 3,
+      Patch: 1,
+      Debris: 0,
+    },
   },
   {
     id: 18,
@@ -182,6 +345,13 @@ const data = ref<RoadCoverageData[]>([
     analysis_at: '2024-11-25',
     hazard_type: '소성변형',
     nodelink: '운중교 → 판교IC',
+    counts: {
+      Pothole: 5,
+      Alligator: 2,
+      LongTrans: 3,
+      Patch: 1,
+      Debris: 0,
+    },
   },
   {
     id: 19,
@@ -191,6 +361,13 @@ const data = ref<RoadCoverageData[]>([
     analysis_at: '2024-11-30',
     hazard_type: '균열',
     nodelink: '남양고가교 → 송현1교',
+    counts: {
+      Pothole: 5,
+      Alligator: 2,
+      LongTrans: 3,
+      Patch: 1,
+      Debris: 0,
+    },
   },
   {
     id: 20,
@@ -200,6 +377,13 @@ const data = ref<RoadCoverageData[]>([
     analysis_at: '2024-12-01',
     hazard_type: '포트홀',
     nodelink: '송현1교 → 남양고가교',
+    counts: {
+      Pothole: 5,
+      Alligator: 2,
+      LongTrans: 3,
+      Patch: 1,
+      Debris: 0,
+    },
   },
   {
     id: 21,
@@ -209,6 +393,13 @@ const data = ref<RoadCoverageData[]>([
     analysis_at: '2024-11-25',
     hazard_type: '소성변형',
     nodelink: '운중교 → 판교IC',
+    counts: {
+      Pothole: 5,
+      Alligator: 2,
+      LongTrans: 3,
+      Patch: 1,
+      Debris: 0,
+    },
   },
 ])
 
@@ -322,11 +513,18 @@ const formatDate = (dateString: string): string => {
 const getLevelDetailsByScore = (score: number) => {
   return settingsStore.getLevelDetailsByScore(score, settingsStore.getLegendLevels)
 }
+
+onMounted(() => {
+  document.addEventListener('click', onClickOutside)
+})
+onBeforeUnmount(() => {
+  document.removeEventListener('click', onClickOutside)
+})
 </script>
 
 <template>
   <div class="flex flex-col bg-white rounded overflow-hidden">
-    <div class="flex flex-1 max-h-[60vh]">
+    <div class="flex flex-1 max-h-[65vh] overflow-auto">
       <table class="min-w-full divide-y divide-gray-200">
         <thead>
           <tr>
@@ -405,8 +603,11 @@ const getLevelDetailsByScore = (score: number) => {
               :style="{ color: getLevelDetailsByScore(item.rpci_score)?.color }">
               {{ item.rpci_score }}
             </td>
-            <td class="px-3 py-3 text-center text-sm text-black underline cursor-pointer">
-              {{ t('button.detail') }}
+            <td class="relative px-3 py-3 text-center text-sm text-black underline">
+              <span class="cursor-pointer" @click.stop="toggleDetail(item.id, $event)"
+                :ref="el => cellRefsObject(el, item.id)">
+                {{ t('button.detail') }}
+              </span>
             </td>
             <td class="px-3 py-3 text-center whitespace-nowrap text-sm text-black">
               {{ formatDate(item.captured_at) }}
@@ -445,6 +646,24 @@ const getLevelDetailsByScore = (score: number) => {
       </button>
     </div>
   </div>
+  <teleport to="body">
+    <div v-if="openId !== null && cellRect" class="fixed z-50 bg-white border rounded shadow-lg w-48" :style="{
+      top: placement === 'below'
+        ? `${cellRect.bottom + 8}px`
+        : `${cellRect.top - 110}px`,
+      left: `${cellRect.left - 65}px`
+    }" @click.stop>
+      <div class="p-2 text-sm">
+        <p class="font-semibold mb-1 text-center">{{ t('menu.damageTypeCounts') }}</p>
+        <table class="w-full text-left text-xs">
+          <tr v-for="type in damageTypes" :key="type">
+            <td>{{ typeLabels[type] }}</td>
+            <td class="text-right">{{displayedData.find(r => r.id === openId)!.counts[type] + openId || 0}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </teleport>
 </template>
 
 <style scoped>

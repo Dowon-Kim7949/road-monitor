@@ -72,7 +72,7 @@ const hideIriLayerHandler = () => {
 
 const showBridgeLayerHandler = async () => {
   if (map.value) {
-    await loadBridgeLayer(map.value as any)
+    bridgeLayer.value = await loadBridgeLayer(map.value as any)
   }
 }
 

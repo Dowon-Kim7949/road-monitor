@@ -3,6 +3,9 @@ import { ref, reactive, watch, onMounted, nextTick, computed } from 'vue'
 import type { Ref } from 'vue'
 import { useSettingsStore } from '@/stores/settings'
 import { cloneDeep } from 'lodash'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 interface LevelValue {
   id?: string
@@ -67,19 +70,19 @@ const wrapLevelRefs = (levels: LevelValue[]): Level[] => {
 const levelSystems = reactive<LevelSystem[]>([
   {
     id: 3,
-    name: '3등급 체계',
+    name: '3',
     editable: false,
     levels: wrapLevelRefs(cloneDeep(initialLevelDataStore[3])),
   },
   {
     id: 5,
-    name: '5등급 체계',
+    name: '5',
     editable: false,
     levels: wrapLevelRefs(cloneDeep(initialLevelDataStore[5])),
   },
   {
     id: 7,
-    name: '7등급 체계',
+    name: '7',
     editable: false,
     levels: wrapLevelRefs(cloneDeep(initialLevelDataStore[7])),
   },
@@ -186,7 +189,7 @@ watch(() => props.modelValue, (newLevelId, oldLevelId) => {
           <input type="radio" name="levelSystemDisplay" :value="system.id" :checked="props.modelValue === system.id"
             @change="changeLevelInfo(system.id)" class="form-radio h-4 w-4 text-blue-600" aria-hidden="true"
             tabindex="-1">
-          <h3 class="text-sm font-semibold text-gray-800">{{ system.name }}</h3>
+          <h3 class="text-sm font-semibold text-gray-800">{{ system.name + t('tierGradingSystem') }}</h3>
         </div>
 
         <div class="space-y-2">

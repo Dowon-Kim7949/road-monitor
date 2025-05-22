@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref, computed, watch, onBeforeUnmount } from 'vue'
+import { ref, computed, watch, onBeforeUnmount, nextTick, onMounted } from 'vue'
 import { useSettingsStore } from '@/stores/settings' // Store 경로 확인
 import type { PropType } from 'vue' // PropType 임포트
 import RIcon from '../common/atom/RIcon.vue'
 // RColumnIcon 컴포넌트 임포트 (경로 확인!)
 import RColumnIcon from '../common/atom/RColumnIcon.vue'
-import RButton from '../common/atom/RButton.vue'
+import { useI18n } from 'vue-i18n'
 
 // --- Store ---
 const settingsStore = useSettingsStore()
@@ -14,7 +14,7 @@ const settingsStore = useSettingsStore()
 interface TitleData {
   level?: string | number
   status?: number
-  coverage?: string
+  coverage: string
 }
 
 interface TableHeader {
@@ -26,7 +26,7 @@ interface TableHeader {
 
 interface TableRow {
   [key: string]: any
-  score?: number
+  rpci_score?: number
   action?: string
 }
 
@@ -42,19 +42,19 @@ const props = defineProps({
   titleData: {
     type: Object as PropType<TitleData>,
     default: () => ({
-      level: '등급',
-      status: 90,
-      coverage: '커버리지 12km',
+      level: 'Grade',
+      status: 0,
+      coverage: 'Coverage',
     }),
   },
   tableHeaders: {
     type: Array as PropType<TableHeader[]>,
     default: () => [
       // sortable 속성 추가 예시 (필요한 컬럼에 true 설정)
-      { text: '도로명', key: 'roadName', sortable: true },
-      { text: '노드링크', key: 'nodeLink', sortable: true },
-      { text: '점수', key: 'score', sortable: true },
-      { text: '파손 유형', key: 'action', sortable: false }, // 예시: 파손 유형은 정렬 불가
+      { text: 'Roadname', key: 'roadName', sortable: true },
+      { text: 'Nodelink', key: 'nodeLink', sortable: true },
+      { text: 'score', key: 'rpci_score', sortable: true },
+      { text: 'DamageType', key: 'action', sortable: false }, // 예시: 파손 유형은 정렬 불가
     ],
   },
   tableData: { type: Array as PropType<TableRow[]>, default: () => [] },
@@ -69,6 +69,8 @@ const props = defineProps({
 const emit = defineEmits(['update:visible', 'filter', 'action'])
 
 // --- Refs ---
+
+const { t } = useI18n()
 const popupContainerRef = ref<HTMLElement | null>(null)
 const isDragging = ref(false)
 const startX = ref(0)
@@ -82,6 +84,49 @@ const currentPage = ref(1)
 // --- Sorting Refs ---
 const sortKey = ref<string>('') // 현재 정렬 기준 컬럼 key
 const sortDirection = ref<'asc' | 'desc'>('asc') // 정렬 방향
+
+
+const cellRefs = ref<Record<number, HTMLElement>>({})
+const placement = ref<'below' | 'above'>('below')
+const cellRect = ref<DOMRect | null>(null)
+
+// 팝업 열려있는 행 id
+const openId = ref<number | null>(null)
+
+// 파손 유형 리스트 및 레이블
+const damageTypes = ['Pothole', 'Alligator', 'LongTrans', 'Patch', 'Debris']
+const typeLabels: Record<string, string> = {
+  Pothole: 'Pothole',
+  Alligator: 'Alligator Crack',
+  LongTrans: 'Long/Trans Crack',
+  Patch: 'Patch',
+  Debris: 'Debris',
+}
+
+const toggleDetail = (id: number, e: MouseEvent) => {
+  e.stopPropagation()
+  openId.value = openId.value === id ? null : id
+
+  nextTick(() => {
+    const el = (e.currentTarget as HTMLElement)
+    const rect = el.getBoundingClientRect()
+    cellRect.value = rect
+
+    // 화면 아래 공간 체크
+    const spaceBelow = window.innerHeight - rect.bottom
+    const popupHeight = 150  // 대략; 실제 렌더 후 보정도 가능
+    placement.value = spaceBelow > popupHeight + 8 ? 'below' : 'above'
+  })
+}
+
+// 팝업 외부 클릭 감지
+const onClickOutside = (e: MouseEvent) => {
+  openId.value = null
+}
+
+const cellRefsObject = (el: any, id: any) => {
+  if (el) cellRefs.value[id] = el
+}
 
 // --- Computed Styles ---
 const popupStyle = computed(() => ({
@@ -309,8 +354,13 @@ const getLevelDetails = (score: number | undefined): LevelDetails | null => {
   return settingsStore.getLevelDetailsByScore(score)
 }
 
+onMounted(() => {
+  document.addEventListener('click', onClickOutside)
+})
+
 // --- Cleanup ---
 onBeforeUnmount(() => {
+  document.removeEventListener('click', onClickOutside)
   if (isDragging.value) {
     stopDrag()
   }
@@ -319,7 +369,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div v-show="visible" ref="popupContainerRef"
-    class="fixed z-50 bg-white rounded-lg shadow-lg w-146 max-w-[700px] min-h-[300px] max-h-[70vh] flex flex-col overflow-hidden"
+    class="fixed z-[2] bg-white rounded-lg shadow-lg w-146 max-w-[700px] min-h-[300px] max-h-[70vh] flex flex-col overflow-hidden"
     :style="[
       popupStyle,
       {
@@ -333,7 +383,7 @@ onBeforeUnmount(() => {
       :class="{ 'cursor-grabbing': isDragging, 'cursor-grab': !isDragging }" @mousedown.prevent="startDrag">
       <div class="flex items-center gap-2">
         <RIcon name="GripVertical" :size="15" />
-        <span class="text-xs font-medium text-gray-600">{{ titleData.level }}:</span>
+        <span class="text-xs font-medium text-gray-600">{{ t(titleData.level!) }}:</span>
         <span v-if="typeof titleData.status === 'number'">
           <p class="text-xs font-semibold px-2 py-0.5 rounded-full text-center w-25" :style="{
             backgroundColor: getLevelDetails(titleData.status)?.color ?? '#ccc',
@@ -342,7 +392,7 @@ onBeforeUnmount(() => {
             {{ getLevelDetails(titleData.status)?.label ?? 'N/A' }}
           </p>
         </span>
-        <span class="text-xs font-medium text-gray-600">{{ titleData.coverage }}</span>
+        <span class="text-xs font-medium text-gray-600">{{ t(titleData.coverage) }} 12km</span>
       </div>
       <div>
         <button type="button"
@@ -365,7 +415,7 @@ onBeforeUnmount(() => {
                 'cursor-default': header.sortable === false, // 정렬 불가능하면 기본 커서
               }" @click="sortBy(header.key)">
               <div class="flex items-center justify-center gap-1">
-                <span>{{ header.text }}</span>
+                <span>{{ t(header.text) }}</span>
                 <button v-if="header.filterable" type="button"
                   class="bg-transparent border-none p-0 ml-1 align-middle cursor-pointer text-gray-500 hover:text-gray-200 focus:outline-none"
                   @click.stop="emitFilter(header.key)" aria-label="Filter column"></button>
@@ -384,9 +434,9 @@ onBeforeUnmount(() => {
           <tr v-for="(row, rowIndex) in paginatedData" :key="`row-${rowIndex}`" class="hover:bg-gray-200">
             <td v-for="(header, colIndex) in tableHeaders" :key="`cell-${rowIndex}-${colIndex}`"
               class="p-3 border-b border-gray-200 text-sm align-middle" :class="{
-                'text-center': colIndex === tableHeaders.length - 1 || header.key === 'score',
+                'text-center': colIndex === tableHeaders.length - 1 || header.key === 'rpci_score',
               }">
-              <template v-if="header.key === 'score' && typeof row[header.key] === 'number'">
+              <template v-if="header.key === 'rpci_score' && typeof row[header.key] === 'number'">
                 <div class="inline-block font-medium text-center"
                   :style="{ color: getLevelDetails(row[header.key])?.color ?? 'inherit' }">
                   {{ row[header.key] }}
@@ -395,8 +445,8 @@ onBeforeUnmount(() => {
               <template v-else-if="header.key === 'action'">
                 <button type="button"
                   class="bg-transparent border-none text-blue-600 hover:text-blue-800 cursor-pointer p-0 underline text-sm focus:outline-none focus:ring-1 focus:ring-blue-400 rounded"
-                  @click="emitAction(row)">
-                  {{ row[header.key] || '상세 보기' }}
+                  @click.stop="toggleDetail(row.id, $event)" :ref="el => cellRefsObject(el, row.id)">
+                  {{ t('button.detail') }}
                 </button>
               </template>
               <template v-else>
@@ -436,4 +486,22 @@ onBeforeUnmount(() => {
       </button>
     </div>
   </div>
+  <teleport to="body">
+    <div v-if="openId !== null && cellRect" class="fixed z-50 bg-white border rounded shadow-lg w-48" :style="{
+      top: placement === 'below'
+        ? `${cellRect.bottom + 8}px`
+        : `${cellRect.top - 110}px`,
+      left: `${cellRect.left - 65}px`
+    }" @click.stop>
+      <div class="p-2 text-sm">
+        <p class="font-semibold mb-1 text-center">{{ t('menu.damageTypeCounts') }}</p>
+        <table class="w-full text-left text-xs">
+          <tr v-for="type in damageTypes" :key="type">
+            <td>{{ typeLabels[type] }}</td>
+            <td class="text-right">{{paginatedData.find(r => r.id === openId)!.counts[type] + openId || 0}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </teleport>
 </template>

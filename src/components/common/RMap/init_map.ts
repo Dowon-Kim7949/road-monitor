@@ -4,7 +4,7 @@ import TileLayer from 'ol/layer/Tile'
 import VectorLayer from 'ol/layer/Vector'
 import HeatmapLayer from 'ol/layer/Heatmap'
 import VectorSource from 'ol/source/Vector'
-import { fromLonLat } from 'ol/proj'
+import { fromLonLat, toLonLat } from 'ol/proj'
 import GeoJSON from 'ol/format/GeoJSON'
 import Style from 'ol/style/Style'
 import Stroke from 'ol/style/Stroke'
@@ -12,6 +12,7 @@ import Circle from 'ol/style/Circle'
 import Fill from 'ol/style/Fill'
 import { Feature, MapBrowserEvent, Overlay } from 'ol'
 import { defaults as defaultInteractions, MouseWheelZoom } from 'ol/interaction'
+import { getLength as getGeodesicLength } from 'ol/sphere'
 import type LineString from 'ol/geom/LineString'
 import Point from 'ol/geom/Point'
 import type { FeatureLike } from 'ol/Feature'
@@ -179,13 +180,13 @@ export const layerStyleFunction = (
   if (!geom) return undefined
 
   // zoom 레벨에 따른 필터링
-  if (currentZoom <= 15.5 && geom.getType() === 'LineString') {
+  if (
+    (propsType === 'road' || propsType === 'surrounding' || propsType === 'rpci') &&
+    currentZoom <= 15.5 &&
+    (geom.getType() === 'LineString' || geom.getType() === 'MultiLineString')
+  ) {
     const highway = props.highway as string
-    if (
-      !['primary', 'secondary', 'trunk', 'primary_link', 'secondary_link', 'trunk_link'].includes(
-        highway,
-      )
-    ) {
+    if (!['primary'].includes(highway)) {
       return undefined
     }
   }
@@ -193,7 +194,7 @@ export const layerStyleFunction = (
   // 선택 여부 계산
   const featureType = geom.getType()
   const featureWayId =
-    featureType === 'LineString'
+    featureType === 'LineString' || featureType === 'MultiLineString'
       ? feature.getId()?.toString()
       : (props.parent_way_id as string | undefined)
   const isSelectedLine = selectedWayId != null && selectedWayId === featureWayId?.toString()
@@ -207,10 +208,12 @@ export const layerStyleFunction = (
   // 스타일 분기
   switch (propsType) {
     case 'cover':
-      return featureType === 'LineString' ? ROAD_DEFAULTLINESTYLE : undefined
+      return featureType === 'LineString' || featureType === 'MultiLineString'
+        ? ROAD_DEFAULTLINESTYLE
+        : undefined
 
     case 'report':
-      if (featureType !== 'LineString') return undefined
+      if (featureType !== 'LineString' && featureType !== 'MultiLineString') return undefined
       const reportColor = hexToRgba(
         (props.assigned_rpci_color as string) || RPCI_COLORS.default,
         0.7,
@@ -225,7 +228,7 @@ export const layerStyleFunction = (
         defOp = 0.7,
         ptDefOp = 0.6
 
-      if (featureType === 'LineString') {
+      if (featureType === 'LineString' || featureType === 'MultiLineString') {
         const sw = isSelectedLine ? 10 : 6
         const op = isSelectedLine ? selOp : defOp
         const mainColor = hexToRgba(assignedHex, op)
@@ -269,7 +272,7 @@ export const layerStyleFunction = (
     case 'surrounding':
     default:
       if (currentZoom < ZOOM_THRESHOLD) {
-        if (featureType === 'LineString') {
+        if (featureType === 'LineString' || featureType === 'MultiLineString') {
           return isSelectedLine
             ? [ROAD_SELECTEDLINEBORDERSTYLE, ROAD_SELECTEDLINESTYLE]
             : ROAD_DEFAULTLINESTYLE
@@ -338,7 +341,9 @@ export const loadLayers = async (
 
   try {
     // Fetch and style line features
-    const { features: lines } = await fetch('/filtered.geojson')
+    // const { features: lines } = await fetch('/filtered.geojson')
+    // merged_graph_path
+    const { features: lines } = await fetch('/road_merged.geojson')
       .then((r) => r.json())
       .then((data) => ({
         features: new GeoJSON().readFeatures(data, {
@@ -374,7 +379,7 @@ export const loadLayers = async (
 
     // Fetch and style point features if needed
     if (['road', 'rpci', 'surrounding'].includes(propsType)) {
-      const { features: points } = await fetch('/road_points_5m.json')
+      const { features: points } = await fetch('/points_5m.geojson')
         .then((r) => r.json())
         .then((data) => ({
           features: new GeoJSON().readFeatures(data, {
@@ -550,14 +555,12 @@ export const bindMapInteractions = (options: {
       if (clicked) {
         const geom = clicked.getGeometry?.()
         const props = clicked.getProperties()
-        if (geom?.getType() === 'LineString') {
+        if (geom?.getType() === 'LineString' || geom?.getType() === 'MultiLineString') {
           clickedWayId = clicked.getId()?.toString() ?? null
-          console.log(clickedWayId, props.pid?.toString())
           isLine = true
           lineFirst = (geom as LineString).getFirstCoordinate() as [number, number]
         } else if (geom?.getType() === 'Point') {
           clickedWayId = props.parent_way_id?.toString() ?? null
-          console.log(clickedWayId, props.parent_way_id?.toString())
           clickedCoords = (geom as Point).getCoordinates() as [number, number]
           isPoint = true
         }
@@ -576,10 +579,20 @@ export const bindMapInteractions = (options: {
 
       // 5) drawer 열기/애니메이션
       if (clicked && (isPoint || isLine)) {
-        const props = clicked.getProperties()
-        delete props.geometry
         if (isPoint && (type === 'road' || type === 'rpci' || type === 'surrounding')) {
-          emit('select-feature', props)
+          const road_info = roadLineLayer.value?.getSource()?.getFeatureById(clickedWayId!)
+          const geom = road_info.getGeometry() as LineString
+          const lengthInMeters = getGeodesicLength(geom, {
+            projection: map.getView().getProjection(),
+          })
+          const LonLat = toLonLat(clickedCoords!)
+          const data = {
+            lat: LonLat![1],
+            lon: LonLat![0],
+            roadName: road_info.getProperties().name,
+            length: lengthInMeters.toFixed(2),
+          }
+          emit('select-feature', data)
           map.getView().animate({ center: clickedCoords!, duration: MAP_DURATION })
         } else if (isLine && (type === 'road' || type === 'rpci' || type === 'surrounding')) {
           map
