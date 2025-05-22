@@ -392,7 +392,7 @@ onBeforeUnmount(() => {
             {{ getLevelDetails(titleData.status)?.label ?? 'N/A' }}
           </p>
         </span>
-        <span class="text-xs font-medium text-gray-600">{{ t(titleData.coverage) }} 12km</span>
+        <span class="text-xs font-medium text-gray-600">{{ t(titleData.coverage) }}: 12km</span>
       </div>
       <div>
         <button type="button"

@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import type { Ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 // 1. 타입 정의
 // 각 뷰(버튼)를 식별하기 위한 타입
@@ -32,8 +35,8 @@ const emit = defineEmits<{
 
 // 4. 버튼 데이터 정의
 const buttons: ButtonInfo[] = [
-  { id: 'road', label: 'rPCI 로드뷰' },
-  { id: 'bird', label: 'rPCI 버드뷰' },
+  { id: 'road', label: 'button.roadview' },
+  { id: 'bird', label: 'button.birdview' },
 ]
 
 // 5. 내부 상태 관리 (어떤 버튼이 현재 선택되었는지)
@@ -70,7 +73,7 @@ watch(
         ? 'bg-gray-800 text-white shadow-md focus:ring-gray-500' // Active state styles
         : 'text-gray-500 hover:bg-gray-200 focus:ring-gray-400', // Inactive state styles
     ]">
-      {{ button.label }}
+      {{ 'rPCI ' + t(button.label) }}
     </button>
   </div>
 </template>

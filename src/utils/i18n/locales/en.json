@@ -33,7 +33,9 @@
     "detail": "Details",
     "reportSave": "Save Report",
     "save": "Save",
-    "coverage": "Coverage"
+    "coverage": "Coverage",
+    "roadview": "Road View",
+    "birdview": "Bird View"
   },
   "Roadsegment": "Road Segment",
   "Roadname": "Road name",

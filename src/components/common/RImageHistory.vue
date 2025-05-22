@@ -8,7 +8,7 @@ import { useSettingsStore } from '@/stores/settings'
 
 const settingsStore = useSettingsStore()
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const props = defineProps<{
   type: 'road' | 'rpci' | 'surrounding'
@@ -69,11 +69,11 @@ const getLevelDetailsByScore = (score: number) => {
                 {{ getLevelDetailsByScore(item.score!)?.label }}
               </span>
               <span class="text-red-500 font-bold" :style="{ color: getLevelDetailsByScore(item.score!)?.color }">
-                {{ item.score }}점
+                {{ item.score }} {{ locale === 'ko' ? '점' : '' }}
               </span>
               <span class="text-red-500 text-xs flex items-center space-x-2 font-bold">
                 <RIcon name="AlertTriangle" class="w-4 h-4" />
-                <span>{{ t('hazard.pothole') }} {{ item.potholes }}개</span>
+                <span>{{ t('hazard.pothole') }} {{ item.potholes }} {{ locale === 'ko' ? '개' : '' }}</span>
               </span>
             </div>
           </template>

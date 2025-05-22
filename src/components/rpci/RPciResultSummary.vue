@@ -8,12 +8,12 @@
       </div>
 
       <!-- 점수 -->
-      <div class="text-green-700 font-bold">{{ score }}점</div>
+      <div class="text-green-700 font-bold">{{ score }} {{ locale === 'ko' ? '점' : '' }}</div>
 
       <!-- 포트홀 -->
       <div class="text-red-500 text-md font-bold flex items-center space-x-1">
         <RIcon name="AlertTriangle" class="w-4 h-4" />
-        <span>{{ t('hazard.pothole') }} {{ potholes }}개</span>
+        <span>{{ t('hazard.pothole') }} {{ potholes }} {{ locale === 'ko' ? '개' : '' }}</span>
       </div>
     </div>
   </div>
@@ -29,5 +29,5 @@ defineProps<{
   pciColor: string // 예: "#00C853"
   potholes: number
 }>()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 </script>
