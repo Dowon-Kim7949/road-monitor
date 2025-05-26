@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, defineEmits } from 'vue'
 import RPieChart from '@/components/common/atom/RPieChart.vue'
 import RPciScoreDetailPopup from '@/components/rpci/RPciScoreDetailPopup.vue'
 import { useI18n } from 'vue-i18n'
-
 const { t } = useI18n()
+
+const emit = defineEmits<{
+  (e: 'selectGrade', item: any): void
+}>()
 
 // Props로 PCI 점수를 받을 수 있도록 정의
 const props = defineProps<{
@@ -441,6 +444,7 @@ const visible = ref(false)
 const popupOpen = (item: any) => {
   if (!visible.value) visible.value = true
   titleData.value.status = item.grade
+  emit('selectGrade', item.grade)
 }
 
 watch(

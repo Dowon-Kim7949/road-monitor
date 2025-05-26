@@ -28,6 +28,9 @@ const datePickerStyle = computed(() => {
   }
 })
 
+const pdfModalTitle = computed(() => t('rpci_analyze.popup06_title'))
+const pdfModalContent = computed(() => t('rpci_analyze.popup06_content'))
+
 const activeMode = ref('alert')
 const showConfirm = ref(false)
 const handleChangeMode = (mode: string) => {
@@ -115,8 +118,8 @@ const onSavePDF = () => {
     <RButton type="icon" size="small" class="bg-white shadow rounded-sm" @click="$emit('zoom-out')" icon="minus" />
   </div>
 
-  <RModal :visible="showConfirm" type="confirm" title="PDF 파일 저장" content="현재 조회 중인 회차의 리포트를 PDF파일로 저장하시겠습니까?"
-    okText="확인" cancelText="취소" @onCancel="showConfirm = false" @onConfirm="onSavePDF" />
+  <RModal :visible="showConfirm" type="confirm" :title="pdfModalTitle" :content="pdfModalContent"
+    @onCancel="showConfirm = false" @onConfirm="onSavePDF" />
 </template>
 
 <style scoped>

@@ -169,7 +169,7 @@ const zoomOut = () => window.dispatchEvent(new CustomEvent('zoom-out-map'))
 const handleSelectMarker = (data: any) => {
   selectedData.value = data
   if (selectedData.value) {
-    selectedData.value.roadName = `${data.name ? data.name : '-'} (${data.length}m)`
+    selectedData.value.roadName = `${data.roadName ? data.roadName : '-'} (${data.length}m)`
   }
   rightDrawer.value = true
   if (leftDrawer.value) leftDrawer.value = false

@@ -22,11 +22,6 @@ defineEmits<{
   (e: 'collapse'): void
 }>()
 
-const currentPage = ref(1)
-const itemsPerPage = 10
-
-const totalPages = computed(() => Math.ceil(props.items.length / itemsPerPage))
-
 const displayedItems = computed(() => {
   if (!props.full) {
     return props.items.slice(0, 3)
@@ -78,7 +73,10 @@ const getLevelDetailsByScore = (score: number) => {
             </div>
           </template>
           <template v-else>
-            <span>{{ item.date }}</span>
+            <div class="flex items-center space-x-2">
+              <RIcon name="Camera" class="w-4 h-4" />
+              <span>{{ item.date }}</span>
+            </div>
           </template>
         </div>
       </div>

@@ -1,9 +1,10 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 // '@/...'는 src/'...'를 의미하는 경우가 많습니다. 경로를 확인하세요.
 import RMLevelSetting from '@/components/roadmonitor/RMLevelSetting.vue'
 import RLeftDrawer from '@/components/common/RLeftDrawer.vue'
 import RButton from '@/components/common/atom/RButton.vue'
+import RModal from '@/components/common/RModal.vue'
 import { useI18n } from 'vue-i18n'
 // --- State ---
 const { t } = useI18n()
@@ -11,6 +12,13 @@ const duplicateRemovalEnabled = ref(true) // 토글 스위치 상태
 const leftDrawer = ref(true) // 왼쪽 드로어 상태 (RLeftDrawer에서 사용될 수 있음)
 const selectedGrade = ref(7) // RMLevelSetting 컴포넌트와 연결된 값
 
+const showConfirm = ref(false)
+const saveModalTitle = computed(() => t('rpci_analyze.popup07_title'))
+const saveModalContent = computed(() => t('rpci_analyze.popup07_content'))
+
+const onSaveSettings = () => {
+  showConfirm.value = false
+}
 // --- 사용되지 않는 변수 제거 ---
 // pciGradeSystem, indicatorStyle 등은 현재 템플릿에서 직접 사용되지 않으므로 제거했습니다.
 // RMLevelSetting 내부 로직에 필요하다면 유지해야 합니다.
@@ -39,7 +47,7 @@ const selectedGrade = ref(7) // RMLevelSetting 컴포넌트와 연결된 값
             <div class="flex flex-col sm:flex-row items-center gap-10 mb-5">
               <div class="setting-label pl-6">
                 <label for="duplicate-removal" class="font-bold text-gray-600 block mb-1">{{
-                  t('removeDuplicateCaptures')}}</label>
+                  t('removeDuplicateCaptures') }}</label>
                 <p class="text-sm text-gray-600">
                   {{ t('duplicateCapturesDescription') }}
                 </p>
@@ -74,10 +82,12 @@ const selectedGrade = ref(7) // RMLevelSetting 컴포넌트와 연결된 값
         </div>
       </div>
       <div class="flex w-full justify-end">
-        <RButton class="" :label="t('button.save')" />
+        <RButton class="" :label="t('button.save')" @click="showConfirm = true" />
       </div>
     </div>
   </div>
+  <RModal :visible="showConfirm" type="confirm" :title="saveModalTitle" :content="saveModalContent"
+    @onCancel="showConfirm = false" @onConfirm="onSaveSettings" />
 </template>
 
 <style scoed>

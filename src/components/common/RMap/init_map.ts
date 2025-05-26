@@ -19,7 +19,7 @@ import type { FeatureLike } from 'ol/Feature'
 import type { Coordinate } from 'ol/coordinate'
 import OSM from 'ol/source/OSM'
 
-export const MAP_DURATION = 300
+export const MAP_DURATION = 0
 export const ZOOM_THRESHOLD = 19
 export const ZOOM_DEFAULT = 17
 export const ZOOM_MINLEVEL = 10
@@ -145,10 +145,29 @@ export const initMap = (
       zoom: ZOOM_DEFAULT,
       minZoom: ZOOM_MINLEVEL,
       maxZoom: ZOOM_MAXLEVEL,
-      constrainResolution: true,
+      // constrainResolution: false,
     }),
-    interactions: defaultInteractions().extend([new MouseWheelZoom({ duration: 300 })]),
+    // interactions: defaultInteractions({
+    //   // 기본 휠 줌 끄고
+    //   mouseWheelZoom: false,
+    // }).extend([
+    //   // 단계별 줌 인터랙션 추가
+    //   new MouseWheelZoom({
+    //     constrainResolution: false, // ← 여기!
+    //     duration: 250, // 애니메이션 시간(ms)
+    //   }),
+    // ]),
   })
+
+  // container.addEventListener(
+  //   'wheel',
+  //   (e) => {
+  //     e.preventDefault()
+  //     const delta = e.deltaY > 0 ? -1 : 1
+  //     map.getView().setZoom(map.getView().getZoom()! + delta)
+  //   },
+  //   { passive: false },
+  // )
 
   map.getView().on('change:resolution', () => {
     onZoomChange(map.getView().getZoom()!)

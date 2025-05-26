@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onUnmounted, ref, watch } from 'vue'
+import { onUnmounted, ref, watch, computed } from 'vue'
 import RImageViewer from './RImageViewer.vue'
 import RImageInfo from './RImageInfo.vue'
 import RImageHistory from './RImageHistory.vue'
@@ -80,6 +80,9 @@ const isFullHistoryMode = ref(false) // 🔥 RImageHistory 확장 여부
 const showRPciModal = ref(false)
 const showSelectRPciModal = ref(false)
 
+const cancelModalTitle = computed(() => t('rpci_analyze.popup02'))
+const cancelModalContent = computed(() => t('rpci_analyze.popup02_content'))
+
 const onFullScreen = () => {
   showModal.value = true
 }
@@ -96,9 +99,8 @@ const onSubmit = (data: { name: string }) => {
 const onRequest = () => {
   showSelectRPciModal.value = false
 
-  modalTitle.value = '요청 확인'
-  modalContent.value =
-    'rPCI 분석이 시작되었습니다. 진행 상황은 [Rapid-PCI] 메뉴에서 확인하실 수 있습니다.'
+  modalTitle.value = t('rpci_analyze.popup01')
+  modalContent.value = t('rpci_analyze.popup01_content')
   showAlert.value = true
 }
 const selectModalClose = () => {
@@ -169,9 +171,9 @@ onUnmounted(() => {
   <RPciAnalysisModal :visible="showRPciModal" @close="showRPciModal = false" @submit="onSubmit" />
   <RPciAnalysisSelectModal :analysisTitle="analysisTitle" :items="selelctItems" :visible="showSelectRPciModal"
     @close="selectModalClose" @request="onRequest" />
-  <RModal :visible="showConfirm" type="confirm" title="분석 시작 취소" content="rPCI 분석을 진행하지 않으시겠습니까? 이 작업은 되돌릴 수 없습니다"
-    okText="확인" cancelText="취소" @onCancel="showConfirm = false" @onConfirm="onCancel" />
-  <RModal :visible="showAlert" :title="modalTitle" :content="modalContent" type="alert" okText="확인" @onOk="onOk" />
+  <RModal :visible="showConfirm" type="confirm" :title="cancelModalTitle" :content="cancelModalContent"
+    @onCancel="showConfirm = false" @onConfirm="onCancel" />
+  <RModal :visible="showAlert" :title="modalTitle" :content="modalContent" type="alert" @onOk="onOk" />
 </template>
 
 <style scoped>

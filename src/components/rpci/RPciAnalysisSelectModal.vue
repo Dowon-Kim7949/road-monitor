@@ -37,6 +37,13 @@ const showUpdateConfirm = ref(false)
 const showCompleteConfirm = ref(false)
 const showCancelConfirm = ref(false)
 
+const popup03_title = computed(() => t('rpci_analyze.popup03_title'))
+const popup04_title = computed(() => t('rpci_analyze.popup04_title'))
+const popup05_title = computed(() => t('rpci_analyze.popup05_title'))
+const popup03_content = computed(() => t('rpci_analyze.popup03_content'))
+const popup04_content = computed(() => t('rpci_analyze.popup04_content'))
+const popup05_content = computed(() => t('rpci_analyze.popup05_content'))
+
 watchEffect(() => {
   if (props.visible) {
     // 모든 도로 펼치기
@@ -138,7 +145,7 @@ const onCancelBatchName = () => {
             <RIcon name="X" />
           </button>
         </div>
-        <p class="font-semibold mb-2">rPCI를 분석할 도로를 선택해주세요.</p>
+        <p class="font-semibold mb-2">{{ t('rpci_analyze.step06') }}</p>
         <div class="flex space-x-2 items-center pb-4">
           <input v-model="updateBatchName" type="text"
             class="min-w-60 max-w-full border rounded px-3 py-2 text-sm focus:ring focus:outline-none not-valid:opacity-50 not-valid:cursor-not-allowed"
@@ -194,12 +201,12 @@ const onCancelBatchName = () => {
       </div>
     </div>
   </transition>
-  <RModal :visible="showUpdateConfirm" type="confirm" title="분석 회차명 변경" content="rPCI 분석 회차명을 변경하시겠습니까?" okText="확인"
-    cancelText="취소" @onCancel="showUpdateConfirm = false" @onConfirm="onUpdateBatchName" />
-  <RModal :visible="showCancelConfirm" type="confirm" title="분석 회차명 변경 취소" content="rPCI 분석 회차명 변경을 취소하시겠습니까?"
-    okText="확인" cancelText="취소" @onCancel="showCancelConfirm = false" @onConfirm="onCancelBatchName" />
-  <RModal :visible="showCompleteConfirm" type="confirm" title="분석 회차명 확정" content="rPCI 분석 회차명을 입력하신 내용으로로 변경하시겠습니까?"
-    okText="확인" cancelText="취소" @onCancel="showCompleteConfirm = false" @onConfirm="onCompleteBatchName" />
+  <RModal :visible="showUpdateConfirm" type="confirm" :title="popup03_title" :content="popup03_content"
+    @onCancel="showUpdateConfirm = false" @onConfirm="onUpdateBatchName" />
+  <RModal :visible="showCancelConfirm" type="confirm" :title="popup04_title" :content="popup04_content"
+    @onCancel="showCancelConfirm = false" @onConfirm="onCancelBatchName" />
+  <RModal :visible="showCompleteConfirm" type="confirm" :title="popup05_title" :content="popup05_content"
+    @onCancel="showCompleteConfirm = false" @onConfirm="onCompleteBatchName" />
 </template>
 
 <style scoped>

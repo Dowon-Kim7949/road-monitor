@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, defineAsyncComponent } from 'vue'
+import { ref } from 'vue'
 import RMap from '@/components/common/RMap/RMap.vue'
 import RFloatingButton from '@/components/common/RFloatingButton.vue'
 import RLeftDrawer from '@/components/common/RLeftDrawer.vue'
@@ -22,16 +22,22 @@ const resetCenter = () => {
 const zoomIn = () => window.dispatchEvent(new CustomEvent('zoom-in-map'))
 const zoomOut = () => window.dispatchEvent(new CustomEvent('zoom-out-map'))
 
-const handleSelectMarker = (data: typeof selectedData.value) => {
+const handleSelectMarker = (data: any) => {
   selectedData.value = data
   if (selectedData.value) {
-    selectedData.value.roadName = `${data.name ? data.name : '-'} (${data.length}m)`
+    selectedData.value.roadName = `${data.roadName ? data.roadName : '-'} (${data.length}m)`
   }
   rightDrawer.value = true
   if (leftDrawer.value) leftDrawer.value = false
 }
 
 const isCompleted = ref(false)
+const selectItem = ref<any>()
+
+const selectGrade = (data: any) => {
+  console.log(data)
+  selectItem.value = data
+}
 </script>
 
 <template>
@@ -47,6 +53,6 @@ const isCompleted = ref(false)
     <RFloatingButton @reset-center="resetCenter" @zoom-in="zoomIn" @zoom-out="zoomOut" type="report"
       @toggle-left="toggleLeftDrawer" />
 
-    <RPciScoreBoard :pci-score="67" />
+    <RPciScoreBoard :pci-score="67" @select-grade="selectGrade" />
   </div>
 </template>

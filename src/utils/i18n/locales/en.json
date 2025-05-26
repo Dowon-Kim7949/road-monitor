@@ -63,5 +63,27 @@
   "configureRpciGrades": "Configure rPCI Grades",
   "rpciGradesDescription": "You can set the grades/scores to be used for rPCI analysis below as desired.",
   "updatedGradingSystemNotice": "The updated grading system will apply to all analyses going forward.",
-  "tierGradingSystem": "-tier grading system"
+  "tierGradingSystem": "-tier grading system",
+  "rpci_analyze": {
+    "step01": "We are about to perform the rPCI analysis",
+    "step02": "for the period currently selected on the screen. Do you want to proceed?",
+    "step03": "If you’d like to change the analysis period, click [Cancel]",
+    "step04": "to return to the previous screen and adjust the map’s query period.",
+    "step05": "Please enter the name for the new session to be created.",
+    "step06": "Please select the road for rPCI analysis.",
+    "popup01": "Request confirmed",
+    "popup01_content": "rPCI analysis has started. You can monitor its progress in the [Rapid-PCI] menu.",
+    "popup02": "Cancel Analysis Start",
+    "popup02_content": "Are you sure you want to cancel the rPCI analysis? This action cannot be undone.",
+    "popup03_title": "Change Analysis Session Name",
+    "popup03_content": "Do you want to change the rPCI analysis session name?",
+    "popup04_title": "Cancel Analysis Session Name Change",
+    "popup04_content": "Do you want to cancel the rPCI analysis session name change?",
+    "popup05_title": "Confirm Analysis Session Name",
+    "popup05_content": "Do you want to apply the entered name for the rPCI analysis session?",
+    "popup06_title": "Save Report as PDF",
+    "popup06_content": "Would you like to save the report for the currently selected session as a PDF file?",
+    "popup07_title": "Save Settings",
+    "popup07_content": "Would you like to save the current settings?"
+  }
 }

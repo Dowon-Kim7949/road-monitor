@@ -52,12 +52,12 @@ const submit = () => {
       <!-- Step 1: 진행 확인 -->
       <div v-if="step === 1">
         <p class="text-lg font-bold mb-4 text-pretty">
-          현재 화면에서 조회 중인 기간에 대해<br />
-          rPCI분석을 진행합니다. 계속하시겠습니까?
+          {{ t('rpci_analyze.step01') }}<br />
+          {{ t('rpci_analyze.step02') }}
         </p>
         <p class="text-sm text-gray-600 mb-4">
-          분석 기간을 변경하려면 [취소]를 눌러 이전 화면으로 돌아가<br />
-          지도 조회 기간을 수정해 주세요.
+          {{ t('rpci_analyze.step03') }}<br />
+          {{ t('rpci_analyze.step04') }}
         </p>
         <div class="flex justify-end space-x-2">
           <RButton type="tertiary" size="small" :label="t('button.cancel')" @click="close" />
@@ -67,7 +67,7 @@ const submit = () => {
 
       <!-- Step 2: 회차명 입력 -->
       <div v-if="step === 2">
-        <p class="text-lg font-semibold mb-4">새롭게 생성될 회차의 이름을 입력해주세요.</p>
+        <p class="text-lg font-semibold mb-4">{{ t('rpci_analyze.step05') }}</p>
         <input v-model="batchName" type="text"
           class="w-full border rounded px-3 py-2 mb-6 text-sm focus:ring focus:outline-none" />
         <div class="flex justify-end space-x-2">

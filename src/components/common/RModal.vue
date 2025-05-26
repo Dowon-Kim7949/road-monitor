@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const props = defineProps<{
   visible: boolean
   title: string
@@ -20,8 +22,8 @@ const emit = defineEmits<{
 
 const showConfirm = computed(() => props.type === 'confirm')
 
-const okLabel = computed(() => props.okText || '확인')
-const cancelLabel = computed(() => props.cancelText || '취소')
+const okLabel = computed(() => props.okText || t('button.confirm'))
+const cancelLabel = computed(() => props.cancelText || t('button.cancel'))
 const dangerStyle = computed(() =>
   props.danger
     ? 'bg-red-600 hover:bg-red-700 text-white'

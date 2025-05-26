@@ -45,12 +45,12 @@ const mapStyle = computed(() => {
 
 const zoomInMapHandler = () => {
   const currentZoom = map.value?.getView().getZoom()
-  if (currentZoom) map.value?.getView().animate({ zoom: currentZoom + 1, duration: MAP_DURATION })
+  if (currentZoom) map.value?.getView().animate({ zoom: currentZoom, duration: MAP_DURATION })
 }
 
 const zoomOutMapHandler = () => {
   const currentZoom = map.value?.getView().getZoom()
-  if (currentZoom) map.value?.getView().animate({ zoom: currentZoom - 1, duration: MAP_DURATION })
+  if (currentZoom) map.value?.getView().animate({ zoom: currentZoom, duration: MAP_DURATION })
 }
 
 const handleResetCenter = () => {
