@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, defineEmits } from 'vue'
+import { ref, watch } from 'vue'
 import RPieChart from '@/components/common/atom/RPieChart.vue'
 import RPciScoreDetailPopup from '@/components/rpci/RPciScoreDetailPopup.vue'
 import { useI18n } from 'vue-i18n'
