@@ -31,7 +31,7 @@ const selectedWayId = ref<string | null>(null)
 const selectedPointCoords = ref<any>(null)
 const isLoading = ref(false)
 const iriHeatmapLayer = ref<HeatmapLayer | null>(null)
-const center = fromLonLat([-0.22365497581524368, 51.49220408472129])
+const center = fromLonLat([127.1276, 37.4190])
 const currentZoom = ref(ZOOM_DEFAULT)
 const bridgeLayer = ref<VectorLayer<VectorSource<any>> | null>(null)
 

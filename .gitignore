@@ -29,5 +29,10 @@ coverage
 
 *.tsbuildinfo
 *.zip
-public/road_points_5m.json
-public/road_data.json
+public/uk
+public/*.json
+public/bridge.geojson
+public/export.geojson
+public/filtered.geojson
+public/road_points_5m.geojson
+public/iri_data.json

@@ -69,7 +69,7 @@ const toggleLeftDrawer = () => {
 
 const resetCenter = () => {
   // 수내역 근처로 지도 이동 이벤트 발생
-  const center = [14150000, 4510000] // EPSG:3857 좌표계에서 수내역 근처 좌표 (예시)
+  const center = [14151779.70, 4497672.02] // EPSG:3857 좌표계에서 수내역 근처 좌표 (예시)
   window.dispatchEvent(new CustomEvent('reset-map-center', { detail: center }))
 }
 

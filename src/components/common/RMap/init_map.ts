@@ -10,8 +10,7 @@ import Style from 'ol/style/Style'
 import Stroke from 'ol/style/Stroke'
 import Circle from 'ol/style/Circle'
 import Fill from 'ol/style/Fill'
-import { Feature, MapBrowserEvent, Overlay } from 'ol'
-import { defaults as defaultInteractions, MouseWheelZoom } from 'ol/interaction'
+import { Feature, MapBrowserEvent } from 'ol'
 import { getLength as getGeodesicLength } from 'ol/sphere'
 import type LineString from 'ol/geom/LineString'
 import Point from 'ol/geom/Point'
@@ -145,29 +144,8 @@ export const initMap = (
       zoom: ZOOM_DEFAULT,
       minZoom: ZOOM_MINLEVEL,
       maxZoom: ZOOM_MAXLEVEL,
-      // constrainResolution: false,
     }),
-    // interactions: defaultInteractions({
-    //   // 기본 휠 줌 끄고
-    //   mouseWheelZoom: false,
-    // }).extend([
-    //   // 단계별 줌 인터랙션 추가
-    //   new MouseWheelZoom({
-    //     constrainResolution: false, // ← 여기!
-    //     duration: 250, // 애니메이션 시간(ms)
-    //   }),
-    // ]),
   })
-
-  // container.addEventListener(
-  //   'wheel',
-  //   (e) => {
-  //     e.preventDefault()
-  //     const delta = e.deltaY > 0 ? -1 : 1
-  //     map.getView().setZoom(map.getView().getZoom()! + delta)
-  //   },
-  //   { passive: false },
-  // )
 
   map.getView().on('change:resolution', () => {
     onZoomChange(map.getView().getZoom()!)
@@ -205,7 +183,7 @@ export const layerStyleFunction = (
     (geom.getType() === 'LineString' || geom.getType() === 'MultiLineString')
   ) {
     const highway = props.highway as string
-    if (!['primary'].includes(highway)) {
+    if (!['primary', 'secondary', 'motorway', 'tertiary'].includes(highway)) {
       return undefined
     }
   }
@@ -359,10 +337,7 @@ export const loadLayers = async (
   roadPointLayer.value = null
 
   try {
-    // Fetch and style line features
-    // const { features: lines } = await fetch('/filtered.geojson')
-    // merged_graph_path
-    const { features: lines } = await fetch('/road_merged.geojson')
+    const { features: lines } = await fetch('/filtered.geojson')
       .then((r) => r.json())
       .then((data) => ({
         features: new GeoJSON().readFeatures(data, {
@@ -398,7 +373,7 @@ export const loadLayers = async (
 
     // Fetch and style point features if needed
     if (['road', 'rpci', 'surrounding'].includes(propsType)) {
-      const { features: points } = await fetch('/points_5m.geojson')
+      const { features: points } = await fetch('/road_points_5m.geojson')
         .then((r) => r.json())
         .then((data) => ({
           features: new GeoJSON().readFeatures(data, {
@@ -424,7 +399,7 @@ export const loadLayers = async (
       map.addLayer(roadPointLayer.value)
     }
   } catch (e: any) {
-    alert(`Error loading layers: ${e.message}`)
+    console.log(`Error loading layers: ${e}`)
   } finally {
     isLoading.value = false
   }
