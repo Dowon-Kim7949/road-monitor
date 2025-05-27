@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { DevicesService } from '@/utils/api/index'
 import RMap from '@/components/common/RMap/RMap.vue'
 import RFloatingButton from '@/components/common/RFloatingButton.vue'
 import RLeftDrawer from '@/components/common/RLeftDrawer.vue'
@@ -41,15 +42,32 @@ const toggleLeftDrawer = () => {
 
 const resetCenter = () => {
   // 수내역 근처로 지도 이동 이벤트 발생
-  const center = [14151779.70, 4497672.02] // EPSG:3857 좌표계에서 수내역 근처 좌표 (예시)
+  const center = [14151779.7, 4497672.02] // EPSG:3857 좌표계에서 수내역 근처 좌표 (예시)
   window.dispatchEvent(new CustomEvent('reset-map-center', { detail: center }))
 }
 
 const zoomIn = () => window.dispatchEvent(new CustomEvent('zoom-in-map'))
 const zoomOut = () => window.dispatchEvent(new CustomEvent('zoom-out-map'))
 
-const deviceSelected = () => { }
+const deviceSelected = () => {}
 const isCompleted = ref(false)
+const deviceList = ref<any>([])
+const getDevicesList = async () => {
+  const cust_id = localStorage.getItem('cust_id')
+  let res
+  try {
+    res = await DevicesService.getDevices(Number(cust_id))
+    console.log(res)
+  } catch (err: any) {
+    console.log(err)
+  }
+
+  if (res && res.data && res.data > 0) deviceList.value = res.data.devices
+}
+
+onMounted(async () => {
+  await getDevicesList()
+})
 </script>
 
 <template>
@@ -62,7 +80,12 @@ const isCompleted = ref(false)
     <RMap :leftDrawer="leftDrawer" type="cover" @completed-load="isCompleted = true" />
 
     <!-- 고정 버튼 모음 -->
-    <RFloatingButton @reset-center="resetCenter" @zoom-in="zoomIn" @zoom-out="zoomOut" type="cover"
-      @toggle-left="toggleLeftDrawer" />
+    <RFloatingButton
+      @reset-center="resetCenter"
+      @zoom-in="zoomIn"
+      @zoom-out="zoomOut"
+      type="cover"
+      @toggle-left="toggleLeftDrawer"
+    />
   </div>
 </template>

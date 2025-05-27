@@ -10,9 +10,10 @@ const routes: RouteRecordRaw[] = [
   // },
   {
     path: '/',
-    redirect: '/monitoring',
+    redirect: '/auth',
     component: () => import('@/layouts/contentsLayout.vue'),
     children: [
+      { path: '/auth', component: () => import('@/views/Login/LoginView.vue') },
       { path: '/monitoring', component: () => import('@/views/RoadMonitor/RMMonitoringView.vue') },
       {
         path: '/surroundings',

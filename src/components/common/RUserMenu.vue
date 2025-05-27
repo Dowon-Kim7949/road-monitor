@@ -28,6 +28,7 @@ import { ref, watchEffect, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import RIcon from '@/components/common/atom/RIcon.vue'
 import { useDropdownControl } from '@/utils/composables/useDropdownControl'
+import { AuthApiService } from '@/utils/api'
 
 const { t } = useI18n()
 const username = 'Dareesoft'
@@ -36,8 +37,22 @@ const buttonRef = ref<HTMLElement | null>(null)
 const direction = ref<'down' | 'up'>('down')
 const { isOpen, toggle } = useDropdownControl('user')
 
-const logout = () => {
-  toggle() // 드롭다운 닫기
+const logout = async () => {
+  try {
+    await AuthApiService.logout()
+    // 로그인 성공 처리 (예: 토큰 저장, 리다이렉트)
+    localStorage.clear()
+    window.location.href = '/auth'
+  } catch (err: any) {
+    // 에러 메시지
+    if (err.response?.status === 401) {
+      alert('이메일 또는 비밀번호가 올바르지 않습니다.')
+    } else {
+      alert('알 수 없는 오류가 발생했습니다. 다시 시도해주세요.')
+    }
+  } finally {
+    toggle() // 드롭다운 닫기
+  }
 }
 
 // 드롭다운 열릴 때 방향 계산
